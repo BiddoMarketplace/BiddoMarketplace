@@ -1170,6 +1170,33 @@ button{cursor:pointer; font-family:inherit;}
 .biddo-seller-note{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:11px;color:var(--ink-2);line-height:1.45;margin-top:12px;}
 .biddo-seller-loading{padding:45px 10px;text-align:center;color:var(--ink-3);font-size:12px;}
 @media (max-width:360px){.biddo-seller-grid{grid-template-columns:1fr;}}
+
+/* Biddo role switch + media guard */
+.biddo-role-card{margin:14px 16px 6px;padding:16px;border:1px solid rgba(20,20,18,.09);border-radius:22px;background:linear-gradient(135deg,#fff 0%,#f6f6f1 100%);box-shadow:0 10px 30px rgba(0,0,0,.06);position:relative;overflow:hidden}
+.biddo-role-card:after{content:"";position:absolute;width:110px;height:110px;border-radius:50%;right:-48px;top:-48px;background:rgba(190,255,60,.35);filter:blur(2px)}
+.biddo-role-kicker{font-size:10px;letter-spacing:.14em;font-weight:800;color:var(--ink-3);position:relative;z-index:1}
+.biddo-role-title{font-size:18px;font-weight:800;margin:5px 0 2px;position:relative;z-index:1}
+.biddo-role-sub{font-size:12px;color:var(--ink-2);position:relative;z-index:1}
+.biddo-role-switch{margin-top:12px;width:100%;border:0;border-radius:15px;padding:11px 13px;background:#171714;color:#fff;display:flex;align-items:center;justify-content:space-between;font:inherit;font-weight:800;cursor:pointer;position:relative;z-index:1;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease}
+.biddo-role-switch:active{transform:scale(.975)}
+.biddo-role-switch .role-arrow{font-size:20px;line-height:1;transition:transform .3s ease}
+.biddo-role-switch:hover .role-arrow{transform:translateX(4px)}
+.biddo-role-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.42);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);z-index:10020;opacity:0;pointer-events:none;transition:opacity .28s ease}
+.biddo-role-modal{position:fixed;left:50%;bottom:18px;transform:translate(-50%,22px) scale(.96);width:min(430px,calc(100% - 28px));background:#fff;border-radius:28px;padding:18px;z-index:10021;opacity:0;pointer-events:none;box-shadow:0 28px 70px rgba(0,0,0,.25);transition:opacity .28s ease,transform .38s cubic-bezier(.2,.85,.2,1)}
+.biddo-role-modal.open{opacity:1;pointer-events:auto;transform:translate(-50%,0) scale(1)}
+.biddo-role-backdrop.open{opacity:1;pointer-events:auto}
+.biddo-role-handle{width:38px;height:4px;border-radius:999px;background:#d7d7d0;margin:0 auto 15px}
+.biddo-role-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.biddo-role-head h3{margin:0;font-size:20px}
+.biddo-role-option{width:100%;border:1px solid #e7e7e0;background:#fafaf7;border-radius:20px;padding:15px;display:flex;align-items:center;gap:13px;text-align:left;margin-top:10px;cursor:pointer;transition:transform .2s ease,border-color .2s ease,background .2s ease,box-shadow .2s ease}
+.biddo-role-option:active{transform:scale(.975)}
+.biddo-role-option.active{border-color:#171714;background:#f2f7e7;box-shadow:0 8px 24px rgba(0,0,0,.07)}
+.biddo-role-icon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:#171714;color:#fff;font-size:19px;flex:none}
+.biddo-role-option.active .biddo-role-icon{background:#bfff3c;color:#171714}
+.biddo-role-option b{display:block;font-size:14px}.biddo-role-option span{display:block;color:var(--ink-2);font-size:11px;margin-top:3px}
+.biddo-role-check{margin-left:auto;font-size:18px;opacity:.2}.biddo-role-option.active .biddo-role-check{opacity:1}
+.biddo-role-pop{animation:biddoRolePop .55s cubic-bezier(.2,.9,.2,1) both}
+@keyframes biddoRolePop{0%{opacity:0;transform:translateY(12px) scale(.98)}100%{opacity:1;transform:none}}
 </style>
 
 </head>
@@ -1499,6 +1526,12 @@ button{cursor:pointer; font-family:inherit;}
     </div>
     <div class="row-gap"><button class="smallbtn outline profile-action-btn" onclick="openEditProfile()">Edit Profile</button><button class="smallbtn outline profile-action-btn" onclick="toast('Profile link copied')">Share Profile</button></div>
   </div>
+  <div class="biddo-role-card" id="biddoRoleCard">
+    <div class="biddo-role-kicker">YOUR BIDDO MODE</div>
+    <div class="biddo-role-title" id="biddoRoleTitle">Buyer mode</div>
+    <div class="biddo-role-sub" id="biddoRoleSub">Discover products, bid, buy and follow your favourite sellers.</div>
+    <button class="biddo-role-switch" type="button" onclick="openBiddoRoleSwitcher()"><span id="biddoRoleSwitchText">Switch to Seller</span><span class="role-arrow">→</span></button>
+  </div>
   <div class="section-lbl">Activity</div>
   <div class="plist" style="padding-top:0;">
     <div class="prow" onclick="openOrders()"><div class="pi">📦</div><div class="pt">My Orders</div><span class="chev">›</span></div>
@@ -1527,6 +1560,15 @@ button{cursor:pointer; font-family:inherit;}
   <button class="navbtn" data-tab="profile" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Profile</button>
 </div>
 
+
+<!-- ============ BUYER / SELLER ROLE SWITCH ============ -->
+<div class="biddo-role-backdrop" id="biddoRoleBackdrop" onclick="closeBiddoRoleSwitcher(event)"></div>
+<div class="biddo-role-modal" id="biddoRoleModal" role="dialog" aria-modal="true" aria-labelledby="biddoRoleModalTitle">
+  <div class="biddo-role-handle"></div>
+  <div class="biddo-role-head"><h3 id="biddoRoleModalTitle">Choose your mode</h3><button class="icon-btn" type="button" onclick="closeBiddoRoleSwitcher()">×</button></div>
+  <button class="biddo-role-option" id="biddoRoleBuyerOption" type="button" onclick="setBiddoRole('buyer')"><div class="biddo-role-icon">🛍</div><div><b>Buyer</b><span>Discover, bid, save and shop.</span></div><div class="biddo-role-check">✓</div></button>
+  <button class="biddo-role-option" id="biddoRoleSellerOption" type="button" onclick="setBiddoRole('seller')"><div class="biddo-role-icon">🏪</div><div><b>Seller</b><span>Manage your store and publish products.</span></div><div class="biddo-role-check">✓</div></button>
+</div>
 
 <!-- ============ EDIT PROFILE MODAL ============ -->
 <div class="biddo-profile-backdrop" id="profileEditBackdrop" onclick="closeEditProfile(event)"></div>
@@ -1905,6 +1947,8 @@ let liveInputBid = {};
 
 /* ---------------- NAV ---------------- */
 function go(tab){
+  // Discover video/audio must NEVER continue outside Discover.
+  if(tab!=='discover') stopAllDiscoverMedia();
   // Never leave an old live-room overlay sitting above the app when switching tabs.
   if(tab!=='live' && document.getElementById('liveRoom').classList.contains('active')) closeLiveRoom();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -1913,8 +1957,8 @@ function go(tab){
   if(tab==='discover' && !document.getElementById('discoverFeed').dataset.built){ buildDiscover(); }
   if(tab==='live'){ buildLive(); window.scrollTo({top:0,behavior:'smooth'}); }
 }
-function closePage(name){ document.getElementById('page-'+name).classList.remove('active'); }
-function openPage(name){ document.getElementById('page-'+name).classList.add('active'); }
+function closePage(name){ document.getElementById('page-'+name).classList.remove('active'); if(document.getElementById('screen-discover')?.classList.contains('active')) setTimeout(playCurrentDiscoverVideo,120); }
+function openPage(name){ stopAllDiscoverMedia(); document.getElementById('page-'+name).classList.add('active'); }
 
 function toast(msg, icon){
   const t=document.getElementById('toast');
@@ -2198,6 +2242,8 @@ function buildDiscover(){
 
 function playVideoWithSound(vid){
   if(!vid) return;
+  const discoverScreen=document.getElementById('screen-discover');
+  if(!discoverScreen || !discoverScreen.classList.contains('active')){ try{vid.pause();}catch(e){} return; }
   vid.muted=false;
   vid.defaultMuted=false;
   vid.volume=1;
@@ -2211,6 +2257,8 @@ function playVideoWithSound(vid){
 }
 
 function playCurrentDiscoverVideo(){
+  const discoverScreen=document.getElementById('screen-discover');
+  if(!discoverScreen || !discoverScreen.classList.contains('active')){ stopAllDiscoverMedia(); return; }
   const feed=document.getElementById('discoverFeed');
   if(!feed) return;
   const slides=Array.from(feed.querySelectorAll('.dslide'));
@@ -2248,10 +2296,18 @@ function handleDiscoverInfiniteLoop(){
   }, 60);
 }
 
+function stopAllDiscoverMedia(){
+  const feed=document.getElementById('discoverFeed');
+  if(feed) feed.querySelectorAll('video.dvideo').forEach(v=>{try{v.pause();v.currentTime=v.currentTime;}catch(e){}});
+  currentlyPlayingVideo=null;
+}
+
 function setupDiscoverObserver(){
   if(discoverObserver) discoverObserver.disconnect();
   const feed=document.getElementById('discoverFeed');
   discoverObserver = new IntersectionObserver((entries)=>{
+    const discoverScreen=document.getElementById('screen-discover');
+    if(!discoverScreen || !discoverScreen.classList.contains('active')){ stopAllDiscoverMedia(); return; }
     entries.forEach(entry=>{
       const vid = entry.target.querySelector('video.dvideo');
       if(!vid) return;
@@ -2372,6 +2428,7 @@ let liveCommentInterval;
 const SAMPLE_COMMENTS = ["🔥🔥🔥","how's the sizing?","ship to Chennai?","just placed a bid!","this is insane value","🙌","need this rn","is it authentic?","GG whoever wins this"];
 const SAMPLE_NAMES = ["rhea_k","dev.codes","priya99","sam_wheels","tanviarora","kunal_x"];
 function openLiveRoom(idx){
+  stopAllDiscoverMedia();
   if(!LIVES[idx]) return;
   currentLiveId=idx;
   const l=LIVES[idx], sel=s(l.sellerId), pr=p(l.productId);
@@ -3010,6 +3067,54 @@ function biddoSellerStudioRenderSetup(){
       </div>
       <div class="biddo-seller-note">Your seller profile is tied to your authenticated Biddo account. Actual business, payout, tax and marketplace compliance setup should be completed with a parent/guardian where required.</div>
     </div>`;
+}
+
+async /* ---------------- BIDDO ROLE SWITCH ---------------- */
+let biddoActiveRole = localStorage.getItem('biddo_active_role') || 'buyer';
+function renderBiddoRole(){
+  const role=biddoActiveRole==='seller'?'seller':'buyer';
+  const title=document.getElementById('biddoRoleTitle');
+  const sub=document.getElementById('biddoRoleSub');
+  const switchText=document.getElementById('biddoRoleSwitchText');
+  const bo=document.getElementById('biddoRoleBuyerOption');
+  const so=document.getElementById('biddoRoleSellerOption');
+  if(title) title.textContent=role==='seller'?'Seller mode':'Buyer mode';
+  if(sub) sub.textContent=role==='seller'?'Manage your store, publish products and keep your shop moving.':'Discover products, bid, buy and follow your favourite sellers.';
+  if(switchText) switchText.textContent=role==='seller'?'Switch to Buyer':'Switch to Seller';
+  if(bo) bo.classList.toggle('active',role==='buyer');
+  if(so) so.classList.toggle('active',role==='seller');
+}
+function openBiddoRoleSwitcher(){
+  renderBiddoRole();
+  document.getElementById('biddoRoleBackdrop')?.classList.add('open');
+  document.getElementById('biddoRoleModal')?.classList.add('open');
+}
+function closeBiddoRoleSwitcher(e){
+  if(e && e.target!==document.getElementById('biddoRoleBackdrop')) return;
+  document.getElementById('biddoRoleBackdrop')?.classList.remove('open');
+  document.getElementById('biddoRoleModal')?.classList.remove('open');
+}
+async function setBiddoRole(role){
+  role=role==='seller'?'seller':'buyer';
+  if(role==='seller' && window.biddoSupabase){
+    const user=await biddoSellerStudioUser();
+    if(!user){ closeBiddoRoleSwitcher(); toast('Log in to switch to Seller mode'); return; }
+    const {data:seller}=await window.biddoSupabase.from('seller_profiles').select('user_id').eq('user_id',user.id).maybeSingle();
+    if(!seller){
+      closeBiddoRoleSwitcher();
+      toast('Create your seller profile first');
+      setTimeout(()=>openSellerStudio(),220);
+      return;
+    }
+  }
+  biddoActiveRole=role;
+  localStorage.setItem('biddo_active_role',role);
+  renderBiddoRole();
+  closeBiddoRoleSwitcher();
+  const card=document.getElementById('biddoRoleCard');
+  if(card){card.classList.remove('biddo-role-pop'); void card.offsetWidth; card.classList.add('biddo-role-pop');}
+  toast(role==='seller'?'Seller mode activated ✓':'Buyer mode activated ✓',ICON_CHECK);
+  if(role==='seller') setTimeout(()=>openSellerStudio(),260);
 }
 
 async function openSellerStudio(){
@@ -4451,7 +4556,10 @@ renderCart();
     if(avatar) setAvatarEverywhere(avatar);
   });
 })();
+
+try{setTimeout(()=>renderBiddoRole(),0);}catch(e){}
 </script>
 
 </body>
 </html>
+
