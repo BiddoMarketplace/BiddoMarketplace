@@ -348,8 +348,780 @@ button{cursor:pointer; font-family:inherit;}
 .hidden{display:none!important;}
 ::-webkit-scrollbar{width:0;}
 </style>
+
+<style id="biddo-auth-css">
+/* ============================================================
+   BIDDO AUTH / ONBOARDING LAYER
+   Added as a standalone layer. Existing app UI/code is untouched.
+   ============================================================ */
+:root{
+  --biddo-lime:#e8ff4d;
+  --biddo-ink:#111110;
+  --biddo-muted:#777771;
+  --biddo-line:#e6e6e2;
+  --biddo-surface:#f7f7f4;
+}
+
+#biddoAuthGate{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  background:#fff;
+  color:var(--biddo-ink);
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  overscroll-behavior:none;
+}
+#biddoAuthGate.hidden{display:none;}
+
+#biddoAuthGate *{box-sizing:border-box;}
+#biddoAuthGate button,
+#biddoAuthGate input,
+#biddoAuthGate select{font:inherit;}
+
+.biddo-auth-shell{
+  width:100%;
+  max-width:430px;
+  min-height:100dvh;
+  background:#fff;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+.biddo-auth-page{
+  min-height:100dvh;
+  width:100%;
+  padding:calc(18px + env(safe-area-inset-top,0px)) 18px calc(20px + env(safe-area-inset-bottom,0px));
+  display:flex;
+  flex-direction:column;
+  animation:biddoAuthIn .32s cubic-bezier(.32,.72,0,1);
+}
+.biddo-auth-page.hidden{display:none;}
+@keyframes biddoAuthIn{
+  from{opacity:0;transform:translateX(20px);}
+  to{opacity:1;transform:translateX(0);}
+}
+
+.biddo-auth-top{
+  min-height:34px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+.biddo-auth-back{
+  position:absolute;
+  left:0;
+  top:0;
+  width:34px;
+  height:34px;
+  border:0;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  color:#111;
+  cursor:pointer;
+}
+.biddo-auth-back:active{background:#f2f2ef;transform:scale(.95);}
+.biddo-auth-logo{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:#20201e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  box-shadow:0 2px 0 rgba(0,0,0,.05);
+}
+.biddo-auth-logo::before{
+  content:"";
+  width:20px;
+  height:20px;
+  border-radius:7px;
+  background:var(--biddo-lime);
+  clip-path:polygon(0 20%,72% 20%,72% 0,100% 50%,72% 100%,72% 80%,0 80%);
+}
+.biddo-auth-logo::after{
+  content:"";
+  position:absolute;
+  width:8px;
+  height:8px;
+  right:8px;
+  top:8px;
+  background:#fff;
+  clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);
+  opacity:.95;
+}
+
+.biddo-auth-content{
+  width:100%;
+  margin:44px auto 0;
+}
+.biddo-auth-title{
+  font-size:29px;
+  line-height:1.08;
+  letter-spacing:-1.05px;
+  font-weight:800;
+  margin:0 0 8px;
+}
+.biddo-auth-subtitle{
+  font-size:14px;
+  line-height:1.45;
+  color:var(--biddo-muted);
+  margin:0 0 24px;
+}
+
+.biddo-auth-methods{display:flex;flex-direction:column;gap:10px;}
+.biddo-auth-method{
+  width:100%;
+  height:54px;
+  border:1px solid var(--biddo-line);
+  background:#fff;
+  border-radius:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  font-size:15px;
+  font-weight:700;
+  color:#111;
+  cursor:pointer;
+  transition:transform .15s,background .15s,border-color .15s;
+  position:relative;
+}
+.biddo-auth-method:hover{background:#fafaf8;border-color:#d8d8d3;}
+.biddo-auth-method:active{transform:scale(.985);}
+.biddo-auth-method .method-icon{
+  width:22px;
+  height:22px;
+  position:absolute;
+  left:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.biddo-auth-method svg{width:21px;height:21px;}
+.biddo-auth-google-g{
+  font-size:20px;
+  line-height:1;
+  font-weight:800;
+  font-family:Arial,sans-serif;
+}
+.biddo-auth-apple{
+  font-size:21px;
+  line-height:1;
+}
+
+.biddo-auth-switch{
+  margin-top:auto;
+  text-align:center;
+  padding-top:38px;
+}
+.biddo-auth-switch-label{
+  color:var(--biddo-muted);
+  font-size:14px;
+  margin-right:5px;
+}
+.biddo-auth-link{
+  border:0;
+  background:none;
+  color:#111;
+  font-size:14px;
+  font-weight:800;
+  text-decoration:underline;
+  padding:0;
+  cursor:pointer;
+}
+
+.biddo-auth-legal{
+  margin-top:18px;
+  text-align:center;
+  font-size:11.5px;
+  line-height:1.45;
+  color:#8d8d87;
+}
+.biddo-auth-legal a{color:#5f5f5a;text-decoration:underline;}
+
+.biddo-auth-footer-space{height:8px;}
+
+.biddo-auth-form{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.biddo-field{
+  width:100%;
+  height:58px;
+  border:1px solid var(--biddo-line);
+  border-radius:13px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  padding:0 14px;
+  transition:border-color .18s,box-shadow .18s;
+}
+.biddo-field:focus-within{
+  border-color:#111;
+  box-shadow:0 0 0 3px rgba(17,17,16,.06);
+}
+.biddo-field input,
+.biddo-field select{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  font-size:15px;
+  color:#111;
+}
+.biddo-field input::placeholder{color:#9a9a95;}
+.biddo-field select{appearance:none;}
+.biddo-field-stack{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.biddo-field-label{
+  font-size:10.5px;
+  color:#80807a;
+  margin-bottom:2px;
+  line-height:1;
+}
+.biddo-field-password{
+  width:36px;
+  height:36px;
+  border:0;
+  background:transparent;
+  color:#777;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  cursor:pointer;
+}
+.biddo-field-password:active{background:#f1f1ee;}
+
+.biddo-checkrow{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  margin-top:2px;
+}
+.biddo-check{
+  width:19px;
+  height:19px;
+  accent-color:#111;
+  margin-top:1px;
+}
+.biddo-checktext{
+  font-size:12.5px;
+  line-height:1.4;
+  color:#5f5f5b;
+}
+.biddo-checktext a{color:#4a4a46;text-decoration:underline;}
+
+.biddo-primary{
+  width:100%;
+  height:54px;
+  border:0;
+  border-radius:28px;
+  background:#1c1c1a;
+  color:#fff;
+  font-size:15px;
+  font-weight:800;
+  margin-top:10px;
+  cursor:pointer;
+  transition:transform .15s,opacity .15s;
+}
+.biddo-primary:disabled{
+  background:#dedddf;
+  color:#8e8c91;
+  cursor:not-allowed;
+}
+.biddo-primary:not(:disabled):active{transform:scale(.985);}
+
+.biddo-note{
+  margin-top:10px;
+  font-size:11px;
+  line-height:1.45;
+  text-align:center;
+  color:#8b8b85;
+}
+
+.biddo-phone-row{
+  display:flex;
+  width:100%;
+  height:58px;
+  border:1px solid var(--biddo-line);
+  border-radius:13px;
+  overflow:hidden;
+  transition:border-color .18s,box-shadow .18s;
+}
+.biddo-phone-row:focus-within{
+  border-color:#111;
+  box-shadow:0 0 0 3px rgba(17,17,16,.06);
+}
+.biddo-country-code{
+  width:77px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  font-weight:700;
+  border-right:1px solid var(--biddo-line);
+  background:#fbfbf9;
+}
+.biddo-phone-row input{
+  flex:1;
+  border:0;
+  outline:0;
+  padding:0 14px;
+  font-size:16px;
+  letter-spacing:.2px;
+}
+.biddo-phone-row input::placeholder{color:#aaa9a4;}
+
+.biddo-otp-row{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:8px;
+}
+.biddo-otp{
+  min-width:0;
+  height:54px;
+  text-align:center;
+  border:1px solid var(--biddo-line);
+  border-radius:12px;
+  font-size:20px !important;
+  font-weight:800;
+  outline:0;
+  color:#111;
+}
+.biddo-otp:focus{
+  border-color:#111;
+  box-shadow:0 0 0 3px rgba(17,17,16,.06);
+}
+.biddo-otp.is-error{
+  animation:biddoShake .35s;
+  border-color:#c23b32;
+}
+@keyframes biddoShake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-4px)}
+  75%{transform:translateX(4px)}
+}
+
+.biddo-otp-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:13px;
+}
+.biddo-otp-meta span{
+  font-size:12px;
+  color:#81817b;
+}
+.biddo-text-btn{
+  border:0;
+  background:none;
+  padding:0;
+  color:#111;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+.biddo-text-btn:disabled{color:#aaa9a4;cursor:not-allowed;}
+
+.biddo-location-card{
+  border:1px solid var(--biddo-line);
+  border-radius:15px;
+  padding:4px;
+  background:#fff;
+  margin-bottom:12px;
+}
+.biddo-location-card .biddo-field{
+  height:64px;
+  border:0;
+  border-radius:11px;
+  box-shadow:none;
+}
+.biddo-location-card .biddo-field + .biddo-field{
+  border-top:1px solid var(--biddo-line);
+  border-radius:0 0 11px 11px;
+}
+.biddo-location-card .biddo-field select{
+  font-size:14.5px;
+}
+.biddo-select-wrap{
+  position:relative;
+  flex:1;
+  display:flex;
+  align-items:center;
+}
+.biddo-select-wrap::after{
+  content:"";
+  width:8px;
+  height:8px;
+  border-right:1.6px solid #777;
+  border-bottom:1.6px solid #777;
+  transform:rotate(45deg);
+  position:absolute;
+  right:3px;
+  top:50%;
+  margin-top:-5px;
+  pointer-events:none;
+}
+.biddo-country-static{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  height:58px;
+  padding:0 14px;
+  border:1px solid var(--biddo-line);
+  border-radius:13px;
+  color:#111;
+  font-size:15px;
+  margin-bottom:12px;
+}
+.biddo-country-static span:first-child{font-size:20px;}
+
+.biddo-auth-error{
+  min-height:18px;
+  color:#b3352e;
+  font-size:12px;
+  margin-top:1px;
+}
+.biddo-demo-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:5px 9px;
+  border-radius:999px;
+  background:#f3f3ef;
+  color:#65655f;
+  font-size:10.5px;
+  font-weight:700;
+  margin-top:10px;
+}
+.biddo-spinner-dot{
+  display:inline-block;
+  width:14px;
+  height:14px;
+  border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;
+  border-radius:50%;
+  vertical-align:-2px;
+  margin-right:7px;
+  animation:biddoSpin .7s linear infinite;
+}
+@keyframes biddoSpin{to{transform:rotate(360deg)}}
+
+.biddo-complete{
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.biddo-complete .biddo-auth-content{
+  margin-top:24px;
+}
+.biddo-success-icon{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  background:#1d1d1b;
+  color:var(--biddo-lime);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 18px;
+  font-size:31px;
+  font-weight:900;
+  box-shadow:0 8px 30px rgba(0,0,0,.12);
+}
+.biddo-success-title{
+  font-size:28px;
+  line-height:1.08;
+  letter-spacing:-.8px;
+  font-weight:800;
+  margin:0 0 8px;
+}
+.biddo-success-sub{
+  color:#74746f;
+  font-size:14px;
+  line-height:1.45;
+  margin:0 auto;
+  max-width:310px;
+}
+
+@media (min-width:600px){
+  #biddoAuthGate{
+    background:#f3f3ef;
+    align-items:center;
+    padding:18px;
+  }
+  .biddo-auth-shell{
+    min-height:calc(100dvh - 36px);
+    max-height:900px;
+    border-radius:26px;
+    box-shadow:0 22px 70px rgba(0,0,0,.12);
+  }
+  .biddo-auth-page{min-height:calc(100dvh - 36px);}
+}
+</style>
+
 </head>
 <body>
+
+<!-- ============================================================
+     BIDDO AUTH / ONBOARDING
+     Separate layer: underlying marketplace UI remains untouched.
+     ============================================================ -->
+<div id="biddoAuthGate" aria-label="Biddo account setup">
+  <div class="biddo-auth-shell">
+
+    <!-- 1. AUTH METHOD -->
+    <section class="biddo-auth-page" id="biddoAuthMethodPage">
+      <div class="biddo-auth-top">
+        <div class="biddo-auth-logo" aria-hidden="true"></div>
+      </div>
+
+      <div class="biddo-auth-content">
+        <h1 class="biddo-auth-title" id="biddoAuthTitle">Sign up for Biddo</h1>
+        <p class="biddo-auth-subtitle">Discover products, join live drops, and shop from creators you love.</p>
+
+        <div class="biddo-auth-methods">
+          <button class="biddo-auth-method" type="button" onclick="biddoAuthContinue('google')">
+            <span class="method-icon"><span class="biddo-auth-google-g">G</span></span>
+            Continue with Google
+          </button>
+
+          <button class="biddo-auth-method" type="button" onclick="biddoAuthContinue('apple')">
+            <span class="method-icon"><span class="biddo-auth-apple"></span></span>
+            Continue with Apple
+          </button>
+
+          <button class="biddo-auth-method" type="button" onclick="biddoShowPage('email')">
+            <span class="method-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="2.5"></rect>
+                <path d="m5 7 7 6 7-6"></path>
+              </svg>
+            </span>
+            Continue with Email
+          </button>
+        </div>
+      </div>
+
+      <div class="biddo-auth-switch">
+        <span class="biddo-auth-switch-label" id="biddoAuthSwitchLabel">Already have an account?</span>
+        <button class="biddo-auth-link" type="button" onclick="biddoToggleMode()">Log in</button>
+      </div>
+
+      <div class="biddo-auth-legal">
+        By continuing, you agree to our
+        <a href="#" onclick="event.preventDefault();">Terms of Service</a>
+        and
+        <a href="#" onclick="event.preventDefault();">Privacy Policy</a>.
+      </div>
+      <div class="biddo-auth-footer-space"></div>
+    </section>
+
+    <!-- 2. EMAIL SIGN UP / LOGIN -->
+    <section class="biddo-auth-page hidden" id="biddoAuthEmailPage">
+      <div class="biddo-auth-top">
+        <button class="biddo-auth-back" type="button" aria-label="Back" onclick="biddoShowPage('method')">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 18 9 12l6-6"></path>
+          </svg>
+        </button>
+        <div class="biddo-auth-logo" aria-hidden="true"></div>
+      </div>
+
+      <div class="biddo-auth-content">
+        <h1 class="biddo-auth-title" id="biddoEmailTitle">Let's get you signed up</h1>
+        <p class="biddo-auth-subtitle" id="biddoEmailSubtitle">You'll use this to log in next time.</p>
+
+        <form class="biddo-auth-form" onsubmit="event.preventDefault(); biddoSubmitEmail();">
+          <div class="biddo-field" id="biddoFullNameField">
+            <div class="biddo-field-stack">
+              <span class="biddo-field-label">Full Name</span>
+              <input id="biddoFullName" type="text" autocomplete="name" placeholder="Your name">
+            </div>
+          </div>
+
+          <div class="biddo-field">
+            <div class="biddo-field-stack">
+              <span class="biddo-field-label">Email</span>
+              <input id="biddoEmail" type="email" autocomplete="email" placeholder="you@example.com">
+            </div>
+          </div>
+
+          <div class="biddo-field">
+            <div class="biddo-field-stack">
+              <span class="biddo-field-label">Password</span>
+              <input id="biddoPassword" type="password" autocomplete="new-password" placeholder="Create a password">
+            </div>
+            <button class="biddo-field-password" type="button" aria-label="Show password" onclick="biddoTogglePassword()">
+              <svg id="biddoEyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M2.5 12s3.3-6 9.5-6 9.5 6 9.5 6-3.3 6-9.5 6-9.5-6-9.5-6Z"></path>
+                <circle cx="12" cy="12" r="2.4"></circle>
+              </svg>
+            </button>
+          </div>
+
+          <div class="biddo-checkrow" id="biddoTermsRow">
+            <input class="biddo-check" id="biddoTerms" type="checkbox">
+            <label class="biddo-checktext" for="biddoTerms">
+              By continuing, you agree to our
+              <a href="#" onclick="event.preventDefault();">Terms of Service</a>
+              and
+              <a href="#" onclick="event.preventDefault();">Privacy Policy</a>.
+            </label>
+          </div>
+
+          <div class="biddo-auth-error" id="biddoEmailError"></div>
+
+          <button class="biddo-primary" id="biddoEmailContinue" type="submit">Continue</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 3. PHONE -->
+    <section class="biddo-auth-page hidden" id="biddoAuthPhonePage">
+      <div class="biddo-auth-top">
+        <button class="biddo-auth-back" type="button" aria-label="Back" onclick="biddoShowPage('method')">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 18 9 12l6-6"></path>
+          </svg>
+        </button>
+        <div class="biddo-auth-logo" aria-hidden="true"></div>
+      </div>
+
+      <div class="biddo-auth-content">
+        <h1 class="biddo-auth-title">Add your phone number</h1>
+        <p class="biddo-auth-subtitle">We'll use it to verify your account with a one-time password and keep your orders secure.</p>
+
+        <form class="biddo-auth-form" onsubmit="event.preventDefault(); biddoSendOtp();">
+          <div class="biddo-phone-row">
+            <div class="biddo-country-code">🇮🇳 +91</div>
+            <input id="biddoPhone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10" placeholder="10-digit mobile number">
+          </div>
+
+          <div class="biddo-auth-error" id="biddoPhoneError"></div>
+
+          <button class="biddo-primary" id="biddoPhoneContinue" type="submit" disabled>Send OTP</button>
+        </form>
+
+        <div class="biddo-note">Your phone number is used for account verification and important order updates.</div>
+      </div>
+    </section>
+
+    <!-- 4. OTP -->
+    <section class="biddo-auth-page hidden" id="biddoAuthOtpPage">
+      <div class="biddo-auth-top">
+        <button class="biddo-auth-back" type="button" aria-label="Back" onclick="biddoShowPage('phone')">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 18 9 12l6-6"></path>
+          </svg>
+        </button>
+        <div class="biddo-auth-logo" aria-hidden="true"></div>
+      </div>
+
+      <div class="biddo-auth-content">
+        <h1 class="biddo-auth-title">Enter the 6-digit code</h1>
+        <p class="biddo-auth-subtitle">We sent a verification code to <strong id="biddoOtpPhoneText"></strong>.</p>
+
+        <div class="biddo-otp-row" id="biddoOtpRow">
+          <input class="biddo-otp" maxlength="1" inputmode="numeric" autocomplete="one-time-code" aria-label="OTP digit 1">
+          <input class="biddo-otp" maxlength="1" inputmode="numeric" aria-label="OTP digit 2">
+          <input class="biddo-otp" maxlength="1" inputmode="numeric" aria-label="OTP digit 3">
+          <input class="biddo-otp" maxlength="1" inputmode="numeric" aria-label="OTP digit 4">
+          <input class="biddo-otp" maxlength="1" inputmode="numeric" aria-label="OTP digit 5">
+          <input class="biddo-otp" maxlength="1" inputmode="numeric" aria-label="OTP digit 6">
+        </div>
+
+        <div class="biddo-auth-error" id="biddoOtpError"></div>
+
+        <button class="biddo-primary" type="button" onclick="biddoVerifyOtp()">Verify & Continue</button>
+
+        <div class="biddo-otp-meta">
+          <span id="biddoOtpTimer">Resend code in 30s</span>
+          <button class="biddo-text-btn" id="biddoResendBtn" type="button" onclick="biddoResendOtp()" disabled>Resend code</button>
+        </div>
+
+        <div class="biddo-demo-pill">Prototype mode · OTP: 123456</div>
+      </div>
+    </section>
+
+    <!-- 5. LOCATION -->
+    <section class="biddo-auth-page hidden" id="biddoAuthLocationPage">
+      <div class="biddo-auth-top">
+        <button class="biddo-auth-back" type="button" aria-label="Back" onclick="biddoShowPage('otp')">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 18 9 12l6-6"></path>
+          </svg>
+        </button>
+        <div class="biddo-auth-logo" aria-hidden="true"></div>
+      </div>
+
+      <div class="biddo-auth-content">
+        <h1 class="biddo-auth-title">Where do you live?</h1>
+        <p class="biddo-auth-subtitle">This helps us show products, sellers, and delivery options relevant to you.</p>
+
+        <div class="biddo-country-static">
+          <span>🇮🇳</span>
+          <span>India</span>
+        </div>
+
+        <div class="biddo-location-card">
+          <div class="biddo-field">
+            <div class="biddo-field-stack">
+              <span class="biddo-field-label">State / Union Territory</span>
+              <div class="biddo-select-wrap">
+                <select id="biddoState" onchange="biddoPopulateCities()">
+                  <option value="">Select your state</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="biddo-field">
+            <div class="biddo-field-stack">
+              <span class="biddo-field-label">City</span>
+              <div class="biddo-select-wrap">
+                <select id="biddoCity" onchange="biddoSyncLocationButton()" disabled>
+                  <option value="">Select your city</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="biddo-auth-error" id="biddoLocationError"></div>
+        <button class="biddo-primary" id="biddoLocationContinue" type="button" onclick="biddoFinishOnboarding()" disabled>Continue</button>
+      </div>
+    </section>
+
+    <!-- 6. COMPLETE -->
+    <section class="biddo-auth-page biddo-complete hidden" id="biddoAuthCompletePage">
+      <div class="biddo-auth-content">
+        <div class="biddo-success-icon">✓</div>
+        <h1 class="biddo-success-title">You're all set.</h1>
+        <p class="biddo-success-sub" id="biddoCompleteSub">Welcome to Biddo. Your feed is ready.</p>
+        <button class="biddo-primary" type="button" onclick="biddoEnterApp()">Enter Biddo</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
 <div id="app">
 
 <!-- ============ HOME ============ -->
@@ -1537,5 +2309,444 @@ buildHome();
 buildLive();
 renderCart();
 </script>
+
+<script id="biddo-auth-js">
+/* ============================================================
+   BIDDO AUTH / ONBOARDING
+   Prototype-only auth layer. Existing marketplace JS is untouched.
+   ============================================================ */
+(function(){
+  "use strict";
+
+  const BIDDO_AUTH_KEY = "biddo_auth_profile_v1";
+  const DEMO_OTP = "123456";
+
+  const INDIA_LOCATIONS = {
+    "Andhra Pradesh": ["Amaravati","Anantapur","Eluru","Guntur","Kakinada","Nellore","Rajahmundry","Tirupati","Vijayawada","Visakhapatnam"],
+    "Arunachal Pradesh": ["Itanagar","Naharlagun","Pasighat","Tawang","Ziro"],
+    "Assam": ["Dibrugarh","Dispur","Guwahati","Jorhat","Silchar","Tezpur"],
+    "Bihar": ["Bhagalpur","Gaya","Muzaffarpur","Patna","Purnia"],
+    "Chhattisgarh": ["Bhilai","Bilaspur","Durg","Korba","Raipur"],
+    "Goa": ["Mapusa","Margao","Panaji","Ponda","Vasco da Gama"],
+    "Gujarat": ["Ahmedabad","Bhavnagar","Gandhinagar","Jamnagar","Rajkot","Surat","Vadodara"],
+    "Haryana": ["Ambala","Faridabad","Gurugram","Hisar","Karnal","Panipat","Rohtak"],
+    "Himachal Pradesh": ["Dharamshala","Kullu","Mandi","Shimla","Solan"],
+    "Jharkhand": ["Bokaro","Deoghar","Dhanbad","Jamshedpur","Ranchi"],
+    "Karnataka": ["Bengaluru","Belagavi","Hubballi-Dharwad","Mangaluru","Mysuru","Shivamogga","Udupi"],
+    "Kerala": ["Alappuzha","Kochi","Kollam","Kozhikode","Thiruvananthapuram","Thrissur"],
+    "Madhya Pradesh": ["Bhopal","Gwalior","Indore","Jabalpur","Ujjain"],
+    "Maharashtra": ["Aurangabad (Chhatrapati Sambhajinagar)","Mumbai","Nagpur","Nashik","Navi Mumbai","Pune","Thane"],
+    "Manipur": ["Imphal","Churachandpur","Thoubal"],
+    "Meghalaya": ["Shillong","Tura","Nongpoh"],
+    "Mizoram": ["Aizawl","Champhai","Lunglei"],
+    "Nagaland": ["Dimapur","Kohima","Mokokchung","Tuensang"],
+    "Odisha": ["Bhubaneswar","Cuttack","Puri","Rourkela","Sambalpur"],
+    "Punjab": ["Amritsar","Bathinda","Jalandhar","Ludhiana","Mohali","Patiala"],
+    "Rajasthan": ["Ajmer","Bikaner","Jaipur","Jodhpur","Kota","Udaipur"],
+    "Sikkim": ["Gangtok","Gyalshing","Namchi","Pakyong"],
+    "Tamil Nadu": ["Chennai","Coimbatore","Madurai","Salem","Tiruchirappalli","Tirunelveli","Vellore"],
+    "Telangana": ["Hyderabad","Karimnagar","Khammam","Nizamabad","Warangal"],
+    "Tripura": ["Agartala","Dharmanagar","Udaipur"],
+    "Uttar Pradesh": ["Agra","Ghaziabad","Kanpur","Lucknow","Meerut","Noida","Prayagraj","Varanasi"],
+    "Uttarakhand": ["Dehradun","Haridwar","Nainital","Rishikesh","Roorkee"],
+    "West Bengal": ["Asansol","Durgapur","Howrah","Kolkata","Siliguri"],
+    "Andaman and Nicobar Islands": ["Port Blair"],
+    "Chandigarh": ["Chandigarh"],
+    "Dadra and Nagar Haveli and Daman and Diu": ["Daman","Diu","Silvassa"],
+    "Delhi": ["New Delhi","Delhi"],
+    "Jammu and Kashmir": ["Jammu","Srinagar","Anantnag","Baramulla"],
+    "Ladakh": ["Leh","Kargil"],
+    "Lakshadweep": ["Kavaratti","Agatti"],
+    "Puducherry": ["Puducherry","Karaikal","Mahe","Yanam"]
+  };
+
+  const state = {
+    mode: "signup",
+    provider: null,
+    page: "method",
+    profile: {
+      name: "",
+      email: "",
+      phone: "",
+      state: "",
+      city: ""
+    },
+    otpTimer: 30,
+    otpInterval: null
+  };
+
+  function $id(id){ return document.getElementById(id); }
+
+  function pages(){
+    return {
+      method:$id("biddoAuthMethodPage"),
+      email:$id("biddoAuthEmailPage"),
+      phone:$id("biddoAuthPhonePage"),
+      otp:$id("biddoAuthOtpPage"),
+      location:$id("biddoAuthLocationPage"),
+      complete:$id("biddoAuthCompletePage")
+    };
+  }
+
+  function setPage(page){
+    const p = pages();
+    Object.keys(p).forEach(k=>p[k].classList.toggle("hidden", k!==page));
+    state.page = page;
+    const gate = $id("biddoAuthGate");
+    if(gate) gate.scrollTop = 0;
+  }
+
+  window.biddoShowPage = function(page){
+    if(page==="email") biddoSyncEmailMode();
+    setPage(page);
+    if(page==="email"){
+      setTimeout(()=>{ const f=$id("biddoFullName"); if(state.mode==="signup") f.focus(); else $id("biddoEmail").focus(); },180);
+    }
+    if(page==="phone") setTimeout(()=> $id("biddoPhone").focus(),180);
+    if(page==="otp") setTimeout(()=> $id("biddoOtpRow").querySelector(".biddo-otp").focus(),180);
+    if(page==="location") biddoPopulateStates();
+  };
+
+  function biddoSyncEmailMode(){
+    const signup = state.mode==="signup";
+    $id("biddoAuthTitle").textContent = signup ? "Sign up for Biddo" : "Log in to Biddo";
+    $id("biddoAuthSwitchLabel").textContent = signup ? "Already have an account?" : "New to Biddo?";
+    document.querySelector("#biddoAuthMethodPage .biddo-auth-link").textContent = signup ? "Log in" : "Sign up";
+
+    $id("biddoEmailTitle").textContent = signup ? "Let's get you signed up" : "Welcome back";
+    $id("biddoEmailSubtitle").textContent = signup ? "You'll use this to log in next time." : "Log in with your Biddo account details.";
+    $id("biddoFullNameField").style.display = signup ? "" : "none";
+    $id("biddoTermsRow").style.display = signup ? "" : "none";
+    $id("biddoPassword").setAttribute("autocomplete", signup ? "new-password" : "current-password");
+    $id("biddoPassword").placeholder = signup ? "Create a password" : "Your password";
+    $id("biddoEmailContinue").textContent = "Continue";
+  }
+
+  window.biddoToggleMode = function(){
+    state.mode = state.mode==="signup" ? "login" : "signup";
+    biddoSyncEmailMode();
+    setPage("method");
+  };
+
+  window.biddoAuthContinue = function(provider){
+    state.provider = provider;
+    state.profile.name = "";
+    state.profile.email = "";
+    if(provider==="google"){
+      state.profile.name = "Biddo User";
+      state.profile.email = "google-user@demo.biddo";
+    } else if(provider==="apple"){
+      state.profile.name = "Biddo User";
+      state.profile.email = "apple-user@demo.biddo";
+    }
+    setPage("phone");
+    $id("biddoPhone").value = state.profile.phone || "";
+    biddoSyncPhoneButton();
+  };
+
+  window.biddoSubmitEmail = function(){
+    const fullName = $id("biddoFullName").value.trim();
+    const email = $id("biddoEmail").value.trim();
+    const password = $id("biddoPassword").value;
+    const terms = $id("biddoTerms").checked;
+    const error = $id("biddoEmailError");
+
+    if(state.mode==="signup" && fullName.length<2){
+      error.textContent = "Please enter your full name.";
+      $id("biddoFullName").focus();
+      return;
+    }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      error.textContent = "Enter a valid email address.";
+      $id("biddoEmail").focus();
+      return;
+    }
+    if(password.length<6){
+      error.textContent = "Password must be at least 6 characters.";
+      $id("biddoPassword").focus();
+      return;
+    }
+    if(state.mode==="signup" && !terms){
+      error.textContent = "Please accept the Terms and Privacy Policy.";
+      return;
+    }
+
+    error.textContent = "";
+    state.provider = "email";
+    state.profile.name = state.mode==="signup" ? fullName : "Biddo User";
+    state.profile.email = email;
+
+    const btn = $id("biddoEmailContinue");
+    btn.disabled = true;
+    btn.innerHTML = '<span class="biddo-spinner-dot"></span>Continuing';
+    setTimeout(()=>{
+      btn.disabled = false;
+      btn.textContent = "Continue";
+      setPage("phone");
+      $id("biddoPhone").focus();
+    },550);
+  };
+
+  window.biddoTogglePassword = function(){
+    const input=$id("biddoPassword");
+    input.type = input.type==="password" ? "text" : "password";
+  };
+
+  function biddoSyncPhoneButton(){
+    const v=$id("biddoPhone").value.replace(/\D/g,"");
+    $id("biddoPhoneContinue").disabled = v.length!==10;
+    if(v.length===10) $id("biddoPhoneError").textContent="";
+  }
+
+  function biddoSyncOtpInputs(){
+    return Array.from(document.querySelectorAll("#biddoOtpRow .biddo-otp"));
+  }
+
+  function clearOtpError(){
+    $id("biddoOtpError").textContent="";
+    biddoSyncOtpInputs().forEach(i=>i.classList.remove("is-error"));
+  }
+
+  window.biddoSendOtp = function(){
+    const phone = $id("biddoPhone").value.replace(/\D/g,"");
+    const error = $id("biddoPhoneError");
+    if(phone.length!==10){
+      error.textContent="Enter a valid 10-digit Indian mobile number.";
+      return;
+    }
+
+    error.textContent="";
+    state.profile.phone=phone;
+    $id("biddoOtpPhoneText").textContent="+91 " + phone;
+    biddoSyncOtpInputs().forEach(i=>{ i.value=""; i.classList.remove("is-error"); });
+    setPage("otp");
+    startOtpTimer();
+  };
+
+  function startOtpTimer(){
+    clearInterval(state.otpInterval);
+    state.otpTimer=30;
+    $id("biddoResendBtn").disabled=true;
+    updateOtpTimer();
+    state.otpInterval=setInterval(()=>{
+      state.otpTimer--;
+      updateOtpTimer();
+      if(state.otpTimer<=0){
+        clearInterval(state.otpInterval);
+        $id("biddoResendBtn").disabled=false;
+        $id("biddoOtpTimer").textContent="You can request a new code";
+      }
+    },1000);
+  }
+
+  function updateOtpTimer(){
+    const s=Math.max(0,state.otpTimer);
+    $id("biddoOtpTimer").textContent = s>0 ? ("Resend code in "+s+"s") : "You can request a new code";
+  }
+
+  window.biddoResendOtp = function(){
+    clearOtpError();
+    biddoSyncOtpInputs().forEach(i=>i.value="");
+    startOtpTimer();
+    toastSafe("New code sent");
+    setTimeout(()=>biddoSyncOtpInputs()[0].focus(),80);
+  };
+
+  window.biddoVerifyOtp = function(){
+    const digits=biddoSyncOtpInputs().map(i=>i.value).join("");
+    if(digits.length!==6){
+      $id("biddoOtpError").textContent="Enter the 6-digit code.";
+      biddoSyncOtpInputs().forEach(i=>i.classList.add("is-error"));
+      return;
+    }
+    if(digits!==DEMO_OTP){
+      $id("biddoOtpError").textContent="That code doesn't match. Use the prototype code shown below.";
+      biddoSyncOtpInputs().forEach(i=>i.classList.add("is-error"));
+      return;
+    }
+
+    clearOtpError();
+    clearInterval(state.otpInterval);
+    setPage("location");
+    biddoPopulateStates();
+  };
+
+  window.biddoPopulateStates = function(){
+    const select=$id("biddoState");
+    const current=state.profile.state;
+    if(select.options.length<=1){
+      Object.keys(INDIA_LOCATIONS).sort((a,b)=>a.localeCompare(b)).forEach(st=>{
+        const option=document.createElement("option");
+        option.value=st;
+        option.textContent=st;
+        select.appendChild(option);
+      });
+    }
+    if(current && INDIA_LOCATIONS[current]){
+      select.value=current;
+      biddoPopulateCities();
+    }
+  };
+
+  window.biddoPopulateCities = function(){
+    const st=$id("biddoState").value;
+    const city=$id("biddoCity");
+    city.innerHTML='<option value="">Select your city</option>';
+    city.disabled=!st;
+    if(st && INDIA_LOCATIONS[st]){
+      INDIA_LOCATIONS[st].slice().sort((a,b)=>a.localeCompare(b)).forEach(c=>{
+        const o=document.createElement("option");
+        o.value=c; o.textContent=c;
+        city.appendChild(o);
+      });
+      if(state.profile.city && INDIA_LOCATIONS[st].includes(state.profile.city)){
+        city.value=state.profile.city;
+      }
+    }
+    biddoSyncLocationButton();
+  };
+
+  function biddoSyncLocationButton(){
+    const st=$id("biddoState").value;
+    const city=$id("biddoCity").value;
+    $id("biddoLocationContinue").disabled=!(st && city);
+  }
+
+  window.biddoSyncLocationButton = biddoSyncLocationButton;
+
+  window.biddoFinishOnboarding = function(){
+    const st=$id("biddoState").value;
+    const city=$id("biddoCity").value;
+    if(!st || !city){
+      $id("biddoLocationError").textContent="Please select both your state and city.";
+      return;
+    }
+
+    state.profile.state=st;
+    state.profile.city=city;
+
+    const savedProfile = {
+      ...state.profile,
+      provider:state.provider,
+      signedInAt:new Date().toISOString()
+    };
+    try{
+      localStorage.setItem(BIDDO_AUTH_KEY, JSON.stringify(savedProfile));
+    }catch(e){
+      /* Storage can be unavailable in sandboxed previews; onboarding still works. */
+    }
+
+    $id("biddoCompleteSub").textContent = "Welcome to Biddo, " + firstName(state.profile.name) + ". Your feed is ready for " + city + ".";
+    setPage("complete");
+  };
+
+  window.biddoEnterApp = function(){
+    applyProfileToApp();
+    $id("biddoAuthGate").classList.add("hidden");
+    document.body.style.overflow="";
+  };
+
+  function firstName(name){
+    const n=(name||"Biddo User").trim().split(/\s+/)[0];
+    return n || "Biddo User";
+  }
+
+  function applyProfileToApp(){
+    const profile=state.profile;
+    const homeLocation=document.querySelector("#screen-home .location-row");
+    if(homeLocation){
+      homeLocation.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+        '<path d="M12 21s-7-6.5-7-11a7 7 0 0114 0c0 4.5-7 11-7 11z"/>' +
+        '<circle cx="12" cy="10" r="2.5"/></svg> Delivering to ' +
+        (profile.city||"your city") + ", " + (profile.state||"India");
+    }
+
+    const nm=document.querySelector("#screen-profile .profile-hero .nm");
+    if(nm) nm.textContent=profile.name || "Biddo User";
+
+    const un=document.querySelector("#screen-profile .profile-hero .un");
+    if(un){
+      const base=(profile.name||"biddo.user")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g,".")
+        .replace(/^\.|\.$/g,"")
+        .slice(0,28);
+      un.textContent="@"+(base||"biddo.user");
+    }
+  }
+
+  function toastSafe(msg){
+    const t=$id("toast");
+    if(!t) return;
+    t.textContent=msg;
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"),1800);
+  }
+
+  function bindOtpUX(){
+    const inputs=biddoSyncOtpInputs();
+    inputs.forEach((input,index)=>{
+      input.addEventListener("input",()=>{
+        clearOtpError();
+        input.value=input.value.replace(/\D/g,"").slice(0,1);
+        if(input.value && index<inputs.length-1) inputs[index+1].focus();
+      });
+      input.addEventListener("keydown",(e)=>{
+        if(e.key==="Backspace" && !input.value && index>0){
+          inputs[index-1].focus();
+        }
+        if(e.key==="ArrowLeft" && index>0) inputs[index-1].focus();
+        if(e.key==="ArrowRight" && index<inputs.length-1) inputs[index+1].focus();
+      });
+      input.addEventListener("paste",(e)=>{
+        const pasted=(e.clipboardData||window.clipboardData).getData("text").replace(/\D/g,"").slice(0,6);
+        if(!pasted) return;
+        e.preventDefault();
+        inputs.forEach((el,i)=>el.value=pasted[i]||"");
+        inputs[Math.min(pasted.length,6)-1].focus();
+      });
+    });
+
+    $id("biddoPhone").addEventListener("input",()=>{
+      const el=$id("biddoPhone");
+      el.value=el.value.replace(/\D/g,"").slice(0,10);
+      biddoSyncPhoneButton();
+    });
+  }
+
+  function boot(){
+    document.body.style.overflow="hidden";
+    bindOtpUX();
+    biddoSyncEmailMode();
+    biddoPopulateStates();
+
+    let saved = null;
+    try{
+      saved = localStorage.getItem(BIDDO_AUTH_KEY);
+    }catch(e){
+      saved = null;
+    }
+    if(saved){
+      try{
+        const profile=JSON.parse(saved);
+        state.profile={...state.profile,...profile};
+        state.provider=profile.provider||null;
+        applyProfileToApp();
+        $id("biddoAuthGate").classList.add("hidden");
+        document.body.style.overflow="";
+        return;
+      }catch(e){
+        try{ localStorage.removeItem(BIDDO_AUTH_KEY); }catch(ignore){}
+      }
+    }
+
+    setPage("method");
+  }
+
+  document.addEventListener("DOMContentLoaded",boot);
+})();
+</script>
+
 </body>
 </html>
