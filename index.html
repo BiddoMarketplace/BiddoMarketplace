@@ -1128,58 +1128,6 @@ button{cursor:pointer; font-family:inherit;}
 }
 </style>
 
-<style id="biddo-seller-mode-css">
-.seller-home-wrap{padding:8px 18px 40px;}
-.seller-home-hero{background:#111;color:#fff;border-radius:22px;padding:18px;margin:4px 0 14px;position:relative;overflow:hidden;box-shadow:0 16px 36px rgba(17,17,16,.11);}
-.seller-home-hero:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-85px;top:-80px;background:rgba(232,255,77,.12);}
-.seller-home-kicker{font-size:10px;font-weight:800;letter-spacing:.8px;color:var(--lime);margin-bottom:6px;}
-.seller-home-title{font-size:23px;font-weight:800;letter-spacing:-.7px;margin:0 0 4px;position:relative;z-index:1;}
-.seller-home-sub{font-size:12px;color:#d0d0cb;line-height:1.45;max-width:305px;position:relative;z-index:1;}
-.seller-home-actions{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;margin-top:15px;position:relative;z-index:1;}
-.seller-home-actions button{min-height:42px;border-radius:12px;border:1px solid rgba(255,255,255,.14);font-size:11.5px;font-weight:800;}
-.seller-home-actions .primary{background:#fff;color:#111;}
-.seller-home-actions .secondary{background:rgba(255,255,255,.08);color:#fff;}
-.seller-analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0 16px;}
-.seller-metric{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px;min-height:86px;box-shadow:0 8px 18px rgba(17,17,16,.04);}
-.seller-metric .m-label{font-size:10.5px;color:var(--ink-3);font-weight:700;}
-.seller-metric .m-value{font-size:20px;font-weight:850;margin-top:5px;letter-spacing:-.4px;}
-.seller-metric .m-sub{font-size:10px;color:var(--ink-2);margin-top:2px;}
-.seller-home-section{margin-top:16px;}
-.seller-home-section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
-.seller-home-section-head h3{margin:0;font-size:15px;font-weight:850;}
-.seller-home-section-head span{font-size:10.5px;color:var(--ink-3);}
-.seller-mini-list{display:flex;flex-direction:column;gap:8px;}
-.seller-mini-row{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:9px;background:#fff;}
-.seller-mini-row .av{width:38px;height:38px;border-radius:50%;background:var(--surface);background-size:cover;background-position:center;flex:none;}
-.seller-mini-row .info{flex:1;min-width:0;}
-.seller-mini-row .name{font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.seller-mini-row .meta{font-size:10.5px;color:var(--ink-2);margin-top:2px;}
-.seller-product-list{display:flex;flex-direction:column;gap:9px;}
-.seller-product-card{display:flex;gap:10px;border:1px solid var(--line);border-radius:16px;padding:10px;background:#fff;box-shadow:0 6px 14px rgba(17,17,16,.03);}
-.seller-product-card .thumb{width:76px;height:88px;border-radius:12px;background:#eee;background-size:cover;background-position:center;flex:none;}
-.seller-product-card .details{flex:1;min-width:0;}
-.seller-product-card .title{font-size:13px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.seller-product-card .meta{font-size:10.5px;color:var(--ink-2);margin-top:3px;line-height:1.4;}
-.seller-product-card .status{display:inline-flex;margin-top:6px;font-size:9.5px;font-weight:800;padding:3px 7px;border-radius:20px;background:var(--surface);border:1px solid var(--line);}
-.seller-product-card .status.published{background:#effbe9;color:var(--ok);}
-.seller-product-card .status.draft{background:#fff8e3;color:#9a6a00;}
-.seller-product-card .controls{display:flex;gap:6px;margin-top:8px;}
-.seller-product-card .controls button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 9px;font-size:10.5px;font-weight:800;}
-.seller-product-card .controls .danger{color:var(--danger);}
-.seller-empty-card{border:1px dashed var(--line);border-radius:16px;padding:24px 18px;text-align:center;}
-.seller-empty-card b{display:block;font-size:13px;margin-bottom:4px;}
-.seller-empty-card span{display:block;font-size:11px;color:var(--ink-3);line-height:1.45;margin-bottom:12px;}
-.seller-empty-card button{background:var(--ink);color:#fff;border:none;border-radius:12px;padding:11px 15px;font-size:11.5px;font-weight:800;}
-.seller-note-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 12px;font-size:10.8px;color:var(--ink-2);line-height:1.45;margin-top:14px;}
-.seller-setup-card{background:linear-gradient(135deg,#111,#2b2b28);border-radius:20px;color:#fff;padding:17px;position:relative;overflow:hidden;}
-.seller-setup-card h3{margin:0 0 5px;font-size:18px;}
-.seller-setup-card p{margin:0;color:#d6d6d1;font-size:11.5px;line-height:1.5;max-width:310px;}
-.seller-setup-card button{margin-top:13px;background:#fff;color:#111;border:none;border-radius:12px;padding:10px 13px;font-size:11.5px;font-weight:800;}
-.seller-analytics-more{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);background:#fff;border-radius:11px;padding:7px 9px;font-size:10px;font-weight:800;}
-.seller-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-@keyframes sellerPopIn{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
-.seller-home-animate{animation:sellerPopIn .42s cubic-bezier(.22,1,.36,1) both;}
-</style>
 <style id="biddo-seller-studio-css">
 .biddo-seller-wrap{padding:8px 18px 42px;}
 .biddo-seller-hero{background:#111;color:#fff;border-radius:22px;padding:18px;margin:4px 0 16px;position:relative;overflow:hidden;}
@@ -1222,6 +1170,47 @@ button{cursor:pointer; font-family:inherit;}
 .biddo-seller-note{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:11px;color:var(--ink-2);line-height:1.45;margin-top:12px;}
 .biddo-seller-loading{padding:45px 10px;text-align:center;color:var(--ink-3);font-size:12px;}
 @media (max-width:360px){.biddo-seller-grid{grid-template-columns:1fr;}}
+.biddo-seller-mode-panel{margin:14px 18px 0;border-radius:22px;background:linear-gradient(135deg,#111 0%,#272725 100%);color:#fff;padding:16px;position:relative;overflow:hidden;display:none;transform:translateY(-8px);opacity:0;}
+.biddo-seller-mode-panel.show{display:block;animation:biddoSellerPanelIn .42s cubic-bezier(.22,1,.36,1) forwards;}
+@keyframes biddoSellerPanelIn{to{transform:translateY(0);opacity:1;}}
+.biddo-seller-mode-panel:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-90px;top:-90px;background:rgba(232,255,77,.11);pointer-events:none;}
+.biddo-seller-mode-top{display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
+.biddo-seller-mode-avatar{width:46px;height:46px;border-radius:50%;background:#2b2b28 center/cover no-repeat;border:1px solid rgba(255,255,255,.16);flex:none;}
+.biddo-seller-mode-copy{min-width:0;flex:1;}
+.biddo-seller-mode-kicker{font-size:9px;font-weight:800;letter-spacing:.8px;color:var(--lime);margin-bottom:4px;}
+.biddo-seller-mode-name{font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.biddo-seller-mode-sub{font-size:11px;color:#cfcfc9;margin-top:2px;}
+.biddo-seller-mode-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;position:relative;z-index:1;}
+.biddo-seller-mode-btn{border:none;border-radius:12px;padding:10px 11px;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px;}
+.biddo-seller-mode-btn.primary{background:#fff;color:#111;}
+.biddo-seller-mode-btn.secondary{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.14);}
+.biddo-seller-mode-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px;position:relative;z-index:1;}
+.biddo-seller-mode-stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:8px 9px;}
+.biddo-seller-mode-stat b{display:block;font-size:14px;color:#fff;}
+.biddo-seller-mode-stat span{display:block;font-size:9.5px;color:#c8c8c4;margin-top:1px;}
+.biddo-seller-mode-explore{margin:10px 18px 0;display:none;font-size:11px;color:var(--ink-2);font-weight:700;align-items:center;gap:6px;}
+.biddo-seller-mode-explore.show{display:flex;animation:fadeIn .35s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.biddo-seller-danger{margin-top:8px;width:100%;border:1px solid #e4bfc0;background:#fff6f6;color:#b52b2e;border-radius:10px;padding:7px 9px;font-size:10.5px;font-weight:800;}
+.biddo-seller-product.archived{opacity:.55;}
+.biddo-seller-product.archived .biddo-seller-danger{border-color:var(--line);background:var(--surface);color:var(--ink-3);}
+
+.biddo-seller-edit-backdrop{position:fixed;inset:0;background:rgba(15,15,13,.46);backdrop-filter:blur(10px);z-index:320;opacity:0;pointer-events:none;transition:opacity .22s ease;}
+.biddo-seller-edit-backdrop.open{opacity:1;pointer-events:auto;}
+.biddo-seller-edit-modal{position:fixed;left:50%;bottom:0;width:min(430px,100%);max-height:88vh;overflow:auto;transform:translate(-50%,110%);background:#fff;border-radius:24px 24px 0 0;z-index:321;box-shadow:0 -20px 70px rgba(0,0,0,.18);padding:10px 16px calc(18px + var(--safe-b));transition:transform .34s cubic-bezier(.22,1,.36,1);}
+.biddo-seller-edit-modal.open{transform:translate(-50%,0);}
+.biddo-seller-edit-handle{width:42px;height:4px;border-radius:999px;background:#d8d8d2;margin:2px auto 12px;}
+.biddo-seller-edit-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.biddo-seller-edit-head h3{margin:0;font-size:18px;letter-spacing:-.2px;flex:1;}
+.biddo-seller-edit-close{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:20px;line-height:1;}
+.biddo-seller-edit-form{display:flex;flex-direction:column;gap:11px;padding-bottom:8px;}
+.biddo-seller-edit-form .biddo-seller-field{gap:6px;}
+.biddo-seller-edit-preview{height:180px;border-radius:16px;background:var(--surface);background-size:cover;background-position:center;border:1px solid var(--line);display:flex;align-items:flex-end;padding:10px;}
+.biddo-seller-edit-preview span{background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:700;backdrop-filter:blur(7px);}
+.biddo-seller-edit-actions{display:flex;gap:8px;padding-top:4px;position:sticky;bottom:0;background:#fff;}
+.biddo-seller-edit-actions button{flex:1;}
+.biddo-seller-edit-btn{margin-top:8px;width:100%;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:7px 9px;font-size:10.5px;font-weight:800;}
+
 
 /* Biddo role switch + media guard */
 .biddo-role-card{margin:14px 16px 6px;padding:16px;border:1px solid rgba(20,20,18,.09);border-radius:22px;background:linear-gradient(135deg,#fff 0%,#f6f6f1 100%);box-shadow:0 10px 30px rgba(0,0,0,.06);position:relative;overflow:hidden}
@@ -1521,6 +1510,28 @@ button{cursor:pointer; font-family:inherit;}
     </div>
   </div>
   <div class="location-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.5-7-11a7 7 0 0114 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Delivering to Vijayawada, 520001</div>
+  <div class="biddo-seller-mode-panel" id="biddoSellerModeHomePanel">
+    <div class="biddo-seller-mode-top">
+      <div class="biddo-seller-mode-avatar" id="biddoSellerModeAvatar"></div>
+      <div class="biddo-seller-mode-copy">
+        <div class="biddo-seller-mode-kicker">SELLER MODE</div>
+        <div class="biddo-seller-mode-name" id="biddoSellerModeName">Your store</div>
+        <div class="biddo-seller-mode-sub" id="biddoSellerModeSub">Sell, manage and grow on Biddo.</div>
+      </div>
+    </div>
+    <div class="biddo-seller-mode-stats">
+      <div class="biddo-seller-mode-stat"><b id="biddoSellerModePublished">0</b><span>Published</span></div>
+      <div class="biddo-seller-mode-stat"><b id="biddoSellerModeProducts">0</b><span>Listings</span></div>
+      <div class="biddo-seller-mode-stat"><b id="biddoSellerModeStock">0</b><span>Stock units</span></div>
+    </div>
+    <div class="biddo-seller-mode-actions">
+      <button class="biddo-seller-mode-btn primary" type="button" onclick="openSellerStudio();">Manage store</button>
+      <button class="biddo-seller-mode-btn secondary" type="button" onclick="sellerStudioOpenAddProductFromHome()">+ Add listing</button>
+    </div>
+  </div>
+  <div class="biddo-seller-mode-explore" id="biddoSellerModeExplore">
+    <span>🛍</span><span>You can still browse Biddo normally — Discover, Live, Cart and everything else stay available.</span>
+  </div>
   <div class="searchbar" onclick="go('search')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
     <span style="color:var(--ink-3)">Search sneakers, tech, streetwear…</span>
@@ -1601,21 +1612,6 @@ button{cursor:pointer; font-family:inherit;}
     <div class="prow"><div class="pi">❓</div><div class="pt">Help Center</div><span class="chev">›</span></div>
     <div class="prow logout-row" onclick="openLogoutConfirm()"><div class="pi">↪</div><div class="pt">Log out</div><span class="chev">›</span></div>
   </div>
-</div>
-
-<!-- ============ SELLER HOME ============ -->
-<div class="screen" id="screen-seller-home" style="padding-bottom:86px;">
-  <div class="topbar">
-    <div>
-      <div class="wordmark" style="font-size:17px;">Biddo<span class="dot"></span></div>
-      <div id="sellerHomeModePill" style="font-size:10px;color:var(--ink-3);font-weight:700;margin-top:1px;letter-spacing:.3px;">SELLER MODE</div>
-    </div>
-    <div class="row-gap">
-      <button class="icon-btn" onclick="go('search')" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></button>
-      <button class="icon-btn" onclick="openNotifs()" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg><span class="badge-dot" id="sellerNotifDot"></span></button>
-    </div>
-  </div>
-  <div id="sellerHomeBody"></div>
 </div>
 
 <!-- bottom nav -->
@@ -1765,6 +1761,36 @@ button{cursor:pointer; font-family:inherit;}
   <div id="checkoutBody"></div>
 </div>
 
+
+<!-- ============ SELLER LISTING EDITOR ============ -->
+<div class="biddo-seller-edit-backdrop" id="biddoSellerEditBackdrop" onclick="if(event.target===this) closeSellerListingEditor()"></div>
+<div class="biddo-seller-edit-modal" id="biddoSellerEditModal" role="dialog" aria-modal="true" aria-labelledby="editSellerProductModalTitle">
+  <div class="biddo-seller-edit-handle"></div>
+  <div class="biddo-seller-edit-head">
+    <h3 id="editSellerProductModalTitle">Edit listing</h3>
+    <button class="biddo-seller-edit-close" type="button" onclick="closeSellerListingEditor()" aria-label="Close">×</button>
+  </div>
+  <div class="biddo-seller-edit-form">
+    <div class="biddo-seller-edit-preview" id="editSellerProductPreview"><span>Listing image</span></div>
+    <label class="biddo-seller-field"><span>Product name</span><input id="editSellerProductTitle" maxlength="100"></label>
+    <div class="biddo-seller-grid">
+      <label class="biddo-seller-field"><span>Price (₹)</span><input id="editSellerProductPrice" type="number" min="1" step="1" inputmode="decimal"></label>
+      <label class="biddo-seller-field"><span>Stock quantity</span><input id="editSellerProductInventory" type="number" min="0" step="1" inputmode="numeric"></label>
+    </div>
+    <div class="biddo-seller-grid">
+      <label class="biddo-seller-field"><span>Category</span><select id="editSellerProductCategory">${CATS.map(c=>`<option value="${biddoEscapeHtml(c)}">${biddoEscapeHtml(c)}</option>`).join('')}</select></label>
+      <label class="biddo-seller-field"><span>Condition</span><select id="editSellerProductCondition"><option>Brand New</option><option>Pre-owned · Excellent</option><option>Pre-owned · Good</option></select></label>
+    </div>
+    <label class="biddo-seller-field"><span>Brand (optional)</span><input id="editSellerProductBrand" maxlength="60"></label>
+    <label class="biddo-seller-field"><span>Product image URL</span><input id="editSellerProductImage" type="url" autocomplete="off" oninput="previewEditedSellerImage()"></label>
+    <label class="biddo-seller-field"><span>Product video URL (optional)</span><input id="editSellerProductVideo" type="url" autocomplete="off"></label>
+    <label class="biddo-seller-field"><span>Description</span><textarea id="editSellerProductDescription" maxlength="1000"></textarea></label>
+    <div class="biddo-seller-edit-actions">
+      <button class="biddo-seller-secondary" type="button" onclick="closeSellerListingEditor()">Cancel</button>
+      <button class="biddo-seller-primary" type="button" id="editSellerProductSaveBtn" onclick="saveSellerListingEdit()">Save changes</button>
+    </div>
+  </div>
+</div>
 
 <!-- ============ SELLER STUDIO PAGE ============ -->
 <div class="page" id="page-seller-studio">
@@ -3153,10 +3179,11 @@ function renderBiddoRole(){
   const bo=document.getElementById('biddoRoleBuyerOption');
   const so=document.getElementById('biddoRoleSellerOption');
   if(title) title.textContent=role==='seller'?'Seller mode':'Buyer mode';
-  if(sub) sub.textContent=role==='seller'?'Manage your store, publish products and keep your shop moving.':'Discover products, bid, buy and follow your favourite sellers.';
+  if(sub) sub.textContent=role==='seller'?'Sell, manage your store and still browse Biddo normally.':'Discover products, bid, buy and follow your favourite sellers.';
   if(switchText) switchText.textContent=role==='seller'?'Switch to Buyer':'Switch to Seller';
   if(bo) bo.classList.toggle('active',role==='buyer');
   if(so) so.classList.toggle('active',role==='seller');
+  renderBiddoSellerHomeMode();
 }
 function openBiddoRoleSwitcher(){
   renderBiddoRole();
@@ -3173,7 +3200,8 @@ async function setBiddoRole(role){
   if(role==='seller' && window.biddoSupabase){
     const user=await biddoSellerStudioUser();
     if(!user){ closeBiddoRoleSwitcher(); toast('Log in to switch to Seller mode'); return; }
-    const {data:seller}=await window.biddoSupabase.from('seller_profiles').select('user_id').eq('user_id',user.id).maybeSingle();
+    const {data:seller,error}=await window.biddoSupabase.from('seller_profiles').select('user_id').eq('user_id',user.id).maybeSingle();
+    if(error){ console.error('Biddo seller mode lookup failed',error); closeBiddoRoleSwitcher(); toast('Could not load your seller profile'); return; }
     if(!seller){
       closeBiddoRoleSwitcher();
       toast('Create your seller profile first');
@@ -3188,7 +3216,57 @@ async function setBiddoRole(role){
   const card=document.getElementById('biddoRoleCard');
   if(card){card.classList.remove('biddo-role-pop'); void card.offsetWidth; card.classList.add('biddo-role-pop');}
   toast(role==='seller'?'Seller mode activated ✓':'Buyer mode activated ✓',ICON_CHECK);
-  if(role==='seller') setTimeout(()=>openSellerStudio(),260);
+  // Stay in the same Biddo app shell. Seller mode is a full mode, not a separate listing page.
+  go('home');
+  if(role==='seller') loadBiddoSellerModeHome();
+}
+
+function renderBiddoSellerHomeMode(){
+  const panel=document.getElementById('biddoSellerModeHomePanel');
+  const explore=document.getElementById('biddoSellerModeExplore');
+  const seller=biddoSellerStudioState?.seller;
+  const isSeller=biddoActiveRole==='seller';
+  if(panel){ panel.classList.toggle('show',isSeller); }
+  if(explore){ explore.classList.toggle('show',isSeller); }
+  if(!isSeller) return;
+  const name=document.getElementById('biddoSellerModeName');
+  const sub=document.getElementById('biddoSellerModeSub');
+  const av=document.getElementById('biddoSellerModeAvatar');
+  if(seller){
+    if(name) name.textContent=seller.business_name||'Your store';
+    if(sub) sub.textContent=seller.handle?'@'+seller.handle+' · Seller on Biddo':'Seller on Biddo';
+    if(av){ const logo=biddoSellerStudioSafeUrl(seller.logo_path,'image'); av.style.backgroundImage=logo?`url(\"${logo}\")`:''; }
+  }
+  const products=Array.isArray(biddoSellerStudioState?.products)?biddoSellerStudioState.products:[];
+  const pub=document.getElementById('biddoSellerModePublished');
+  const total=document.getElementById('biddoSellerModeProducts');
+  const stock=document.getElementById('biddoSellerModeStock');
+  if(pub) pub.textContent=String(products.filter(p=>p.status==='published').length);
+  if(total) total.textContent=String(products.filter(p=>p.status!=='archived').length);
+  if(stock) stock.textContent=String(products.filter(p=>p.status!=='archived').reduce((a,p)=>a+Math.max(0,Number(p.inventory_quantity||0)),0));
+}
+async function loadBiddoSellerModeHome(){
+  if(biddoActiveRole!=='seller') return;
+  renderBiddoSellerHomeMode();
+  if(!window.biddoSupabase) return;
+  const user=await biddoSellerStudioUser();
+  if(!user) return;
+  try{
+    const {data:seller,error:sellerError}=await window.biddoSupabase.from('seller_profiles').select('user_id,business_name,handle,bio,logo_path,banner_path,seller_status,created_at,updated_at').eq('user_id',user.id).maybeSingle();
+    if(sellerError) throw sellerError;
+    if(!seller){ renderBiddoSellerHomeMode(); return; }
+    biddoSellerStudioState.seller=seller;
+    const {data:products,error:productError}=await window.biddoSupabase.from('products').select('id,title,category,price_paise,inventory_quantity,status,created_at').eq('seller_id',user.id).order('created_at',{ascending:false});
+    if(productError) throw productError;
+    biddoSellerStudioState.products=Array.isArray(products)?products:[];
+    renderBiddoSellerHomeMode();
+  }catch(error){
+    console.error('Biddo seller mode home load failed',error);
+  }
+}
+function sellerStudioOpenAddProductFromHome(){
+  openSellerStudio();
+  setTimeout(()=>sellerStudioOpenAddProduct(),320);
 }
 
 async function openSellerStudio(){
@@ -3241,6 +3319,7 @@ async function biddoSellerStudioLoadDashboard(user,seller){
   media.forEach(m=>{ if(!firstMedia.has(m.product_id)) firstMedia.set(m.product_id,m); });
   biddoSellerStudioState.products=rows.map(row=>({...row,image:biddoSellerStudioSafeUrl(firstMedia.get(row.id)?.storage_path,"image") || IMGS[0]}));
   biddoSellerStudioRenderDashboard();
+  renderBiddoSellerHomeMode();
 }
 
 function biddoSellerStudioRenderDashboard(){
@@ -3274,12 +3353,13 @@ function biddoSellerStudioRenderDashboard(){
         <div class="biddo-seller-section-head"><h3>Your products</h3><span>${products.length} listed</span></div>
         <div class="biddo-seller-products">
           ${products.length?products.map(pr=>`
-            <div class="biddo-seller-product">
+            <div class="biddo-seller-product ${pr.status==='archived'?'archived':''}">
               <div class="img" style="background-image:url('${biddoEscapeHtml(pr.image)}')"></div>
               <div class="info">
                 <div class="name">${biddoEscapeHtml(pr.title)}</div>
                 <div class="meta">${fmt(Number(pr.price_paise||0)/100)} · ${biddoEscapeHtml(pr.category||'Other')} · ${Number(pr.inventory_quantity||0)} in stock</div>
-                <span class="biddo-seller-badge ${pr.status==='published'?'published':'draft'}">${biddoEscapeHtml(pr.status||'draft')}</span>
+                <span class="biddo-seller-badge ${pr.status==='published'?'published':(pr.status==='archived'?'draft':'draft')}">${biddoEscapeHtml(pr.status||'draft')}</span>
+                ${pr.status!=='archived'?`<button class="biddo-seller-edit-btn" type="button" onclick="editSellerListing('${pr.id}');event.stopPropagation();">Edit listing</button><button class="biddo-seller-danger" type="button" onclick="deleteSellerListing('${pr.id}');event.stopPropagation();">Delete listing</button>`:''}
               </div>
             </div>`).join(''):`
             <div class="biddo-seller-empty"><b>No products yet</b><span>Add your first product and publish it to the Biddo marketplace.</span></div>`}
@@ -3287,6 +3367,170 @@ function biddoSellerStudioRenderDashboard(){
       </div>
       <div class="biddo-seller-note"><b style="color:var(--ink);">For now:</b> Seller Studio publishes regular products. Secure auctions will be added after the server-authoritative bidding functions are built, so sellers can't manipulate bids from the browser.</div>
     </div>`;
+}
+
+let biddoEditingSellerProductId=null;
+
+function closeSellerListingEditor(){
+  biddoEditingSellerProductId=null;
+  document.getElementById('biddoSellerEditBackdrop')?.classList.remove('open');
+  document.getElementById('biddoSellerEditModal')?.classList.remove('open');
+}
+
+async function editSellerListing(productId){
+  const pr=biddoSellerStudioState.products.find(x=>x.id===productId);
+  if(!pr || pr.status==='archived') return;
+  const user=await biddoSellerStudioUser();
+  if(!user){toast('Please log in first');return;}
+  if(String(user.id)!==String(biddoSellerStudioState.seller?.user_id||'')){toast('You can only edit your own listings');return;}
+  biddoEditingSellerProductId=productId;
+  const modal=document.getElementById('biddoSellerEditModal');
+  const backdrop=document.getElementById('biddoSellerEditBackdrop');
+  const title=document.getElementById('editSellerProductTitle');
+  const price=document.getElementById('editSellerProductPrice');
+  const inventory=document.getElementById('editSellerProductInventory');
+  const category=document.getElementById('editSellerProductCategory');
+  const condition=document.getElementById('editSellerProductCondition');
+  const brand=document.getElementById('editSellerProductBrand');
+  const image=document.getElementById('editSellerProductImage');
+  const video=document.getElementById('editSellerProductVideo');
+  const description=document.getElementById('editSellerProductDescription');
+  const preview=document.getElementById('editSellerProductPreview');
+  if(!modal||!backdrop) return;
+  title.value=pr.title||'';
+  price.value=String(Number(pr.price_paise||0)/100||'');
+  inventory.value=String(Number(pr.inventory_quantity||0));
+  category.value=pr.category||CATS[0]||'';
+  condition.value=pr.condition||'Brand New';
+  brand.value=pr.brand||'';
+  image.value=pr.image||'';
+  video.value='';
+  description.value=pr.description||'';
+  try{
+    const {data:media,error}=await window.biddoSupabase.from('product_media').select('id,media_type,storage_path,sort_order').eq('product_id',productId).order('sort_order',{ascending:true});
+    if(error) throw error;
+    const imageRow=(media||[]).find(m=>m.media_type==='image');
+    const videoRow=(media||[]).find(m=>m.media_type==='video');
+    image.value=biddoSellerStudioSafeUrl(imageRow?.storage_path||pr.image,'image')||'';
+    video.value=biddoSellerStudioSafeUrl(videoRow?.storage_path||'','video')||'';
+    if(preview) preview.style.backgroundImage=image.value?`url("${String(image.value).replace(/"/g,'\\"')}")`:'';
+  }catch(error){
+    console.error('Biddo listing media load for edit failed',error);
+  }
+  backdrop.classList.add('open');
+  modal.classList.add('open');
+  setTimeout(()=>title?.focus(),180);
+}
+
+function previewEditedSellerImage(){
+  const value=document.getElementById('editSellerProductImage')?.value.trim()||'';
+  const safe=biddoSellerStudioSafeUrl(value,'image');
+  const preview=document.getElementById('editSellerProductPreview');
+  if(preview) preview.style.backgroundImage=safe?`url("${String(safe).replace(/"/g,'\\"')}")`:'';
+}
+
+async function saveSellerListingEdit(){
+  const productId=biddoEditingSellerProductId;
+  const user=await biddoSellerStudioUser();
+  if(!productId||!user){closeSellerListingEditor();return;}
+  const title=document.getElementById('editSellerProductTitle')?.value.trim();
+  const price=Number(document.getElementById('editSellerProductPrice')?.value);
+  const inventory=Number(document.getElementById('editSellerProductInventory')?.value);
+  const category=document.getElementById('editSellerProductCategory')?.value||null;
+  const condition=document.getElementById('editSellerProductCondition')?.value||null;
+  const brand=document.getElementById('editSellerProductBrand')?.value.trim()||null;
+  const image=document.getElementById('editSellerProductImage')?.value.trim();
+  const video=document.getElementById('editSellerProductVideo')?.value.trim();
+  const description=document.getElementById('editSellerProductDescription')?.value.trim()||null;
+  if(title.length<2){toast('Enter a product name');return;}
+  if(!Number.isFinite(price)||price<=0){toast('Enter a valid price');return;}
+  if(!Number.isInteger(inventory)||inventory<0){toast('Enter a valid stock quantity');return;}
+  const safeImage=biddoSellerStudioSafeUrl(image,'image');
+  if(!safeImage){toast('Add a valid product image URL');return;}
+  const safeVideo=biddoSellerStudioSafeUrl(video,'video');
+  if(video && !safeVideo){toast('Use a valid video URL');return;}
+  const btn=document.getElementById('editSellerProductSaveBtn');
+  if(btn){btn.disabled=true;btn.textContent='Saving…';}
+  try{
+    const {data:updated,error:updateError}=await window.biddoSupabase.from('products').update({
+      title,
+      description,
+      category,
+      brand,
+      condition,
+      price_paise:Math.round(price*100),
+      inventory_quantity:inventory,
+      updated_at:new Date().toISOString()
+    }).eq('id',productId).eq('seller_id',user.id).select('id,title,description,category,brand,condition,price_paise,inventory_quantity,status,updated_at').single();
+    if(updateError) throw updateError;
+    if(!updated) throw new Error('Listing was not updated.');
+
+    const {data:existingMedia,error:mediaLoadError}=await window.biddoSupabase.from('product_media').select('id,media_type,storage_path,sort_order').eq('product_id',productId).order('sort_order',{ascending:true});
+    if(mediaLoadError) throw mediaLoadError;
+    const rows=Array.isArray(existingMedia)?existingMedia:[];
+    const imageRow=rows.find(m=>m.media_type==='image');
+    const videoRow=rows.find(m=>m.media_type==='video');
+    if(imageRow){
+      const {error}=await window.biddoSupabase.from('product_media').update({storage_path:safeImage,alt_text:title,sort_order:0}).eq('id',imageRow.id).eq('product_id',productId);
+      if(error) throw error;
+    }else{
+      const {error}=await window.biddoSupabase.from('product_media').insert({product_id:productId,media_type:'image',storage_path:safeImage,alt_text:title,sort_order:0});
+      if(error) throw error;
+    }
+    if(safeVideo){
+      if(videoRow){
+        const {error}=await window.biddoSupabase.from('product_media').update({storage_path:safeVideo,alt_text:title,sort_order:1}).eq('id',videoRow.id).eq('product_id',productId);
+        if(error) throw error;
+      }else{
+        const {error}=await window.biddoSupabase.from('product_media').insert({product_id:productId,media_type:'video',storage_path:safeVideo,alt_text:title,sort_order:1});
+        if(error) throw error;
+      }
+    }else if(videoRow){
+      const {error}=await window.biddoSupabase.from('product_media').delete().eq('id',videoRow.id).eq('product_id',productId);
+      if(error) throw error;
+    }
+
+    toast('Listing updated ✓',ICON_CHECK);
+    closeSellerListingEditor();
+    await biddoSellerStudioLoadDashboard(user,biddoSellerStudioState.seller);
+    biddoMarketplaceDataLoaded=false;
+    biddoMarketplaceDataPromise=null;
+    await loadMarketplaceData();
+    renderBiddoSellerHomeMode();
+  }catch(error){
+    console.error('Biddo listing edit failed',error);
+    toast(biddoSellerStudioFriendlyError(error));
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='Save changes';}
+  }
+}
+
+async function deleteSellerListing(productId){
+  const pr=biddoSellerStudioState.products.find(x=>x.id===productId);
+  if(!pr) return;
+  const label=pr.title||'this listing';
+  if(!window.confirm(`Delete ${label}?\n\nThe listing will be removed from Biddo for buyers.`)) return;
+  const user=await biddoSellerStudioUser();
+  if(!user){toast('Please log in first');return;}
+  try{
+    const {error:updateError}=await window.biddoSupabase.from('products').update({status:'archived'}).eq('id',productId).eq('seller_id',user.id);
+    if(updateError) throw updateError;
+    // Media rows can be removed by the listing owner; the archived product remains as the historical record.
+    const {error:mediaError}=await window.biddoSupabase.from('product_media').delete().eq('product_id',productId);
+    if(mediaError) console.warn('Biddo media cleanup failed',mediaError);
+    biddoSellerStudioState.products=biddoSellerStudioState.products.map(x=>x.id===productId?{...x,status:'archived'}:x);
+    const local=p(productId);
+    if(local && local.source==='supabase') local._archived=true;
+    toast('Listing deleted ✓',ICON_CHECK);
+    await biddoSellerStudioLoadDashboard(user,biddoSellerStudioState.seller);
+    biddoMarketplaceDataLoaded=false;
+    biddoMarketplaceDataPromise=null;
+    await loadMarketplaceData();
+    renderBiddoSellerHomeMode();
+  }catch(error){
+    console.error('Biddo listing delete failed',error);
+    toast(biddoSellerStudioFriendlyError(error));
+  }
 }
 
 function sellerStudioOpenAddProduct(){
@@ -4634,281 +4878,14 @@ renderCart();
 try{setTimeout(()=>renderBiddoRole(),0);}catch(e){}
 </script>
 
-
-<script id="biddo-seller-complete-v2">
-/* ============================================================
-   BIDDO SELLER MODE V2
-   - Reliable buyer/seller switch
-   - Seller home uses the same app shell
-   - Real listing edit/delete (archive)
-   - Real seller analytics through Supabase RPC
-   ============================================================ */
-(function(){
-  const originalGo = window.go;
-  window.biddoSellerOriginalGo = originalGo;
-
-  function sellerMoney(paise){ return fmt(Number(paise||0)/100); }
-  function sellerEsc(v){ return biddoEscapeHtml(v); }
-  function sellerFormatCount(n){ return Number(n||0).toLocaleString('en-IN'); }
-  function sellerFormatDate(v){
-    if(!v) return '';
-    try{return new Date(v).toLocaleDateString('en-IN',{day:'numeric',month:'short'});}catch(e){return '';}
-  }
-  function sellerImg(url){ return biddoCssImageUrl(url, IMGS[0]); }
-
-  window.go = function(tab){
-    stopAllDiscoverMedia();
-    if(tab==='home' && biddoActiveRole==='seller'){
-      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-      document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-      const screen=document.getElementById('screen-seller-home');
-      if(screen) screen.classList.add('active');
-      document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.tab==='home'));
-      renderSellerModeHome();
-      return;
-    }
-    return originalGo(tab);
-  };
-  window.biddoSellerGoHome=()=>window.go('home');
-
-  window.setBiddoRole = async function(role){
-    role = role==='seller' ? 'seller' : 'buyer';
-    const client=window.biddoSupabase;
-    if(!client){ toast('Supabase is not connected'); return; }
-    try{
-      const {data:{user}}=await client.auth.getUser();
-      if(!user){ toast('Log in to switch modes'); return; }
-      biddoActiveRole=role;
-      localStorage.setItem('biddo_active_role',role);
-      renderBiddoRole();
-      document.getElementById('biddoRoleBackdrop')?.classList.remove('open');
-      document.getElementById('biddoRoleModal')?.classList.remove('open');
-      const card=document.getElementById('biddoRoleCard');
-      if(card){ card.classList.remove('biddo-role-pop'); void card.offsetWidth; card.classList.add('biddo-role-pop'); }
-      window.go('home');
-      if(role==='seller'){
-        await renderSellerModeHome();
-        toast('Seller mode activated ✓',ICON_CHECK);
-      }else{
-        toast('Buyer mode activated ✓',ICON_CHECK);
-      }
-    }catch(error){
-      console.error('Biddo role switch failed',error);
-      toast('Could not switch mode. Please try again.');
-    }
-  };
-
-  async function sellerCurrentUser(){
-    const client=window.biddoSupabase;
-    if(!client) return null;
-    const {data:{user}}=await client.auth.getUser();
-    return user||null;
-  }
-
-  async function loadSellerAnalytics(){
-    const client=window.biddoSupabase;
-    if(!client) return {ok:false,error:'Supabase is not connected'};
-    const {data,error}=await client.rpc('get_seller_analytics');
-    if(error){
-      console.warn('Seller analytics unavailable',error);
-      return {ok:false,error:error.message||String(error)};
-    }
-    const a=data||{};
-    return {ok:true,views:Number(a.views||0),unique_viewers:Number(a.unique_viewers||0),orders:Number(a.orders||0),units_sold:Number(a.units_sold||0),revenue_paise:Number(a.revenue_paise||0),bids:Number(a.bids||0),unique_bidders:Number(a.unique_bidders||0),buyers:Array.isArray(a.buyers)?a.buyers:[],bidders:Array.isArray(a.bidders)?a.bidders:[]};
-  }
-
-  async function loadSellerHomeData(){
-    const user=await sellerCurrentUser();
-    if(!user) return {user:null,seller:null,products:[],analytics:{ok:false,error:'Please sign in.'}};
-    const client=window.biddoSupabase;
-    const [{data:seller,error:sellerError},{data:products,error:productsError}]=await Promise.all([
-      client.from('seller_profiles').select('user_id,business_name,handle,bio,logo_path,seller_status').eq('user_id',user.id).maybeSingle(),
-      client.from('products').select('id,title,description,category,brand,condition,listing_type,price_paise,inventory_quantity,status,created_at,updated_at').eq('seller_id',user.id).order('created_at',{ascending:false})
-    ]);
-    if(sellerError) console.warn('Seller profile load failed',sellerError);
-    if(productsError) console.warn('Seller product load failed',productsError);
-    const rows=Array.isArray(products)?products:[];
-    let media=[];
-    if(rows.length){
-      const mr=await client.from('product_media').select('product_id,media_type,storage_path,sort_order').in('product_id',rows.map(x=>x.id)).order('sort_order',{ascending:true});
-      if(!mr.error) media=mr.data||[];
-    }
-    const first=new Map(); media.forEach(m=>{ if(!first.has(m.product_id)) first.set(m.product_id,m); });
-    const productsWithMedia=rows.map(row=>({...row,image:biddoSellerStudioSafeUrl(first.get(row.id)?.storage_path,'image')||IMGS[0]}));
-    const analytics = seller ? await loadSellerAnalytics() : {ok:false,error:'Create your seller profile to unlock analytics.'};
-    return {user,seller,products:productsWithMedia,analytics};
-  }
-
-  function sellerAnalyticsHtml(a){
-    if(!a?.ok){
-      return `<div class="seller-note-card">Analytics will become live after the seller analytics migration is added in Supabase. No fake numbers are shown.</div>`;
-    }
-    const buyers=a.buyers||[], bidders=a.bidders||[];
-    return `
-      <div class="seller-analytics-grid seller-home-animate">
-        <div class="seller-metric"><div class="m-label">Product views</div><div class="m-value">${sellerFormatCount(a.views)}</div><div class="m-sub">${sellerFormatCount(a.unique_viewers)} unique viewers</div></div>
-        <div class="seller-metric"><div class="m-label">Orders</div><div class="m-value">${sellerFormatCount(a.orders)}</div><div class="m-sub">${sellerFormatCount(a.units_sold)} units sold</div></div>
-        <div class="seller-metric"><div class="m-label">Revenue</div><div class="m-value">${sellerMoney(a.revenue_paise)}</div><div class="m-sub">from non-cancelled orders</div></div>
-        <div class="seller-metric"><div class="m-label">Bids</div><div class="m-value">${sellerFormatCount(a.bids)}</div><div class="m-sub">${sellerFormatCount(a.unique_bidders)} unique bidders</div></div>
-      </div>
-      <div class="seller-home-section">
-        <div class="seller-home-section-head"><h3>Recent buyers</h3><span>${buyers.length ? 'Latest orders' : 'No completed orders yet'}</span></div>
-        <div class="seller-mini-list">
-          ${buyers.length?buyers.map(x=>`<div class="seller-mini-row"><div class="av" style="background-image:url('${sellerImg(x.avatar_url)}')"></div><div class="info"><div class="name">${sellerEsc(x.display_name||'Biddo buyer')}</div><div class="meta">Order ${sellerEsc(x.order_number||'—')} · ${sellerMoney(x.amount_paise)} · ${sellerFormatDate(x.created_at)}</div></div></div>`).join(''):`<div class="seller-empty-card"><b>No buyers yet</b><span>Real buyers will appear here after an order containing one of your products is completed.</span></div>`}
-        </div>
-      </div>
-      <div class="seller-home-section">
-        <div class="seller-home-section-head"><h3>Recent bidders</h3><span>${bidders.length ? 'Latest auction activity' : 'No bids yet'}</span></div>
-        <div class="seller-mini-list">
-          ${bidders.length?bidders.map(x=>`<div class="seller-mini-row"><div class="av" style="background-image:url('${sellerImg(x.avatar_url)}')"></div><div class="info"><div class="name">${sellerEsc(x.display_name||'Biddo bidder')}</div><div class="meta">${sellerFormatCount(x.bid_count)} bids · High ${sellerMoney(x.highest_bid_paise)} · ${sellerFormatDate(x.last_bid_at)}</div></div></div>`).join(''):`<div class="seller-empty-card"><b>No bidders yet</b><span>Real bidder activity will appear here for your auctions.</span></div>`}
-        </div>
-      </div>`;
-  }
-
-  function sellerProductsHtml(products){
-    const active=products.filter(x=>x.status!=='archived');
-    const archived=products.filter(x=>x.status==='archived').length;
-    return `
-      <div class="seller-home-section">
-        <div class="seller-home-section-head"><h3>Your listings</h3><span>${active.length} active${archived?` · ${archived} archived`:''}</span></div>
-        ${active.length?`<div class="seller-product-list">${active.map(pr=>`<div class="seller-product-card">
-          <div class="thumb" style="background-image:url('${sellerImg(pr.image)}')"></div>
-          <div class="details">
-            <div class="title">${sellerEsc(pr.title)}</div>
-            <div class="meta">${sellerMoney(pr.price_paise)} · ${sellerEsc(pr.category||'Other')} · ${sellerFormatCount(pr.inventory_quantity)} in stock</div>
-            <span class="status ${pr.status==='published'?'published':'draft'}">${sellerEsc(pr.status||'draft')}</span>
-            <div class="controls"><button type="button" onclick="sellerStudioEditProduct('${pr.id}')">Edit</button><button type="button" class="danger" onclick="sellerDeleteListing('${pr.id}')">Delete</button></div>
-          </div>
-        </div>`).join('')}</div>`:`<div class="seller-empty-card"><b>No active listings</b><span>Publish your first product and it will appear across Biddo.</span><button type="button" onclick="sellerStudioOpenAddProduct()">+ Add product</button></div>`}
-      </div>`;
-  }
-
-  window.renderSellerModeHome = async function(){
-    const body=document.getElementById('sellerHomeBody');
-    if(!body) return;
-    body.innerHTML='<div class="seller-home-wrap"><div class="biddo-seller-loading">Loading Seller Mode…</div></div>';
-    const data=await loadSellerHomeData();
-    if(!data.user){ body.innerHTML='<div class="seller-home-wrap"><div class="seller-empty-card"><b>Log in to sell</b><span>Sign in to your Biddo account to access Seller Mode.</span></div></div>'; return; }
-    if(!data.seller){
-      body.innerHTML=`<div class="seller-home-wrap"><div class="seller-setup-card seller-home-animate"><div class="seller-home-kicker">SELLER MODE</div><h3>Open your Biddo store.</h3><p>Create your seller profile once. Then you can publish listings, monitor views, buyers and bids from this same app.</p><button type="button" onclick="openSellerStudio()">Create seller profile</button></div></div>`;
-      return;
-    }
-    const a=data.analytics;
-    body.innerHTML=`<div class="seller-home-wrap">
-      <div class="seller-home-hero seller-home-animate">
-        <div class="seller-home-kicker">SELLER MODE</div>
-        <div class="seller-home-title">${sellerEsc(data.seller.business_name)}</div>
-        <div class="seller-home-sub">${data.seller.handle?'@'+sellerEsc(data.seller.handle):'Your Biddo store'} · ${sellerEsc(data.seller.seller_status||'active')}</div>
-        <div class="seller-home-actions"><button class="primary" type="button" onclick="sellerStudioOpenAddProduct()">+ Add listing</button><button class="secondary" type="button" onclick="openSellerStudio()">Manage store</button><button class="secondary" type="button" onclick="window.go('discover')">Discover</button></div>
-      </div>
-      ${sellerAnalyticsHtml(a)}
-      ${sellerProductsHtml(data.products)}
-      <div class="seller-note-card">Buyer and bidder names below come from authenticated Biddo accounts tied to real orders or bids. Views are recorded from authenticated product opens. No demo analytics are shown.</div>
-    </div>`;
-  };
-
-  window.sellerStudioEditProduct = async function(id){
-    const client=window.biddoSupabase; const user=await sellerCurrentUser();
-    if(!client||!user){toast('Please log in first');return;}
-    const {data:pr,error}=await client.from('products').select('id,title,description,category,brand,condition,listing_type,price_paise,inventory_quantity,status,seller_id').eq('id',id).eq('seller_id',user.id).single();
-    if(error||!pr){toast('Listing could not be loaded');return;}
-    const mr=await client.from('product_media').select('media_type,storage_path,sort_order').eq('product_id',id).order('sort_order',{ascending:true});
-    const media=mr.data||[];
-    const img=media.find(m=>m.media_type==='image')?.storage_path||'';
-    const vid=media.find(m=>m.media_type==='video')?.storage_path||'';
-    const box=document.getElementById('sellerStudioProductComposer');
-    if(!box){openSellerStudio();setTimeout(()=>sellerStudioEditProduct(id),260);return;}
-    box.style.display='block';
-    box.scrollIntoView({behavior:'smooth',block:'start'});
-    box.innerHTML=`
-      <div class="biddo-seller-section-head"><h3>Edit listing</h3><span>${pr.status==='archived'?'Archived':'Live listing'}</span></div>
-      <div class="biddo-seller-form">
-        <label class="biddo-seller-field"><span>Product name</span><input id="sellerProductEditTitle" maxlength="100" value="${sellerEsc(pr.title)}"></label>
-        <div class="biddo-seller-grid"><label class="biddo-seller-field"><span>Price (₹)</span><input id="sellerProductEditPrice" type="number" min="1" step="1" value="${Number(pr.price_paise||0)/100}"></label><label class="biddo-seller-field"><span>Stock quantity</span><input id="sellerProductEditInventory" type="number" min="0" step="1" value="${Number(pr.inventory_quantity||0)}"></label></div>
-        <div class="biddo-seller-grid"><label class="biddo-seller-field"><span>Category</span><select id="sellerProductEditCategory">${CATS.map(c=>`<option value="${sellerEsc(c)}" ${String(pr.category||'')===String(c)?'selected':''}>${sellerEsc(c)}</option>`).join('')}</select></label><label class="biddo-seller-field"><span>Condition</span><select id="sellerProductEditCondition"><option ${pr.condition==='Brand New'?'selected':''}>Brand New</option><option ${pr.condition==='Pre-owned · Excellent'?'selected':''}>Pre-owned · Excellent</option><option ${pr.condition==='Pre-owned · Good'?'selected':''}>Pre-owned · Good</option></select></label></div>
-        <label class="biddo-seller-field"><span>Brand (optional)</span><input id="sellerProductEditBrand" maxlength="60" value="${sellerEsc(pr.brand||'')}"></label>
-        <label class="biddo-seller-field"><span>Product image URL</span><input id="sellerProductEditImage" type="url" value="${sellerEsc(img)}"><div class="biddo-seller-help">Use a direct image URL.</div></label>
-        <label class="biddo-seller-field"><span>Product video URL (optional)</span><input id="sellerProductEditVideo" type="url" value="${sellerEsc(vid)}"></label>
-        <label class="biddo-seller-field"><span>Description</span><textarea id="sellerProductEditDescription" maxlength="1000">${sellerEsc(pr.description||'')}</textarea></label>
-        <div class="biddo-seller-actions"><button class="biddo-seller-secondary" type="button" onclick="sellerStudioCloseAddProduct();window.go('home')">Cancel</button><button class="biddo-seller-primary" type="button" onclick="saveSellerProductEdit('${id}')">Save changes</button></div>
-      </div>`;
-  };
-
-  window.saveSellerProductEdit = async function(id){
-    const client=window.biddoSupabase,user=await sellerCurrentUser();
-    if(!client||!user){toast('Please log in first');return;}
-    const title=document.getElementById('sellerProductEditTitle')?.value.trim();
-    const price=Number(document.getElementById('sellerProductEditPrice')?.value);
-    const inventory=Number(document.getElementById('sellerProductEditInventory')?.value);
-    const category=document.getElementById('sellerProductEditCategory')?.value||null;
-    const condition=document.getElementById('sellerProductEditCondition')?.value||null;
-    const brand=document.getElementById('sellerProductEditBrand')?.value.trim()||null;
-    const image=document.getElementById('sellerProductEditImage')?.value.trim();
-    const video=document.getElementById('sellerProductEditVideo')?.value.trim();
-    const description=document.getElementById('sellerProductEditDescription')?.value.trim()||null;
-    const safeImage=biddoSellerStudioSafeUrl(image,'image');
-    const safeVideo=biddoSellerStudioSafeUrl(video,'video');
-    if(!title||title.length<2){toast('Enter a product name');return;}
-    if(!Number.isFinite(price)||price<=0){toast('Enter a valid price');return;}
-    if(!Number.isInteger(inventory)||inventory<0){toast('Enter a valid stock quantity');return;}
-    if(!safeImage){toast('Add a valid product image URL');return;}
-    if(video&&!safeVideo){toast('Use a valid video URL');return;}
-    const {error:updateError}=await client.from('products').update({title,description,category,brand,condition,price_paise:Math.round(price*100),inventory_quantity:inventory,status:pr.status==='draft'?'draft':'published',updated_at:new Date().toISOString()}).eq('id',id).eq('seller_id',user.id);
-    if(updateError){console.error(updateError);toast(biddoSellerStudioFriendlyError(updateError));return;}
-    await client.from('product_media').delete().eq('product_id',id);
-    const mediaRows=[{product_id:id,media_type:'image',storage_path:safeImage,alt_text:title,sort_order:0}];
-    if(safeVideo) mediaRows.push({product_id:id,media_type:'video',storage_path:safeVideo,alt_text:title,sort_order:1});
-    const {error:mediaError}=await client.from('product_media').insert(mediaRows);
-    if(mediaError){console.error(mediaError);toast('Listing saved, but media could not be updated');}
-    toast('Listing updated ✓',ICON_CHECK);
-    sellerStudioCloseAddProduct();
-    biddoMarketplaceDataLoaded=false; biddoMarketplaceDataPromise=null;
-    await loadMarketplaceData();
-    await renderSellerModeHome();
-  };
-
-  window.sellerDeleteListing = async function(id){
-    const client=window.biddoSupabase,user=await sellerCurrentUser();
-    if(!client||!user){toast('Please log in first');return;}
-    const pr=PRODUCTS.find(x=>x.id===id);
-    const ok=window.confirm(`Delete “${pr?.name||'this listing'}”? It will be archived and removed from the marketplace.`);
-    if(!ok) return;
-    const {error}=await client.from('products').update({status:'archived',updated_at:new Date().toISOString()}).eq('id',id).eq('seller_id',user.id);
-    if(error){console.error(error);toast(biddoSellerStudioFriendlyError(error));return;}
-    toast('Listing deleted ✓',ICON_CHECK);
-    biddoMarketplaceDataLoaded=false; biddoMarketplaceDataPromise=null;
-    await loadMarketplaceData();
-    if(document.getElementById('page-seller-studio')?.classList.contains('active')) await openSellerStudio();
-    else await renderSellerModeHome();
-  };
-
-  const originalOpenProduct=window.openProduct;
-  window.openProduct = function(id){
-    try{
-      const sessionKey='biddo_view_'+id;
-      const last=Number(sessionStorage.getItem(sessionKey)||0);
-      if(Date.now()-last>30*60*1000){
-        sessionStorage.setItem(sessionKey,String(Date.now()));
-        const client=window.biddoSupabase;
-        if(client){
-          client.auth.getUser().then(({data:{user}})=>{
-            if(user) client.from('product_views').insert({product_id:id,viewer_id:user.id}).then(({error})=>{if(error) console.warn('Product view was not recorded',error);});
-          }).catch(()=>{});
-        }
-      }
-    }catch(e){}
-    return originalOpenProduct(id);
-  };
-
-  window.addEventListener('load',()=>{
-    try{renderBiddoRole();}catch(e){}
-    if(biddoActiveRole==='seller' && document.getElementById('screen-seller-home')){
-      setTimeout(()=>window.go('home'),0);
-    }
-  });
-})();
+<script>
+window.addEventListener('load',()=>{
+  try{
+    if(typeof renderBiddoRole==='function') renderBiddoRole();
+    if(typeof loadBiddoSellerModeHome==='function' && biddoActiveRole==='seller') loadBiddoSellerModeHome();
+  }catch(e){ console.warn('Biddo seller mode init failed',e); }
+});
 </script>
-
 </body>
 </html>
 
