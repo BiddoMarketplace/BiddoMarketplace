@@ -132,8 +132,8 @@ body{
 .lg-bottom .it{font-size:11px;color:#e6e6e3;}
 .lg-bottom .bid{font-size:12px;font-weight:700; color:var(--lime); margin-top:2px;}
 
-.liveroom{position:fixed; inset:0; background:#111; z-index:200; display:none; flex-direction:column; color:#fff;}
-.liveroom.active{display:flex;}
+.liveroom{position:fixed; inset:0; max-width:430px; width:100%; margin:0 auto; background:#111; z-index:200; display:none; flex-direction:column; color:#fff; border-radius:0; overflow:hidden; box-shadow:0 24px 80px rgba(0,0,0,.25); transform:translateY(10px) scale(.985); opacity:0; transition:opacity .22s ease, transform .28s cubic-bezier(.22,1,.36,1);}
+.liveroom.active{display:flex; opacity:1; transform:translateY(0) scale(1);}
 .lr-video{flex:1; background-size:cover; background-position:center; position:relative;}
 .lr-top{position:absolute; top:calc(14px + var(--safe-t)); left:14px; right:14px; display:flex; align-items:center; gap:8px; z-index:3;}
 .lr-top .av{width:34px;height:34px;border-radius:50%;background-size:cover;border:1.5px solid #fff;}
@@ -429,35 +429,18 @@ button{cursor:pointer; font-family:inherit;}
 }
 .biddo-auth-back:active{background:#f2f2ef;transform:scale(.95);}
 .biddo-auth-logo{
-  width:38px;
-  height:38px;
-  border-radius:12px;
-  background:#20201e;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:142px;
+  height:52px;
+  flex:none;
+  display:block;
   position:relative;
-  box-shadow:0 2px 0 rgba(0,0,0,.05);
+  background:transparent url('data:image/png;base64,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') center/contain no-repeat;
+  border-radius:0;
+  box-shadow:none;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.04));
 }
-.biddo-auth-logo::before{
-  content:"";
-  width:20px;
-  height:20px;
-  border-radius:7px;
-  background:var(--biddo-lime);
-  clip-path:polygon(0 20%,72% 20%,72% 0,100% 50%,72% 100%,72% 80%,0 80%);
-}
-.biddo-auth-logo::after{
-  content:"";
-  position:absolute;
-  width:8px;
-  height:8px;
-  right:8px;
-  top:8px;
-  background:#fff;
-  clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);
-  opacity:.95;
-}
+.biddo-auth-logo::before,
+.biddo-auth-logo::after{display:none !important;}
 
 .biddo-auth-content{
   width:100%;
@@ -874,8 +857,264 @@ button{cursor:pointer; font-family:inherit;}
   }
   .biddo-auth-page{min-height:calc(100dvh - 36px);}
 }
+
+/* ---------------- BIDDO AUTH POLISH / MOTION ---------------- */
+#biddoAuthGate{
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+.biddo-auth-shell{
+  isolation:isolate;
+}
+.biddo-auth-page{
+  padding-left:18px;
+  padding-right:18px;
+  animation:biddoPageIn .46s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes biddoPageIn{
+  0%{opacity:0;transform:translate3d(18px,0,0) scale(.988);}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1);}
+}
+.biddo-auth-top{
+  min-height:52px;
+}
+.biddo-auth-top .biddo-auth-logo{
+  transform-origin:center;
+  animation:biddoLogoIn .6s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes biddoLogoIn{
+  0%{opacity:0;transform:translateY(-8px) scale(.9);}
+  100%{opacity:1;transform:translateY(0) scale(1);}
+}
+.biddo-auth-content{
+  margin-top:48px;
+}
+.biddo-auth-title{
+  font-size:30px;
+  letter-spacing:-1.25px;
+  animation:biddoTextIn .48s .05s cubic-bezier(.22,1,.36,1) both;
+}
+.biddo-auth-subtitle{
+  font-size:15px;
+  color:#6d6d68;
+  animation:biddoTextIn .48s .1s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes biddoTextIn{
+  0%{opacity:0;transform:translateY(9px);}
+  100%{opacity:1;transform:translateY(0);}
+}
+.biddo-auth-method{
+  box-shadow:0 1px 0 rgba(0,0,0,.02);
+  transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s, border-color .18s, box-shadow .18s;
+}
+.biddo-auth-method:nth-child(1){animation:biddoTextIn .45s .14s both;}
+.biddo-auth-method:nth-child(2){animation:biddoTextIn .45s .19s both;}
+.biddo-auth-method:nth-child(3){animation:biddoTextIn .45s .24s both;}
+.biddo-auth-method:hover{box-shadow:0 8px 20px rgba(0,0,0,.05);transform:translateY(-1px);}
+.biddo-auth-method:active{transform:scale(.975);box-shadow:none;}
+.biddo-auth-switch,
+.biddo-auth-legal{
+  animation:biddoTextIn .45s .3s both;
+}
+.biddo-auth-form > *{
+  animation:biddoFieldIn .44s cubic-bezier(.22,1,.36,1) both;
+}
+.biddo-auth-form > *:nth-child(1){animation-delay:.10s;}
+.biddo-auth-form > *:nth-child(2){animation-delay:.15s;}
+.biddo-auth-form > *:nth-child(3){animation-delay:.20s;}
+.biddo-auth-form > *:nth-child(4){animation-delay:.25s;}
+.biddo-auth-form > *:nth-child(5){animation-delay:.30s;}
+@keyframes biddoFieldIn{
+  0%{opacity:0;transform:translateY(10px);}
+  100%{opacity:1;transform:translateY(0);}
+}
+.biddo-field,
+.biddo-phone-row,
+.biddo-location-card,
+.biddo-country-static{
+  border-color:#deded9;
+  transition:border-color .2s, box-shadow .2s, transform .2s;
+}
+.biddo-field:focus-within,
+.biddo-phone-row:focus-within{
+  border-color:#1b1b19;
+  box-shadow:0 0 0 4px rgba(27,27,25,.055);
+}
+.biddo-field:focus-within{transform:translateY(-1px);}
+.biddo-field input::selection{background:var(--biddo-lime);color:#111;}
+.biddo-check{
+  transition:transform .16s ease;
+}
+.biddo-check:checked{transform:scale(1.04);}
+.biddo-primary{
+  box-shadow:0 8px 22px rgba(17,17,16,.10);
+  transition:transform .18s cubic-bezier(.22,1,.36,1), box-shadow .18s, opacity .18s, background .18s;
+}
+.biddo-primary:not(:disabled):hover{
+  transform:translateY(-1px);
+  box-shadow:0 11px 28px rgba(17,17,16,.16);
+}
+.biddo-primary:not(:disabled):active{
+  transform:translateY(1px) scale(.985);
+  box-shadow:0 5px 15px rgba(17,17,16,.10);
+}
+.biddo-field-password svg{transition:transform .18s ease;}
+.biddo-field-password:active svg{transform:scale(.88);}
+.biddo-otp{transition:transform .18s, border-color .18s, box-shadow .18s;}
+.biddo-otp:focus{transform:translateY(-2px) scale(1.02);}
+.biddo-text-btn{transition:opacity .18s, transform .18s;}
+.biddo-text-btn:active:not(:disabled){transform:scale(.96);}
+.biddo-location-card{overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.02);}
+.biddo-location-card .biddo-field{transition:background .18s;}
+.biddo-location-card .biddo-field:focus-within{background:#fcfcfa;}
+.biddo-success-icon{
+  animation:biddoSuccessIn .62s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes biddoSuccessIn{
+  0%{opacity:0;transform:scale(.55) rotate(-10deg);}
+  100%{opacity:1;transform:scale(1) rotate(0);}
+}
+.biddo-success-title{animation:biddoTextIn .46s .12s both;}
+.biddo-success-sub{animation:biddoTextIn .46s .18s both;}
+.biddo-complete .biddo-primary{animation:biddoTextIn .46s .25s both;}
+
+@media (max-width:380px){
+  .biddo-auth-title{font-size:28px;}
+  .biddo-auth-logo{width:128px;height:47px;}
+  .biddo-auth-content{margin-top:40px;}
+  .biddo-auth-page{padding-left:16px;padding-right:16px;}
+}
 </style>
 
+
+<style id="biddo-email-reference-css">
+.biddo-auth-close{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  left:-2px;
+  top:-1px;
+}
+.biddo-auth-close:hover{background:#f4f4f1;}
+#biddoAuthEmailPage .biddo-auth-content{
+  margin-top:42px;
+}
+#biddoAuthEmailPage .biddo-auth-title{
+  max-width:360px;
+  margin-bottom:10px;
+}
+#biddoAuthEmailPage .biddo-auth-subtitle{
+  margin-bottom:28px;
+}
+#biddoAuthEmailPage .biddo-auth-form{
+  gap:14px;
+}
+#biddoAuthEmailPage .biddo-field{
+  min-height:76px;
+  height:76px;
+  padding:9px 14px;
+  border-radius:14px;
+}
+#biddoAuthEmailPage .biddo-field-stack{
+  justify-content:center;
+}
+#biddoAuthEmailPage .biddo-field-label{
+  font-size:13px;
+  color:#6f6f69;
+  margin-bottom:6px;
+}
+#biddoAuthEmailPage .biddo-field input{
+  font-size:16px;
+}
+#biddoAuthEmailPage .biddo-field input::placeholder{
+  color:#6f6f69;
+  opacity:1;
+}
+#biddoAuthEmailPage .biddo-checkrow{
+  margin-top:3px;
+  gap:10px;
+}
+#biddoAuthEmailPage .biddo-checktext{
+  font-size:13.5px;
+  color:#60605b;
+}
+#biddoAuthEmailPage .biddo-primary{
+  margin-top:12px;
+  height:58px;
+  font-size:16px;
+}
+@media(max-width:380px){
+  #biddoAuthEmailPage .biddo-field{height:72px;min-height:72px;}
+  #biddoAuthEmailPage .biddo-checktext{font-size:12.5px;}
+}
+</style>
+
+
+<style id="biddo-auth-micro-motion">
+.biddo-auth-logo{overflow:visible;}
+.biddo-auth-logo::marker{display:none;}
+.biddo-auth-logo{
+  animation:biddoLogoIn .6s cubic-bezier(.22,1,.36,1) both, biddoLogoBreath 4s ease-in-out 1s infinite;
+}
+@keyframes biddoLogoBreath{
+  0%,100%{filter:drop-shadow(0 2px 5px rgba(0,0,0,.04));}
+  50%{filter:drop-shadow(0 6px 12px rgba(0,0,0,.07));}
+}
+</style>
+
+<style id="biddo-profile-live-css">
+/* ---------------- PROFILE / LIVE UX POLISH ---------------- */
+.profile-action-btn{transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s, box-shadow .18s;}
+.profile-action-btn:active{transform:scale(.94);}
+.logout-row{color:#b3352e; cursor:pointer; transition:background .18s, transform .18s, padding-left .18s;}
+.logout-row .pi{color:#b3352e;}
+.logout-row:active{transform:scale(.985); padding-left:5px; background:#fff7f6;}
+
+.biddo-profile-backdrop,
+.biddo-logout-backdrop{position:fixed; inset:0; z-index:520; background:rgba(10,10,9,.42); opacity:0; pointer-events:none; transition:opacity .22s ease; backdrop-filter:blur(4px);}
+.biddo-profile-backdrop.active,
+.biddo-logout-backdrop.active{opacity:1; pointer-events:auto;}
+.biddo-profile-modal{position:fixed; left:50%; bottom:0; width:min(430px,100%); max-height:min(88dvh,760px); transform:translate(-50%,104%); background:#fff; border-radius:24px 24px 0 0; z-index:521; padding:8px 18px calc(18px + var(--safe-b)); box-shadow:0 -14px 50px rgba(0,0,0,.18); transition:transform .34s cubic-bezier(.22,1,.36,1); overflow:auto;}
+.biddo-profile-modal.active{transform:translate(-50%,0);}
+.biddo-profile-handle{width:38px;height:4px;border-radius:4px;background:#deded9;margin:3px auto 15px;}
+.biddo-profile-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.biddo-profile-modal-head h3{margin:2px 0 0;font-size:21px;letter-spacing:-.5px;}
+.biddo-profile-kicker{font-size:10px;letter-spacing:.12em;font-weight:800;color:#a0a09a;}
+.biddo-profile-modal-head .icon-btn{font-size:24px;line-height:1;background:#f6f6f4;}
+.biddo-edit-avatar-row{display:flex;align-items:center;gap:12px;background:#f7f7f4;border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:16px;}
+.biddo-edit-avatar{width:52px;height:52px;border-radius:50%;background:#eee center/cover no-repeat;box-shadow:0 0 0 1px rgba(0,0,0,.05);flex:none;}
+.biddo-edit-avatar-title{font-size:13px;font-weight:800;}
+.biddo-edit-avatar-sub{font-size:11px;color:var(--ink-3);margin-top:2px;}
+.biddo-edit-fields{display:flex;flex-direction:column;gap:11px;}
+.biddo-edit-field{display:flex;flex-direction:column;gap:6px;}
+.biddo-edit-field>span{font-size:11px;font-weight:800;color:var(--ink-2);}
+.biddo-edit-field input,.biddo-edit-field select{width:100%;border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 13px;font-size:13.5px;outline:none;transition:border-color .2s, box-shadow .2s, transform .2s;}
+.biddo-edit-field input:focus,.biddo-edit-field select:focus{border-color:#111;box-shadow:0 0 0 4px rgba(17,17,16,.05);transform:translateY(-1px);}
+.biddo-edit-phone{display:flex;align-items:center;border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:border-color .2s, box-shadow .2s;}
+.biddo-edit-phone:focus-within{border-color:#111;box-shadow:0 0 0 4px rgba(17,17,16,.05);}
+.biddo-edit-phone>span{padding:0 0 0 13px;font-size:13.5px;font-weight:800;color:var(--ink-2);}
+.biddo-edit-phone input{border:0;border-radius:0;box-shadow:none!important;transform:none!important;}
+.biddo-edit-location-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.biddo-profile-modal-actions{display:flex;gap:10px;margin-top:18px;}
+.biddo-profile-modal-actions>*{min-height:50px;}
+
+.biddo-logout-modal{position:fixed;left:50%;top:50%;width:min(330px,calc(100% - 34px));transform:translate(-50%,-46%) scale(.94);opacity:0;pointer-events:none;z-index:523;background:#fff;border-radius:24px;padding:24px 20px 20px;text-align:center;box-shadow:0 28px 90px rgba(0,0,0,.24);transition:transform .28s cubic-bezier(.22,1,.36,1), opacity .22s ease;}
+.biddo-logout-modal.active{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto;}
+.biddo-logout-icon{width:56px;height:56px;margin:0 auto 13px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff2f0;color:#b3352e;animation:logoutIconIn .5s cubic-bezier(.34,1.56,.64,1) both;}
+.biddo-logout-icon svg{width:25px;height:25px;}
+@keyframes logoutIconIn{0%{transform:scale(.55) rotate(-10deg);opacity:.3}100%{transform:scale(1) rotate(0);opacity:1}}
+.biddo-logout-modal h3{margin:0;font-size:20px;letter-spacing:-.4px;}
+.biddo-logout-modal p{margin:8px auto 18px;color:var(--ink-2);font-size:12.5px;line-height:1.5;max-width:280px;}
+.biddo-logout-actions{display:flex;gap:9px;}
+.biddo-logout-actions>*{flex:1;min-height:48px;}
+.biddo-logout-confirm{background:#b3352e;}
+.biddo-logout-confirm:hover{background:#a22f29;}
+
+@media (min-width:600px){
+  .biddo-profile-modal{bottom:18px;border-radius:24px;max-height:82dvh;}
+  .liveroom{border-radius:24px;top:18px;bottom:18px;height:calc(100% - 36px);}
+}
+</style>
 </head>
 <body>
 
@@ -936,9 +1175,10 @@ button{cursor:pointer; font-family:inherit;}
     <!-- 2. EMAIL SIGN UP / LOGIN -->
     <section class="biddo-auth-page hidden" id="biddoAuthEmailPage">
       <div class="biddo-auth-top">
-        <button class="biddo-auth-back" type="button" aria-label="Back" onclick="biddoShowPage('method')">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M15 18 9 12l6-6"></path>
+        <button class="biddo-auth-back biddo-auth-close" type="button" aria-label="Close" onclick="biddoShowPage('method')">
+          <svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M6 6l12 12"></path>
+            <path d="M18 6L6 18"></path>
           </svg>
         </button>
         <div class="biddo-auth-logo" aria-hidden="true"></div>
@@ -1189,7 +1429,7 @@ button{cursor:pointer; font-family:inherit;}
       <div><b>642</b><span>Followers</span></div>
       <div><b id="statSaved">0</b><span>Saved</span></div>
     </div>
-    <div class="row-gap"><button class="smallbtn outline">Edit Profile</button><button class="smallbtn outline">Share Profile</button></div>
+    <div class="row-gap"><button class="smallbtn outline profile-action-btn" onclick="openEditProfile()">Edit Profile</button><button class="smallbtn outline profile-action-btn" onclick="toast('Profile link copied')">Share Profile</button></div>
   </div>
   <div class="section-lbl">Activity</div>
   <div class="plist" style="padding-top:0;">
@@ -1206,6 +1446,7 @@ button{cursor:pointer; font-family:inherit;}
     <div class="prow"><div class="pi">🔒</div><div class="pt">Security</div><span class="chev">›</span></div>
     <div class="prow" onclick="toast('Seller Studio is invite-only right now')"><div class="pi">🏪</div><div class="pt">Become a Seller</div><span class="chev">›</span></div>
     <div class="prow"><div class="pi">❓</div><div class="pt">Help Center</div><span class="chev">›</span></div>
+    <div class="prow logout-row" onclick="openLogoutConfirm()"><div class="pi">↪</div><div class="pt">Log out</div><span class="chev">›</span></div>
   </div>
 </div>
 
@@ -1216,6 +1457,61 @@ button{cursor:pointer; font-family:inherit;}
   <button class="navbtn" data-tab="live" onclick="go('live')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Live</button>
   <button class="navbtn" data-tab="cart" onclick="go('cart')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.5 3h2l2.4 12.4a2 2 0 002 1.6h8.6a2 2 0 002-1.6L21 7H5.5"/></svg>Cart</button>
   <button class="navbtn" data-tab="profile" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Profile</button>
+</div>
+
+
+<!-- ============ EDIT PROFILE MODAL ============ -->
+<div class="biddo-profile-backdrop" id="profileEditBackdrop" onclick="closeEditProfile(event)"></div>
+<div class="biddo-profile-modal" id="profileEditModal" role="dialog" aria-modal="true" aria-labelledby="profileEditTitle">
+  <div class="biddo-profile-handle"></div>
+  <div class="biddo-profile-modal-head">
+    <div>
+      <div class="biddo-profile-kicker">PROFILE</div>
+      <h3 id="profileEditTitle">Edit profile</h3>
+    </div>
+    <button class="icon-btn" type="button" onclick="closeEditProfile()" aria-label="Close">×</button>
+  </div>
+  <div class="biddo-edit-avatar-row">
+    <div class="biddo-edit-avatar" id="editProfileAvatar"></div>
+    <div>
+      <div class="biddo-edit-avatar-title">Your Biddo profile</div>
+      <div class="biddo-edit-avatar-sub">Your changes update instantly.</div>
+    </div>
+  </div>
+  <div class="biddo-edit-fields">
+    <label class="biddo-edit-field">
+      <span>Full name</span>
+      <input id="editProfileName" type="text" maxlength="40" placeholder="Your full name" autocomplete="name">
+    </label>
+    <label class="biddo-edit-field">
+      <span>Username</span>
+      <input id="editProfileUsername" type="text" maxlength="28" placeholder="your.username" autocomplete="username">
+    </label>
+    <label class="biddo-edit-field">
+      <span>Phone number</span>
+      <div class="biddo-edit-phone"><span>+91</span><input id="editProfilePhone" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number"></div>
+    </label>
+    <div class="biddo-edit-location-grid">
+      <label class="biddo-edit-field"><span>State</span><select id="editProfileState" onchange="editProfilePopulateCities()"><option value="">Select state</option></select></label>
+      <label class="biddo-edit-field"><span>City</span><select id="editProfileCity"><option value="">Select city</option></select></label>
+    </div>
+  </div>
+  <div class="biddo-profile-modal-actions">
+    <button class="btn-secondary" type="button" onclick="closeEditProfile()">Cancel</button>
+    <button class="btn-primary" type="button" id="editProfileSaveBtn" onclick="saveEditProfile()">Save changes</button>
+  </div>
+</div>
+
+<!-- ============ LOGOUT CONFIRMATION ============ -->
+<div class="biddo-logout-backdrop" id="logoutBackdrop" onclick="closeLogoutConfirm(event)"></div>
+<div class="biddo-logout-modal" id="logoutModal" role="dialog" aria-modal="true" aria-labelledby="logoutTitle">
+  <div class="biddo-logout-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 4h9a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9"/><path d="M14 12H3m0 0 4-4m-4 4 4 4"/></svg></div>
+  <h3 id="logoutTitle">Log out of Biddo?</h3>
+  <p>You can sign back in anytime using your Biddo account.</p>
+  <div class="biddo-logout-actions">
+    <button class="btn-secondary" type="button" onclick="closeLogoutConfirm()">Stay signed in</button>
+    <button class="btn-primary biddo-logout-confirm" type="button" onclick="biddoPerformLogout()">Log out</button>
+  </div>
 </div>
 
 <!-- ============ PRODUCT DETAIL PAGE ============ -->
@@ -1514,10 +1810,13 @@ let liveInputBid = {};
 
 /* ---------------- NAV ---------------- */
 function go(tab){
+  // Never leave an old live-room overlay sitting above the app when switching tabs.
+  if(tab!=='live' && document.getElementById('liveRoom').classList.contains('active')) closeLiveRoom();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+tab).classList.add('active');
   document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
   if(tab==='discover' && !document.getElementById('discoverFeed').dataset.built){ buildDiscover(); }
+  if(tab==='live'){ buildLive(); window.scrollTo({top:0,behavior:'smooth'}); }
 }
 function closePage(name){ document.getElementById('page-'+name).classList.remove('active'); }
 function openPage(name){ document.getElementById('page-'+name).classList.add('active'); }
@@ -1735,6 +2034,7 @@ let liveCommentInterval;
 const SAMPLE_COMMENTS = ["🔥🔥🔥","how's the sizing?","ship to Chennai?","just placed a bid!","this is insane value","🙌","need this rn","is it authentic?","GG whoever wins this"];
 const SAMPLE_NAMES = ["rhea_k","dev.codes","priya99","sam_wheels","tanviarora","kunal_x"];
 function openLiveRoom(idx){
+  if(!LIVES[idx]) return;
   currentLiveId=idx;
   const l=LIVES[idx], sel=s(l.sellerId), pr=p(l.productId);
   document.getElementById('lrVideo').style.backgroundImage=`url('${l.img}')`;
@@ -1772,7 +2072,13 @@ function sendLiveComment(){
   if(!inp.value.trim()) return;
   addLiveComment('you', inp.value.trim()); spawnReaction(); inp.value='';
 }
-function openBidFromLive(){ const l=LIVES[currentLiveId]; if(p(l.productId).isAuction){ openBid(l.productId); } else { openProduct(l.productId); } }
+function openBidFromLive(){
+  const l=LIVES[currentLiveId];
+  if(!l) return;
+  const pr=p(l.productId);
+  closeLiveRoom();
+  setTimeout(()=>{ if(pr && pr.isAuction){ openBid(pr.id); } else if(pr){ openProduct(pr.id); } },140);
+}
 
 /* ---------------- PRODUCT PAGE ---------------- */
 function openProduct(id){
@@ -2310,6 +2616,88 @@ buildLive();
 renderCart();
 </script>
 
+
+<script id="biddo-profile-actions-js">
+/* ---------------- PROFILE EDIT / LOGOUT ---------------- */
+(function(){
+  const PROFILE_KEY = "biddo_auth_profile_v1";
+  const DEFAULT_AVATAR = "https://i.pravatar.cc/150?img=12";
+  function byId(id){ return document.getElementById(id); }
+  function getProfile(){
+    try { return JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}"); } catch(e){ return {}; }
+  }
+  function makeUsername(name){
+    const base=(name||"biddo.user").toLowerCase().replace(/[^a-z0-9]+/g,".").replace(/^\.|\.$/g,"").slice(0,28);
+    return base || "biddo.user";
+  }
+  function hydrateEditLocations(){
+    const st=byId('editProfileState');
+    if(!st || st.options.length>1 || typeof INDIA_LOCATIONS==='undefined') return;
+    Object.keys(INDIA_LOCATIONS).sort((a,b)=>a.localeCompare(b)).forEach(state=>{
+      const o=document.createElement('option'); o.value=state; o.textContent=state; st.appendChild(o);
+    });
+  }
+  window.editProfilePopulateCities=function(){
+    const st=byId('editProfileState'), city=byId('editProfileCity');
+    if(!st || !city) return;
+    city.innerHTML='<option value="">Select city</option>';
+    city.disabled=!st.value;
+    if(st.value && typeof INDIA_LOCATIONS!=='undefined' && INDIA_LOCATIONS[st.value]){
+      INDIA_LOCATIONS[st.value].slice().sort((a,b)=>a.localeCompare(b)).forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; city.appendChild(o); });
+    }
+  };
+  window.openEditProfile=function(){
+    const m=byId('profileEditModal'), b=byId('profileEditBackdrop'); if(!m||!b) return;
+    const pr=getProfile();
+    hydrateEditLocations();
+    byId('editProfileName').value=pr.name||document.querySelector('#screen-profile .profile-hero .nm')?.textContent?.trim()||"";
+    byId('editProfileUsername').value=(pr.username||document.querySelector('#screen-profile .profile-hero .un')?.textContent?.replace(/^@/,'')||makeUsername(pr.name));
+    byId('editProfilePhone').value=String(pr.phone||"").replace(/\D/g,'').slice(0,10);
+    byId('editProfileState').value=pr.state||"";
+    editProfilePopulateCities();
+    byId('editProfileCity').value=pr.city||"";
+    byId('editProfileAvatar').style.backgroundImage=`url('${pr.avatar||DEFAULT_AVATAR}')`;
+    b.classList.add('active'); m.classList.add('active'); document.body.classList.add('biddo-modal-open');
+    setTimeout(()=>byId('editProfileName').focus(),180);
+  };
+  window.closeEditProfile=function(e){
+    if(e && e.target!==e.currentTarget) return;
+    byId('profileEditBackdrop')?.classList.remove('active'); byId('profileEditModal')?.classList.remove('active'); document.body.classList.remove('biddo-modal-open');
+  };
+  window.saveEditProfile=function(){
+    const name=byId('editProfileName').value.trim();
+    const usernameRaw=byId('editProfileUsername').value.trim().replace(/^@+/,'');
+    const username=makeUsername(usernameRaw || name);
+    const phone=byId('editProfilePhone').value.replace(/\D/g,'').slice(0,10);
+    const state=byId('editProfileState').value;
+    const city=byId('editProfileCity').value;
+    if(name.length<2){ toast('Enter your full name'); shakeEl(byId('editProfileName')); return; }
+    if(phone && phone.length!==10){ toast('Enter a valid 10-digit phone'); shakeEl(byId('editProfilePhone')); return; }
+    const pr=getProfile();
+    const updated={...pr,name,username,phone,state,city};
+    try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(updated)); }catch(e){}
+    const nm=document.querySelector('#screen-profile .profile-hero .nm'); if(nm) nm.textContent=name;
+    const un=document.querySelector('#screen-profile .profile-hero .un'); if(un) un.textContent='@'+username;
+    const loc=document.querySelector('#screen-home .location-row'); if(loc && city) loc.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.5-7-11a7 7 0 0114 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg> Delivering to '+city+(state?(', '+state):'');
+    closeEditProfile();
+    toast('Profile updated ✓');
+  };
+  window.openLogoutConfirm=function(){ byId('logoutBackdrop')?.classList.add('active'); byId('logoutModal')?.classList.add('active'); };
+  window.closeLogoutConfirm=function(e){ if(e && e.target!==e.currentTarget) return; byId('logoutBackdrop')?.classList.remove('active'); byId('logoutModal')?.classList.remove('active'); };
+  window.biddoPerformLogout=function(){
+    closeLogoutConfirm();
+    try{ localStorage.removeItem(PROFILE_KEY); }catch(e){}
+    const gate=byId('biddoAuthGate');
+    if(gate){ gate.classList.remove('hidden'); document.body.style.overflow='hidden'; }
+    if(typeof window.biddoShowPage==='function') window.biddoShowPage('method');
+    const name=byId('biddoFullName'), email=byId('biddoEmail'), pass=byId('biddoPassword'), phone=byId('biddoPhone');
+    if(name) name.value=''; if(email) email.value=''; if(pass) pass.value=''; if(phone) phone.value='';
+    toastSafeOutside('Logged out');
+  };
+  function toastSafeOutside(msg){ const t=byId('toast'); if(!t) return; t.textContent=msg; t.classList.add('show'); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove('show'),1600); }
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeEditProfile(); closeLogoutConfirm(); } });
+})();
+</script>
 <script id="biddo-auth-js">
 /* ============================================================
    BIDDO AUTH / ONBOARDING
@@ -2646,6 +3034,13 @@ renderCart();
     document.body.style.overflow="";
   };
 
+  window.biddoLogout = function(){
+    try{ localStorage.removeItem(BIDDO_AUTH_KEY); }catch(e){}
+    $id("biddoAuthGate").classList.remove("hidden");
+    document.body.style.overflow="hidden";
+    setPage("method");
+  };
+
   function firstName(name){
     const n=(name||"Biddo User").trim().split(/\s+/)[0];
     return n || "Biddo User";
@@ -2667,7 +3062,7 @@ renderCart();
 
     const un=document.querySelector("#screen-profile .profile-hero .un");
     if(un){
-      const base=(profile.name||"biddo.user")
+      const base=(profile.username || (profile.name||"biddo.user"))
         .toLowerCase()
         .replace(/[^a-z0-9]+/g,".")
         .replace(/^\.|\.$/g,"")
@@ -2720,6 +3115,11 @@ renderCart();
     bindOtpUX();
     biddoSyncEmailMode();
     biddoPopulateStates();
+
+
+  if(new URLSearchParams(location.search).get("resetAuth")==="1"){
+    try{ localStorage.removeItem(BIDDO_AUTH_KEY); }catch(e){}
+  }
 
     let saved = null;
     try{
