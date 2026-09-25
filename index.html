@@ -1167,6 +1167,17 @@ button{cursor:pointer; font-family:inherit;}
             </span>
             Continue with Email
           </button>
+
+          <button class="biddo-auth-method" type="button" onclick="biddoStartPhoneAuth()">
+            <span class="method-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+                <rect x="7" y="3" width="10" height="18" rx="2.2"></rect>
+                <path d="M10 6h4"></path>
+                <circle cx="12" cy="18" r=".8" fill="currentColor" stroke="none"></circle>
+              </svg>
+            </span>
+            Continue with Phone
+          </button>
         </div>
       </div>
 
@@ -1868,16 +1879,16 @@ const VERIFIED='<svg viewBox="0 0 24 24" fill="#2b7fff"><path d="M12 2l2.4 1.2 2
 
 /* ---------------- PRODUCT CARD RENDER ---------------- */
 function productCardHtml(pr){
-  const seller=s(pr.sellerId);
+  const seller=s(pr.sellerId) || {name:"Biddo Seller"};
   return `<div class="pcard" onclick="openProduct('${pr.id}')">
     <div class="thumb" style="background-image:url('${pr.img}')">
       ${pr.isAuction?'<span class="live-chip">🔥 BID</span>':''}
       <span class="save-chip" onclick="event.stopPropagation();toggleSave('${pr.id}')" id="save-${pr.id}">${pr.saved?BOOKMARK_F:BOOKMARK_O}</span>
     </div>
     <div class="meta">
-      <div class="name">${pr.name}</div>
+      <div class="name">${biddoEscapeHtml(pr.name)}</div>
       <div class="price">${pr.isAuction? fmt(pr.currentBid):fmt(pr.price)}</div>
-      <div class="sub">${pr.isAuction? pr.bidsCount+' bids · '+seller.name : seller.name}</div>
+      <div class="sub">${pr.isAuction? pr.bidsCount+' bids · '+biddoEscapeHtml(seller.name) : biddoEscapeHtml(seller.name)}</div>
     </div>
   </div>`;
 }
@@ -1886,7 +1897,7 @@ function renderRow(elId, list){ document.getElementById(elId).innerHTML = list.m
 function buildHome(){
   renderRow('trendingRow', PRODUCTS.slice(0,8));
   document.getElementById('liveRow').innerHTML = LIVES.map(l=>{
-    const sel=s(l.sellerId);
+    const sel=s(l.sellerId) || {name:"Biddo Seller"};
     return `<div class="live-scard" onclick="openLiveRoom(${LIVES.indexOf(l)})">
       <div class="ring" style="background-image:url('${l.img}')">
         <span class="badge">LIVE</span>
@@ -1921,6 +1932,168 @@ function toggleLike(id, fromDiscover){
 let discoverObserver=null;
 let currentlyPlayingVideo=null;
 const BIDDO_DISCOVER_SEQUENCE = ["p0","p11","p12"];
+/* ---------------- SUPABASE MARKETPLACE DATA ---------------- */
+const BIDDO_LOCAL_PRODUCT_IDS_NEEDED = new Set([
+  ...LIVES.map(x=>x.productId),
+  ...CART.map(x=>x.productId),
+  ...ORDERS.map(x=>x.productId),
+  ...MYBIDS.map(x=>x.productId),
+  ...BIDDO_DISCOVER_SEQUENCE
+]);
+const BIDDO_LOCAL_SEEDED_PRODUCTS = PRODUCTS.slice();
+let biddoMarketplaceDataLoaded = false;
+let biddoMarketplaceDataPromise = null;
+
+function biddoSafeAssetUrl(value, fallback=""){
+  const v=String(value||"").trim();
+  if(!v) return fallback;
+  if(/^https?:\/\//i.test(v) || /^data:image\//i.test(v)) return v;
+  return fallback;
+}
+function biddoEscapeHtml(value){
+  return String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+function biddoMediaUrl(media, fallback=""){
+  return biddoSafeAssetUrl(media?.storage_path || media?.url || media?.public_url, fallback);
+}
+function biddoSellerFromRow(row){
+  return {
+    id: row.user_id,
+    name: row.business_name || row.handle || "Biddo Seller",
+    city: "",
+    state: "",
+    verified: false,
+    rating: 0,
+    sales: 0,
+    followers: 0,
+    av: biddoSafeAssetUrl(row.logo_path, "")
+  };
+}
+
+async function loadMarketplaceData(){
+  if(biddoMarketplaceDataLoaded) return {loaded:true, remoteCount:PRODUCTS.filter(x=>x.source==="supabase").length};
+  if(biddoMarketplaceDataPromise) return biddoMarketplaceDataPromise;
+
+  biddoMarketplaceDataPromise=(async()=>{
+    const client=window.biddoSupabase;
+    if(!client) return {loaded:false,remoteCount:0,reason:"Supabase client unavailable"};
+
+    try{
+      const {data:productRows,error:productError}=await client
+        .from("products")
+        .select("id,seller_id,title,description,category,subcategory,brand,condition,listing_type,price_paise,inventory_quantity,status,created_at,updated_at")
+        .eq("status","published")
+        .order("created_at",{ascending:false})
+        .range(0,99);
+      if(productError) throw productError;
+
+      const rows=Array.isArray(productRows)?productRows:[];
+      if(!rows.length){
+        biddoMarketplaceDataLoaded=true;
+        return {loaded:true,remoteCount:0};
+      }
+
+      const productIds=rows.map(r=>r.id).filter(Boolean);
+      const sellerIds=[...new Set(rows.map(r=>r.seller_id).filter(Boolean))];
+
+      const [sellerResult,mediaResult,auctionResult]=await Promise.all([
+        sellerIds.length ? client.from("seller_profiles").select("user_id,business_name,handle,bio,logo_path,banner_path,seller_status").in("user_id",sellerIds) : Promise.resolve({data:[],error:null}),
+        productIds.length ? client.from("product_media").select("id,product_id,media_type,storage_path,alt_text,sort_order").in("product_id",productIds).order("sort_order",{ascending:true}) : Promise.resolve({data:[],error:null}),
+        productIds.length ? client.from("auctions").select("id,product_id,status,starts_at,ends_at,starting_bid_paise,minimum_increment_paise,current_bid_paise").in("product_id",productIds).in("status",["scheduled","live"]).order("ends_at",{ascending:true}) : Promise.resolve({data:[],error:null})
+      ]);
+
+      if(sellerResult.error) console.warn("Biddo seller data could not be loaded",sellerResult.error);
+      if(mediaResult.error) console.warn("Biddo product media could not be loaded",mediaResult.error);
+      if(auctionResult.error) console.warn("Biddo auction metadata could not be loaded",auctionResult.error);
+
+      const sellerRows=Array.isArray(sellerResult.data)?sellerResult.data:[];
+      const mediaRows=Array.isArray(mediaResult.data)?mediaResult.data:[];
+      const auctionRows=Array.isArray(auctionResult.data)?auctionResult.data:[];
+      const sellerMap=new Map(sellerRows.map(r=>[r.user_id,r]));
+      const mediaMap=new Map();
+      mediaRows.forEach(m=>{
+        if(!mediaMap.has(m.product_id)) mediaMap.set(m.product_id,[]);
+        mediaMap.get(m.product_id).push(m);
+      });
+      const auctionMap=new Map();
+      auctionRows.forEach(a=>{ if(!auctionMap.has(a.product_id)) auctionMap.set(a.product_id,a); });
+
+      sellerRows.forEach(row=>{
+        const mapped=biddoSellerFromRow(row);
+        const existing=SELLERS.find(x=>x.id===mapped.id);
+        if(existing) Object.assign(existing,mapped);
+        else SELLERS.push(mapped);
+      });
+
+      const remoteProducts=rows.map((row,index)=>{
+        const seller=sellerMap.get(row.seller_id);
+        const media=mediaMap.get(row.id)||[];
+        const firstImage=media.find(m=>m.media_type==="image") || media[0];
+        const firstVideo=media.find(m=>m.media_type==="video");
+        const auction=auctionMap.get(row.id);
+        const basePrice=Number(row.price_paise||0)/100;
+        const startingBid=Number(auction?.starting_bid_paise ?? row.price_paise ?? 0)/100;
+        const currentBid=Number(auction?.current_bid_paise ?? auction?.starting_bid_paise ?? row.price_paise ?? 0)/100;
+        const endsInSec=auction?.ends_at ? Math.max(0,Math.floor((new Date(auction.ends_at).getTime()-Date.now())/1000)) : 0;
+        const imageFallback=IMGS[index%IMGS.length];
+        const img=biddoMediaUrl(firstImage,imageFallback) || imageFallback;
+        const video=biddoMediaUrl(firstVideo,"");
+        const isAuction=!!auction || row.listing_type==="auction" || (row.listing_type==="both" && !!auction);
+        return {
+          id:row.id,
+          name:String(row.title||"Untitled product"),
+          cat:String(row.category||"Other"),
+          sellerId:row.seller_id,
+          price:isAuction ? (startingBid||basePrice) : basePrice,
+          mrp:null,
+          img,
+          video:video||null,
+          rating:"—",
+          isAuction,
+          currentBid:isAuction ? currentBid : null,
+          bidsCount:0,
+          endsInSec,
+          liked:false,
+          saved:false,
+          likeCount:0,
+          shipping:"Delivery calculated at checkout",
+          condition:String(row.condition||"New"),
+          desc:String(row.description||""),
+          brand:String(row.brand||""),
+          subcategory:String(row.subcategory||""),
+          inventoryQuantity:Number(row.inventory_quantity||0),
+          listingType:String(row.listing_type||"regular"),
+          source:"supabase",
+          mediaPath:firstImage?.storage_path||"",
+          createdAt:row.created_at||null,
+          updatedAt:row.updated_at||null
+        };
+      });
+
+      const requiredLocal=BIDDO_LOCAL_SEEDED_PRODUCTS.filter(x=>BIDDO_LOCAL_PRODUCT_IDS_NEEDED.has(x.id));
+      PRODUCTS=[...remoteProducts,...requiredLocal];
+      biddoMarketplaceDataLoaded=true;
+
+      if(document.getElementById("screen-home")) buildHome();
+      if(document.getElementById("liveGrid")) buildLive();
+      if(document.getElementById("page-cart")?.classList.contains("active")) renderCart();
+      if(document.getElementById("page-product")?.classList.contains("active") && currentProductId) renderProduct(currentProductId);
+      if(document.getElementById("page-search")?.classList.contains("active")) runSearch();
+
+      return {loaded:true,remoteCount:remoteProducts.length};
+    }catch(error){
+      console.error("Biddo marketplace data load failed",error);
+      biddoMarketplaceDataLoaded=true;
+      return {loaded:false,remoteCount:0,reason:String(error?.message||error||"Unknown error")};
+    }finally{
+      biddoMarketplaceDataPromise=null;
+    }
+  })();
+
+  return biddoMarketplaceDataPromise;
+}
+window.biddoRefreshMarketplaceData=loadMarketplaceData;
+
 const BIDDO_DISCOVER_CYCLES = 7;
 let biddoDiscoverLoopLock = false;
 let biddoDiscoverScrollTO2 = null;
@@ -2111,7 +2284,8 @@ function handleAuctionEnd(pr){
 /* ---------------- LIVE TAB ---------------- */
 function buildLive(){
   document.getElementById('liveGrid').innerHTML = LIVES.map((l,i)=>{
-    const sel=s(l.sellerId); const pr=p(l.productId);
+    const sel=s(l.sellerId) || {name:"Biddo Seller"}; const pr=p(l.productId);
+    if(!pr) return "";
     return `<div class="livegrid-card" style="background-image:url('${l.img}')" onclick="openLiveRoom(${i})">
       <div class="lg-top"><span class="lg-badge">● LIVE</span><span class="lg-viewers">${l.viewers.toLocaleString('en-IN')} watching</span></div>
       <div class="lg-bottom"><div class="n">${sel.name}</div><div class="it">${l.title}</div><div class="bid">Current bid ${fmt(pr.currentBid||pr.price)}</div></div>
@@ -2177,7 +2351,7 @@ function openProduct(id){
   currentProductId=id; renderProduct(id); openPage('product');
 }
 function renderProduct(id){
-  const pr=p(id), seller=s(pr.sellerId);
+  const pr=p(id), seller=s(pr.sellerId) || {name:"Biddo Seller",city:"",rating:"—",followers:0,sales:0,av:"",verified:false};
   const priceBlock = pr.isAuction
     ? `<div class="pd-price-row"><div class="pd-price">${fmt(pr.currentBid)}</div><span class="pd-tag">${pr.bidsCount} bids</span></div>`
     : `<div class="pd-price-row"><div class="pd-price">${fmt(pr.price)}</div>${pr.mrp?`<div class="pd-strike">${fmt(pr.mrp)}</div><span class="pd-tag">${Math.round((1-pr.price/pr.mrp)*100)}% off</span>`:''}</div>`;
@@ -2673,7 +2847,10 @@ function runSearch(){
     `;
     return;
   }
-  const results=PRODUCTS.filter(pr=>pr.name.toLowerCase().includes(q)||pr.cat.toLowerCase().includes(q)||s(pr.sellerId).name.toLowerCase().includes(q));
+  const results=PRODUCTS.filter(pr=>{
+    const seller=s(pr.sellerId) || {name:""};
+    return pr.name.toLowerCase().includes(q)||pr.cat.toLowerCase().includes(q)||seller.name.toLowerCase().includes(q);
+  });
   body.innerHTML = `<div class="cat-grid" style="grid-template-columns:1fr 1fr; padding:14px 12px;">${results.length? results.map(pr=>`<div style="padding:6px;">${productCardHtml(pr)}</div>`).join(''):`<div class="empty-state" style="grid-column:1/3;"><div class="t">No results</div><div class="s">Try a different search term.</div></div>`}</div>`;
 }
 function quickSearch(q){ document.getElementById('searchInput').value=q; runSearch(); }
@@ -2905,6 +3082,7 @@ renderCart();
       city: ""
     },
     pendingPhone: "",
+    phoneFlow: "signin",
     otpTimer: 30,
     otpInterval: null,
     onboardingInProgress: false,
@@ -2953,6 +3131,8 @@ renderCart();
     if(/user already registered/i.test(m)) return "An account with this email already exists. Try logging in.";
     if(/password/i.test(m) && /least|6|characters|length/i.test(m)) return "Password must be at least 6 characters.";
     if(/phone/i.test(m) && /already/i.test(m)) return "That phone number is already linked to another account.";
+    if(/rate limit|too many|frequency/i.test(m)) return "Too many code requests. Please wait a minute and try again.";
+    if(/sms.*provider|provider.*sms|sms.*not.*configured|phone.*not.*enabled/i.test(m)) return "Phone sign-in is not configured yet. Enable Phone Auth and connect an SMS provider in Supabase.";
     return m || "Something went wrong. Please try again.";
   }
 
@@ -3184,6 +3364,7 @@ renderCart();
     if(!user) return;
     try{
       await loadProfile(user);
+      await loadMarketplaceData();
       applyProfileToApp();
       state.onboardingInProgress=false;
       $id("biddoAuthGate")?.classList.add("hidden");
@@ -3282,6 +3463,7 @@ renderCart();
       }
 
       state.provider="email";
+      state.phoneFlow="link";
       state.profile.name=fullName;
       state.profile.email=email;
       state.onboardingInProgress=true;
@@ -3352,6 +3534,19 @@ renderCart();
     $id("biddoOtpTimer").textContent=s>0 ? ("Resend code in "+s+"s") : "You can request a new code";
   }
 
+  window.biddoStartPhoneAuth=function(){
+    if(!configuredOrToast()) return;
+    state.provider="phone";
+    state.phoneFlow="signin";
+    state.pendingPhone="";
+    setAuthError("biddoPhoneError","");
+    clearOtpError();
+    const phoneInput=$id("biddoPhone");
+    if(phoneInput) phoneInput.value="";
+    biddoSyncPhoneButton();
+    setPage("phone");
+  };
+
   window.biddoSendOtp=async function(){
     if(!configuredOrToast()) return;
     const phone=$id("biddoPhone").value.replace(/\D/g,"");
@@ -3364,18 +3559,31 @@ renderCart();
     const oldText=btn.textContent;
     btn.textContent="Sending…";
     try{
-      const {data,error:phoneError}=await supabaseClient.auth.updateUser({phone:normalized});
-      if(phoneError) throw phoneError;
+      if(state.phoneFlow==="signin"){
+        const {error:otpError}=await supabaseClient.auth.signInWithOtp({
+          phone:normalized,
+          options:{shouldCreateUser:true}
+        });
+        if(otpError) throw otpError;
+      }else{
+        const {data,error:phoneError}=await supabaseClient.auth.updateUser({phone:normalized});
+        if(phoneError) throw phoneError;
+        if(data?.user?.phone===normalized){
+          state.pendingPhone=normalized;
+          state.profile.phone=phone;
+          state.onboardingInProgress=false;
+          clearOtpError();
+          setPage("location");
+          biddoPopulateStates();
+          return;
+        }
+      }
+
       state.pendingPhone=normalized;
       $id("biddoOtpPhoneText").textContent="+91 "+phone;
       biddoSyncOtpInputs().forEach(i=>{ i.value=""; i.classList.remove("is-error"); });
-      if(data?.user?.phone===normalized){
-        state.profile.phone=phone;
-        clearOtpError();
-        setPage("location");
-        biddoPopulateStates();
-        return;
-      }
+      state.onboardingInProgress=true;
+      clearOtpError();
       setPage("otp");
       startOtpTimer();
     }catch(e){
@@ -3390,8 +3598,16 @@ renderCart();
     if(!state.pendingPhone || !configuredOrToast()) return;
     clearOtpError();
     try{
-      const {error}=await supabaseClient.auth.updateUser({phone:state.pendingPhone});
-      if(error) throw error;
+      if(state.phoneFlow==="signin"){
+        const {error}=await supabaseClient.auth.signInWithOtp({
+          phone:state.pendingPhone,
+          options:{shouldCreateUser:true}
+        });
+        if(error) throw error;
+      }else{
+        const {error}=await supabaseClient.auth.updateUser({phone:state.pendingPhone});
+        if(error) throw error;
+      }
       biddoSyncOtpInputs().forEach(i=>i.value="");
       startOtpTimer();
       toastSafe("New code sent");
@@ -3413,17 +3629,36 @@ renderCart();
     const btn=document.querySelector('#biddoAuthOtpPage .biddo-primary');
     if(btn){ btn.disabled=true; btn.dataset.oldText=btn.textContent; btn.textContent="Verifying…"; }
     try{
+      const verifyType=state.phoneFlow==="signin" ? "sms" : "phone_change";
       const {data,error}=await supabaseClient.auth.verifyOtp({
         phone:state.pendingPhone,
         token:digits,
-        type:"phone_change"
+        type:verifyType
       });
       if(error) throw error;
       clearOtpError();
       clearInterval(state.otpInterval);
-      state.profile.phone=displayPhone(data?.user?.phone||state.pendingPhone);
-      setPage("location");
-      biddoPopulateStates();
+      const verifiedUser=data?.user || data?.session?.user || await fetchCurrentUser();
+      if(!verifiedUser) throw new Error("Phone verification succeeded, but your Biddo session could not be restored. Please try again.");
+      state.profile.phone=displayPhone(verifiedUser.phone||state.pendingPhone);
+
+      if(state.phoneFlow==="signin"){
+        await loadProfile(verifiedUser);
+        state.onboardingInProgress=false;
+        if(!state.profile.state || !state.profile.city){
+          $id("biddoAuthGate")?.classList.remove("hidden");
+          document.body.style.overflow="hidden";
+          setPage("location");
+          biddoPopulateStates();
+        }else{
+          await enterAuthenticatedApp(verifiedUser);
+          toastSafe("Welcome to Biddo, "+firstName(state.profile.name)+".");
+        }
+      }else{
+        state.onboardingInProgress=false;
+        setPage("location");
+        biddoPopulateStates();
+      }
     }catch(e){
       $id("biddoOtpError").textContent=friendlyAuthError(e);
       biddoSyncOtpInputs().forEach(i=>i.classList.add("is-error"));
