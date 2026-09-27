@@ -1258,6 +1258,31 @@ button{cursor:pointer; font-family:inherit;}
 @keyframes biddoRolePop{0%{opacity:0;transform:translateY(12px) scale(.98)}100%{opacity:1;transform:none}}
 </style>
 
+
+<style id="biddo-media-gallery-v2-css">
+.pd-gallery{position:relative;width:100%;aspect-ratio:1/1;background:#eee;overflow:hidden;border-bottom:1px solid var(--line);}
+.pd-gallery-track{display:flex;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain;}
+.pd-gallery-track::-webkit-scrollbar{display:none;}
+.pd-gallery-slide{position:relative;min-width:100%;height:100%;scroll-snap-align:start;display:flex;align-items:center;justify-content:center;background:#eee;}
+.pd-gallery-slide img,.pd-gallery-slide video{width:100%;height:100%;object-fit:cover;display:block;}
+.pd-gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;border-radius:50%;background:rgba(20,20,18,.62);color:#fff;display:flex;align-items:center;justify-content:center;z-index:4;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,.16);}
+.pd-gallery-arrow.left{left:10px}.pd-gallery-arrow.right{right:10px}
+.pd-gallery-arrow:disabled{opacity:.28}
+.pd-gallery-counter{position:absolute;right:10px;top:10px;z-index:4;padding:6px 9px;border-radius:999px;background:rgba(20,20,18,.62);color:#fff;font-size:10px;font-weight:800;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.pd-gallery-video-tag{position:absolute;left:10px;top:10px;z-index:3;padding:6px 9px;border-radius:999px;background:rgba(20,20,18,.62);color:#fff;font-size:10px;font-weight:800;}
+.biddo-media-preview-strip{display:flex;gap:7px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none;}
+.biddo-media-preview-strip::-webkit-scrollbar{display:none;}
+.biddo-media-preview-strip img{width:56px;height:56px;flex:none;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:var(--surface);}
+.biddo-media-file-note{font-size:10px;color:var(--ink-3);line-height:1.35;margin-top:6px;}
+.biddo-seller-order-alert,.biddo-seller-orders-alert{margin:10px 18px;padding:11px 13px;border:1px solid var(--line);border-radius:14px;background:var(--surface);display:flex;align-items:center;gap:10px;}
+.biddo-seller-order-alert .ico,.biddo-seller-orders-alert .ico{width:30px;height:30px;border-radius:10px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;font-size:14px;}
+.biddo-seller-order-alert .copy,.biddo-seller-orders-alert .copy{flex:1;min-width:0;}
+.biddo-seller-order-alert b,.biddo-seller-orders-alert b{display:block;font-size:11.5px;color:var(--ink);}
+.biddo-seller-order-alert span,.biddo-seller-orders-alert span{display:block;margin-top:2px;font-size:10px;color:var(--ink-2);line-height:1.35;}
+.biddo-seller-order-alert button{border:0;background:var(--ink);color:#fff;border-radius:10px;padding:8px 10px;font-size:10px;font-weight:800;}
+.biddo-seller-new-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border-radius:999px;background:var(--ink);color:#fff;font-size:8.5px;font-weight:900;letter-spacing:.04em;margin-top:7px;}
+</style>
+
 </head>
 <body>
 
@@ -6104,6 +6129,524 @@ window.addEventListener('load',()=>{
     if(event==='SIGNED_OUT'){ ORDERS=[]; }
   });
   setTimeout(bootOrders,300);
+})();
+</script>
+
+
+<script id="biddo-media-orders-notifications-v2">
+(function(){
+  'use strict';
+
+  const client=window.biddoSupabase;
+  if(!client) return;
+
+  /* =========================================================
+     MEDIA LIMITS / UPLOAD HELPERS
+     ========================================================= */
+  const IMAGE_SOURCE_MAX=12*1024*1024;
+  const IMAGE_OUTPUT_MAX=1.5*1024*1024;
+  const VIDEO_MAX=20*1024*1024;
+  const VIDEO_MAX_SECONDS=45;
+  const MAX_IMAGES=5;
+  const MEDIA_BUCKET='biddo-media';
+
+  function escV(v){ return typeof window.esc==='function' ? window.esc(v) : String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+  function safeUrl(v){ return typeof window.biddoSafeAssetUrl==='function' ? window.biddoSafeAssetUrl(v,'') : (/^https?:\/\//i.test(String(v||''))?String(v):''); }
+  function mediaUrl(m){ return safeUrl(m?.storage_path||m?.url||m?.public_url); }
+  function mediaPathFromUrl(v){
+    const marker='/storage/v1/object/public/'+MEDIA_BUCKET+'/';
+    const s=String(v||''); const i=s.indexOf(marker); return i===-1?'':decodeURIComponent(s.slice(i+marker.length));
+  }
+  async function removeMediaObject(url){
+    const path=mediaPathFromUrl(url); if(!path) return;
+    try{ await client.storage.from(MEDIA_BUCKET).remove([path]); }catch(e){ console.warn('Biddo media cleanup failed',e); }
+  }
+  function randomId(){ try{ if(crypto?.randomUUID) return crypto.randomUUID(); }catch(e){} return Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9); }
+  function hasAllowedImageName(file){
+    const ext=String(file?.name||'').toLowerCase().split('.').pop();
+    return String(file?.type||'').startsWith('image/') || ['jpg','jpeg','png','webp','gif','bmp','avif','heic','heif'].includes(ext);
+  }
+  function hasAllowedVideoName(file){
+    const ext=String(file?.name||'').toLowerCase().split('.').pop();
+    return String(file?.type||'').startsWith('video/') || ['mp4','webm','mov'].includes(ext);
+  }
+  function validateImageSource(file){
+    if(!(file instanceof File)) throw new Error('Choose an image first.');
+    if(!hasAllowedImageName(file)) throw new Error('Choose an image file.');
+    if(file.size>IMAGE_SOURCE_MAX) throw new Error('Each image can be up to 12 MB. Biddo will optimize it automatically.');
+  }
+  async function validateVideoSource(file){
+    if(!(file instanceof File)) throw new Error('Choose a video first.');
+    if(!hasAllowedVideoName(file)) throw new Error('Choose an MP4, WebM or MOV video.');
+    if(file.size>VIDEO_MAX) throw new Error('The product video must be 20 MB or smaller.');
+    const url=URL.createObjectURL(file);
+    try{
+      const duration=await new Promise((resolve,reject)=>{
+        const v=document.createElement('video'); let done=false;
+        const finish=(fn,val)=>{ if(done) return; done=true; clearTimeout(timer); v.removeAttribute('src'); v.load(); URL.revokeObjectURL(url); fn(val); };
+        const timer=setTimeout(()=>finish(reject,new Error('Could not read the video length. Please choose another video.')),9000);
+        v.preload='metadata';
+        v.onloadedmetadata=()=>finish(resolve,Number(v.duration||0));
+        v.onerror=()=>finish(reject,new Error('Biddo could not read this video. MP4 is recommended.'));
+        v.src=url;
+      });
+      if(!Number.isFinite(duration) || duration<=0) throw new Error('Could not read the video length.');
+      if(duration>VIDEO_MAX_SECONDS+0.05) throw new Error('Product videos can be up to 45 seconds.');
+      return duration;
+    }catch(e){ throw e instanceof Error?e:new Error(String(e)); }
+  }
+  async function optimizeImage(file){
+    validateImageSource(file);
+    const objectUrl=URL.createObjectURL(file);
+    try{
+      const img=await new Promise((resolve,reject)=>{
+        const i=new Image(); i.onload=()=>resolve(i); i.onerror=()=>reject(new Error('This image format could not be processed by your browser.')); i.src=objectUrl;
+      });
+      const maxDim=1600;
+      const scale=Math.min(1,maxDim/Math.max(img.naturalWidth||img.width||1,img.naturalHeight||img.height||1));
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.max(1,Math.round((img.naturalWidth||img.width)*scale));
+      canvas.height=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));
+      const ctx=canvas.getContext('2d',{alpha:true});
+      if(!ctx) throw new Error('Could not process this image.');
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      let quality=0.84, blob=null;
+      for(let i=0;i<6;i++){
+        blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',quality));
+        if(blob && blob.size<=IMAGE_OUTPUT_MAX) break;
+        quality-=0.09;
+      }
+      if(!blob || blob.size>IMAGE_OUTPUT_MAX){
+        const scale2=Math.min(1,1100/Math.max(canvas.width,canvas.height));
+        canvas.width=Math.max(1,Math.round(canvas.width*scale2));
+        canvas.height=Math.max(1,Math.round(canvas.height*scale2));
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',0.72));
+      }
+      if(!blob || blob.size>IMAGE_OUTPUT_MAX) throw new Error('This image could not be optimized below the storage limit. Please choose a smaller image.');
+      return new File([blob],'biddo-image-'+randomId()+'.webp',{type:'image/webp'});
+    }finally{ URL.revokeObjectURL(objectUrl); }
+  }
+  async function uploadMedia(file,userId,productId,kind){
+    if(kind==='image') file=await optimizeImage(file);
+    else await validateVideoSource(file);
+    const ext=kind==='image'?'webp':(String(file.name||'').toLowerCase().split('.').pop()||'mp4');
+    const path=userId+'/'+productId+'/'+kind+'-'+randomId()+'.'+ext;
+    const {error}=await client.storage.from(MEDIA_BUCKET).upload(path,file,{cacheControl:'3600',contentType:file.type||undefined,upsert:false});
+    if(error) throw new Error(error.message||('Could not upload the '+kind+'.'));
+    const {data}=client.storage.from(MEDIA_BUCKET).getPublicUrl(path);
+    if(!data?.publicUrl) throw new Error('The upload succeeded but its public URL could not be created.');
+    return {path,url:data.publicUrl};
+  }
+
+  function previewImages(input,targetId){
+    const target=document.getElementById(targetId); if(!target) return;
+    const files=Array.from(input?.files||[]).slice(0,MAX_IMAGES);
+    target.innerHTML=files.map(f=>`<img src="${escV(URL.createObjectURL(f))}" alt="Selected image">`).join('');
+    if(input?.files?.length>MAX_IMAGES) target.insertAdjacentHTML('afterend','<div class="biddo-media-file-note">Choose up to 5 images per product.</div>');
+  }
+  window.previewSellerImages=function(input,targetId){ previewImages(input,targetId); };
+
+  window.previewSellerVideo=function(input,targetId){
+    const target=document.getElementById(targetId); if(!target) return;
+    const file=input?.files?.[0];
+    if(!file){ target.textContent=''; return; }
+    target.textContent='Checking video length…';
+    validateVideoSource(file).then(sec=>{ target.textContent=`Video ready · ${Math.round(sec)}s · ${Math.ceil(file.size/1024/1024*10)/10} MB`; }).catch(e=>{ target.textContent=e.message||'Invalid video'; });
+  };
+
+  function ensureEditMediaUi(){
+    const imageInput=document.getElementById('editSellerProductImage');
+    const imageLabel=imageInput?.closest('label');
+    if(imageLabel && !document.getElementById('editSellerProductImageFiles')){
+      imageLabel.innerHTML=`<span>Product images</span><input id="editSellerProductImage" type="url" autocomplete="off" oninput="previewEditedSellerImage()"><input id="editSellerProductImageFiles" type="file" accept="image/*" multiple style="margin-top:7px;" onchange="previewSellerImages(this,'editSellerProductImagesPreview')"><div id="editSellerProductImagesPreview" class="biddo-media-preview-strip"></div><div class="biddo-media-file-note">Add up to 5 images total. Select new images to add them to the existing gallery.</div>`;
+    }
+    const videoInput=document.getElementById('editSellerProductVideo');
+    const videoLabel=videoInput?.closest('label');
+    if(videoLabel && !document.getElementById('editSellerProductVideoFileV2')){
+      videoLabel.innerHTML=`<span>Product video (optional)</span><input id="editSellerProductVideo" type="url" autocomplete="off"><input id="editSellerProductVideoFileV2" type="file" accept="video/*" style="margin-top:7px;" onchange="previewSellerVideo(this,'editSellerProductVideoNote')"><div id="editSellerProductVideoNote" class="biddo-media-file-note">1 video max · 20 MB · 45 seconds.</div>`;
+    }
+  }
+
+  /* =========================================================
+     REAL PRODUCT MEDIA HYDRATION
+     ========================================================= */
+  async function hydrateAllProductMedia(){
+    if(typeof PRODUCTS==='undefined') return;
+    const remote=PRODUCTS.filter(x=>x.source==='supabase');
+    const ids=remote.map(x=>x.id).filter(Boolean);
+    if(!ids.length){ PRODUCTS.forEach(pr=>{ if(!pr.images) pr.images=pr.img?[pr.img]:[]; }); return; }
+    try{
+      const {data,error}=await client.from('product_media').select('id,product_id,media_type,storage_path,alt_text,sort_order').in('product_id',ids).order('sort_order',{ascending:true});
+      if(error) throw error;
+      const mediaMap=new Map();
+      (data||[]).forEach(row=>{ if(!mediaMap.has(row.product_id)) mediaMap.set(row.product_id,[]); mediaMap.get(row.product_id).push(row); });
+      remote.forEach(pr=>{
+        const rows=mediaMap.get(pr.id)||[];
+        const images=rows.filter(r=>r.media_type==='image').map(mediaUrl).filter(Boolean);
+        const video=mediaUrl(rows.find(r=>r.media_type==='video'))||pr.video||'';
+        pr.images=images.length?images:[pr.img].filter(Boolean);
+        pr.img=pr.images[0]||pr.img;
+        pr.video=video||null;
+      });
+    }catch(e){ console.warn('Biddo product gallery hydration failed',e); }
+    PRODUCTS.forEach(pr=>{ if(!pr.images) pr.images=pr.img?[pr.img]:[]; });
+    if(document.getElementById('page-product')?.classList.contains('active') && typeof currentProductId!=='undefined' && currentProductId) window.renderProduct(currentProductId);
+    const feed=document.getElementById('discoverFeed');
+    if(document.getElementById('screen-discover')?.classList.contains('active') && feed){ feed.dataset.built=''; buildDiscover(); }
+  }
+
+  const originalMarketplaceRefresh=window.biddoRefreshMarketplaceData || window.loadMarketplaceData;
+  if(originalMarketplaceRefresh && !window.__biddoMediaMarketplaceWrapped){
+    window.__biddoMediaMarketplaceWrapped=true;
+    const wrapped=async function(){ const result=await originalMarketplaceRefresh.apply(this,arguments); await hydrateAllProductMedia(); return result; };
+    window.loadMarketplaceData=wrapped;
+    window.biddoRefreshMarketplaceData=wrapped;
+  }
+  setTimeout(hydrateAllProductMedia,0);
+
+  /* =========================================================
+     PRODUCT GALLERY
+     ========================================================= */
+  function galleryKey(id){ return 'pdGallery_'+String(id||'').replace(/[^A-Za-z0-9_-]/g,'_'); }
+  function galleryItems(pr){
+    const imgs=Array.isArray(pr?.images)&&pr.images.length?pr.images:[pr?.img].filter(Boolean);
+    const items=imgs.map((u,i)=>({type:'image',url:u,label:'Product image '+(i+1)}));
+    if(pr?.video) items.push({type:'video',url:pr.video,label:'Product video'});
+    return items;
+  }
+  function productGalleryHtml(pr){
+    const items=galleryItems(pr); const gid=galleryKey(pr.id);
+    const slides=items.map((m,i)=>m.type==='video'
+      ? `<div class="pd-gallery-slide"><video src="${escV(m.url)}" controls playsinline preload="metadata"></video><div class="pd-gallery-video-tag">VIDEO</div></div>`
+      : `<div class="pd-gallery-slide"><img src="${escV(m.url)}" alt="${escV(m.label)}" loading="${i===0?'eager':'lazy'}"></div>`
+    ).join('');
+    return `<div class="pd-gallery" id="${gid}" data-count="${items.length}">
+      <div class="pd-gallery-track" id="${gid}_track" onscroll="biddoGalleryUpdateCounter('${escV(gid)}',this)">${slides}</div>
+      ${items.length>1?`<button class="pd-gallery-arrow left" id="${gid}_left" onclick="biddoGalleryMove('${escV(gid)}',-1)" aria-label="Previous media"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg></button><button class="pd-gallery-arrow right" id="${gid}_right" onclick="biddoGalleryMove('${escV(gid)}',1)" aria-label="Next media"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></button><div class="pd-gallery-counter" id="${gid}_counter">1 / ${items.length}</div>`:''}
+    </div>`;
+  }
+  window.biddoGalleryMove=function(gid,delta){
+    const track=document.getElementById(gid+'_track'); if(!track) return;
+    const width=track.clientWidth||track.parentElement?.clientWidth||0;
+    track.scrollBy({left:delta*width,behavior:'smooth'});
+  };
+  window.biddoGalleryUpdateCounter=function(gid,track){
+    if(!track) return;
+    const width=track.clientWidth||1;
+    const count=Number(track.parentElement?.dataset.count||track.children.length||1);
+    const idx=Math.max(0,Math.min(count-1,Math.round(track.scrollLeft/width)));
+    const counter=document.getElementById(gid+'_counter'); if(counter) counter.textContent=(idx+1)+' / '+count;
+    const left=document.getElementById(gid+'_left'); const right=document.getElementById(gid+'_right');
+    if(left) left.disabled=idx<=0; if(right) right.disabled=idx>=count-1;
+  };
+
+  window.renderProduct=function(id){
+    const pr=typeof p==='function'?p(id):null;
+    if(!pr) return;
+    const seller=typeof s==='function'?(s(pr.sellerId)||{name:'Biddo Seller',city:'',rating:'—',followers:0,sales:0,av:'',verified:false}):{name:'Biddo Seller',city:'',rating:'—',followers:0,sales:0,av:'',verified:false};
+    const priceBlock=pr.isAuction
+      ? `<div class="pd-price-row"><div class="pd-price">${fmt(pr.currentBid)}</div><span class="pd-tag">${pr.bidsCount} bids</span></div>`
+      : `<div class="pd-price-row"><div class="pd-price">${fmt(pr.price)}</div>${pr.mrp?`<div class="pd-strike">${fmt(pr.mrp)}</div><span class="pd-tag">${Math.round((1-pr.price/pr.mrp)*100)}% off</span>`:''}</div>`;
+    const actionBtns=pr.isAuction
+      ? `<button class="btn-secondary" id="pdSaveBtn" onclick="toggleSave('${escV(id)}')">${pr.saved?'Saved ♥':'Save'}</button><button class="btn-primary" onclick="openBid('${escV(id)}')">Place Bid</button>`
+      : `<button class="btn-ghost-icon" id="pdSaveBtn" onclick="toggleSave('${escV(id)}')">${pr.saved?BOOKMARK_F:BOOKMARK_O}</button><button class="btn-secondary" onclick="addToCart('${escV(id)}',1); toast('Added to cart', ICON_CHECK)">Add to Cart</button><button class="btn-primary" onclick="buyNow('${escV(id)}')">Buy Now</button>`;
+    const revs=[{stars:5,txt:'Exactly as shown, fast delivery to Bengaluru.',who:'Rohit S.'},{stars:4,txt:'Good quality, packaging could be sturdier.',who:'Meera J.'}];
+    document.getElementById('productBody').innerHTML=`
+      ${productGalleryHtml(pr)}
+      <div class="pd-body">
+        <div class="pd-seller-row">${seller.verified?VERIFIED:''} <span onclick="openSellerToast()">${escV(seller.name)}${seller.city?' · '+escV(seller.city):''}</span>${seller.rating&&seller.rating!=='—'?' · ★ '+escV(seller.rating):''}</div>
+        <div class="pd-name">${escV(pr.name)}</div>
+        ${priceBlock}
+        <div class="pd-info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="16" height="12" rx="2"/><path d="M17 10h3l3 3v5h-6"/><circle cx="6" cy="19" r="2"/><circle cx="17" cy="19" r="2"/></svg>${escV(pr.shipping||'Delivery calculated at checkout')}</div>
+        <div class="pd-info-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>${escV(pr.condition||'Brand New')} · ${Number(pr.inventoryQuantity||0)>0?'In stock':'Currently unavailable'}</div>
+        <div class="pd-desc">${escV(pr.desc||'')}</div>
+        <div class="seller-card">
+          <div class="av" style="background-image:url('${escV(seller.av||'')}')"></div>
+          <div class="info"><div class="nm">${escV(seller.name)} ${seller.verified?VERIFIED:''}</div><div class="sub">${Number(seller.followers||0).toLocaleString('en-IN')} followers · ${Number(seller.sales||0).toLocaleString('en-IN')} sales</div></div>
+          <button class="followbtn2 ${pr.following?'following':''}" id="pdFollowBtn" onclick="togglePdFollow(this)">${pr.following?'Following':'Follow'}</button>
+        </div>
+        <div class="section-title" style="margin:6px 0 8px;">Reviews</div>
+        ${revs.map(r=>`<div class="review"><div class="stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div><div class="txt">${escV(r.txt)}</div><div class="who">${escV(r.who)}</div></div>`).join('')}
+      </div>
+      <div class="pd-fixed-bottom">${actionBtns}</div>`;
+    requestAnimationFrame(()=>{ const tr=document.getElementById(galleryKey(id)+'_track'); if(tr) window.biddoGalleryUpdateCounter(galleryKey(id),tr); });
+  };
+
+  /* =========================================================
+     SELLER CREATE PRODUCT — 5 IMAGES + 1 VIDEO
+     ========================================================= */
+  window.sellerStudioOpenAddProduct=function(){
+    const box=document.getElementById('sellerStudioProductComposer'); if(!box) return;
+    box.style.display='block';
+    box.innerHTML=`
+      <div class="biddo-seller-section-head"><h3>Add product</h3><span>Step 2 of 2</span></div>
+      <div class="biddo-seller-form">
+        <label class="biddo-seller-field"><span>Product name</span><input id="sellerProductTitle" maxlength="100" placeholder="e.g. Rolex Daytona"></label>
+        <div class="biddo-seller-grid">
+          <label class="biddo-seller-field"><span>Price (₹)</span><input id="sellerProductPrice" type="number" min="1" step="1" inputmode="decimal" placeholder="1299"></label>
+          <label class="biddo-seller-field"><span>Stock quantity</span><input id="sellerProductInventory" type="number" min="1" step="1" inputmode="numeric" placeholder="10"></label>
+        </div>
+        <div class="biddo-seller-grid">
+          <label class="biddo-seller-field"><span>Category</span><select id="sellerProductCategory">${CATS.map(c=>`<option value="${escV(c)}">${escV(c)}</option>`).join('')}</select></label>
+          <label class="biddo-seller-field"><span>Condition</span><select id="sellerProductCondition"><option>Brand New</option><option>Pre-owned · Excellent</option><option>Pre-owned · Good</option></select></label>
+        </div>
+        <label class="biddo-seller-field"><span>Brand (optional)</span><input id="sellerProductBrand" maxlength="60" placeholder="Brand name"></label>
+        <label class="biddo-seller-field"><span>Product images</span><input id="sellerProductImage" type="url" placeholder="First image URL (optional)" autocomplete="off"><input id="sellerProductImageFiles" type="file" accept="image/*" multiple style="margin-top:7px;" onchange="previewSellerImages(this,'sellerProductImagesPreview')"><div id="sellerProductImagesPreview" class="biddo-media-preview-strip"></div><div class="biddo-media-file-note">Up to 5 images. Choose any normal image; Biddo optimizes each one automatically.</div></label>
+        <label class="biddo-seller-field"><span>Product video (optional)</span><input id="sellerProductVideo" type="url" placeholder="Direct video URL" autocomplete="off"><input id="sellerProductVideoFile" type="file" accept="video/*" style="margin-top:7px;" onchange="previewSellerVideo(this,'sellerProductVideoNote')"><div id="sellerProductVideoNote" class="biddo-media-file-note">1 video max · 20 MB · 45 seconds. MP4 recommended.</div></label>
+        <label class="biddo-seller-field"><span>Description</span><textarea id="sellerProductDescription" maxlength="1000" placeholder="Describe the product, what's included, and anything buyers should know."></textarea></label>
+        <div class="biddo-seller-note">Add up to 5 images and one short video. Images are automatically optimized so sellers don't have to compress them manually.</div>
+        <div class="biddo-seller-actions"><button class="biddo-seller-secondary" type="button" onclick="sellerStudioCloseAddProduct()">Cancel</button><button class="biddo-seller-primary" type="button" onclick="createSellerProduct()">Publish Product</button></div>
+      </div>`;
+    setTimeout(()=>document.getElementById('sellerProductTitle')?.focus(),120);
+  };
+
+  window.createSellerProduct=async function(){
+    const user=typeof biddoSellerStudioUser==='function'?await biddoSellerStudioUser():null;
+    if(!user){toast('Please log in first');return;}
+    const title=document.getElementById('sellerProductTitle')?.value.trim();
+    const price=Number(document.getElementById('sellerProductPrice')?.value);
+    const inventory=Number(document.getElementById('sellerProductInventory')?.value);
+    const category=document.getElementById('sellerProductCategory')?.value||null;
+    const condition=document.getElementById('sellerProductCondition')?.value||null;
+    const brand=document.getElementById('sellerProductBrand')?.value.trim()||null;
+    const imageUrl=document.getElementById('sellerProductImage')?.value.trim()||'';
+    const imageFiles=Array.from(document.getElementById('sellerProductImageFiles')?.files||[]);
+    const videoUrl=document.getElementById('sellerProductVideo')?.value.trim()||'';
+    const videoFile=document.getElementById('sellerProductVideoFile')?.files?.[0]||null;
+    const description=document.getElementById('sellerProductDescription')?.value.trim()||null;
+    const safeImage=safeUrl(imageUrl);
+    const safeVideo=safeUrl(videoUrl);
+    if(title.length<2){toast('Enter a product name');return;}
+    if(!Number.isFinite(price)||price<=0){toast('Enter a valid price');return;}
+    if(!Number.isInteger(inventory)||inventory<1){toast('Enter a valid stock quantity');return;}
+    if(imageFiles.length>MAX_IMAGES){toast('Choose up to 5 images.');return;}
+    if(imageUrl && !safeImage){toast('Use a valid direct image URL or upload an image.');return;}
+    if(videoUrl && !safeVideo && !videoFile){toast('Use a valid direct video URL or upload a video.');return;}
+    try{
+      imageFiles.forEach(validateImageSource);
+      if(videoFile) await validateVideoSource(videoFile);
+    }catch(e){toast(e.message||'Media validation failed');return;}
+    if(!imageFiles.length && !safeImage){toast('Add at least one product image.');return;}
+    if(imageFiles.length+(safeImage?1:0)>MAX_IMAGES){toast('A product can have at most 5 images.');return;}
+    const box=document.getElementById('sellerStudioProductComposer');
+    const btn=box?.querySelector('.biddo-seller-primary');
+    if(btn){btn.disabled=true;btn.textContent='Publishing…';}
+    let productId=null; const uploaded=[];
+    try{
+      const {data:draft,error:draftError}=await client.from('products').insert({seller_id:user.id,title,slug:(typeof biddoSellerStudioSlug==='function'?biddoSellerStudioSlug(title):title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')),description,category,brand,condition,listing_type:'regular',price_paise:Math.round(price*100),inventory_quantity:inventory,status:'draft'}).select('id').single();
+      if(draftError) throw draftError; productId=draft.id;
+      const mediaRows=[]; let sort=0;
+      if(safeImage){mediaRows.push({product_id:productId,media_type:'image',storage_path:safeImage,alt_text:title,sort_order:sort++});}
+      for(const file of imageFiles){ const u=await uploadMedia(file,user.id,productId,'image'); uploaded.push(u); mediaRows.push({product_id:productId,media_type:'image',storage_path:u.url,alt_text:title,sort_order:sort++}); }
+      if(videoFile){ const u=await uploadMedia(videoFile,user.id,productId,'video'); uploaded.push(u); mediaRows.push({product_id:productId,media_type:'video',storage_path:u.url,alt_text:title,sort_order:sort++}); }
+      else if(safeVideo){ mediaRows.push({product_id:productId,media_type:'video',storage_path:safeVideo,alt_text:title,sort_order:sort++}); }
+      const {error:mediaError}=await client.from('product_media').insert(mediaRows); if(mediaError) throw mediaError;
+      const {data:published,error:publishError}=await client.from('products').update({status:'published'}).eq('id',productId).eq('seller_id',user.id).select('id,title,status').single();
+      if(publishError) throw publishError; if(!published) throw new Error('Product was created but could not be published.');
+      toast('Product published ✓',ICON_CHECK);
+      if(typeof sellerStudioCloseAddProduct==='function') sellerStudioCloseAddProduct();
+      if(typeof biddoSellerStudioLoadDashboard==='function') await biddoSellerStudioLoadDashboard(user,biddoSellerStudioState.seller);
+      if(typeof window.biddoRefreshMarketplaceData==='function'){ window.biddoMarketplaceDataLoaded=false; await window.biddoRefreshMarketplaceData(); }
+      else await hydrateAllProductMedia();
+    }catch(e){
+      for(const u of uploaded) await removeMediaObject(u.url);
+      if(productId){ try{await client.from('product_media').delete().eq('product_id',productId);}catch(_){} try{await client.from('products').delete().eq('id',productId).eq('seller_id',user.id);}catch(_){} }
+      console.error('Biddo media product publish failed',e); toast(e?.message||'Could not publish product.');
+    }finally{ if(btn){btn.disabled=false;btn.textContent='Publish Product';} }
+  };
+
+  /* =========================================================
+     SELLER EDIT: ADD IMAGES / REPLACE OR REMOVE ONE VIDEO
+     ========================================================= */
+  let editMediaRows=[];
+  window.editSellerListing=async function(productId){
+    ensureEditMediaUi();
+    const pr=typeof biddoSellerStudioState!=='undefined'?biddoSellerStudioState.products.find(x=>x.id===productId):null;
+    const user=typeof biddoSellerStudioUser==='function'?await biddoSellerStudioUser():null;
+    if(!pr||pr.status==='archived'||!user){if(!user) toast('Please log in first');return;}
+    if(String(user.id)!==String(biddoSellerStudioState.seller?.user_id||'')){toast('You can only edit your own listings');return;}
+    window.biddoEditingSellerProductId=productId;
+    const modal=document.getElementById('biddoSellerEditModal'),backdrop=document.getElementById('biddoSellerEditBackdrop'); if(!modal||!backdrop)return;
+    document.getElementById('editSellerProductTitle').value=pr.title||'';
+    document.getElementById('editSellerProductPrice').value=String(Number(pr.price_paise||0)/100||'');
+    document.getElementById('editSellerProductInventory').value=String(Number(pr.inventory_quantity||0));
+    document.getElementById('editSellerProductCategory').value=pr.category||CATS[0]||'';
+    document.getElementById('editSellerProductCondition').value=pr.condition||'Brand New';
+    document.getElementById('editSellerProductBrand').value=pr.brand||'';
+    document.getElementById('editSellerProductImage').value='';
+    document.getElementById('editSellerProductVideo').value='';
+    const imageFiles=document.getElementById('editSellerProductImageFiles'); if(imageFiles) imageFiles.value='';
+    const videoFile=document.getElementById('editSellerProductVideoFileV2'); if(videoFile) videoFile.value='';
+    document.getElementById('editSellerProductDescription').value=pr.description||'';
+    try{
+      const {data,error}=await client.from('product_media').select('id,media_type,storage_path,sort_order').eq('product_id',productId).order('sort_order',{ascending:true}); if(error)throw error;
+      editMediaRows=Array.isArray(data)?data:[];
+      const first=editMediaRows.find(m=>m.media_type==='image'); const video=editMediaRows.find(m=>m.media_type==='video');
+      document.getElementById('editSellerProductImage').value=mediaUrl(first)||safeUrl(pr.image)||'';
+      document.getElementById('editSellerProductVideo').value=mediaUrl(video)||'';
+      const prev=document.getElementById('editSellerProductPreview'); if(prev){const u=mediaUrl(first)||safeUrl(pr.image); prev.style.backgroundImage=u?`url("${String(u).replace(/"/g,'\\"')}")`:'';}
+      const strip=document.getElementById('editSellerProductImagesPreview'); if(strip)strip.innerHTML=editMediaRows.filter(m=>m.media_type==='image').map(m=>`<img src="${escV(mediaUrl(m))}" alt="Current image">`).join('');
+    }catch(e){console.error('Biddo edit media load failed',e);toast('Could not load product media');}
+    document.getElementById('biddoSellerEditBackdrop').classList.add('open'); document.getElementById('biddoSellerEditModal').classList.add('open');
+    setTimeout(()=>document.getElementById('editSellerProductTitle')?.focus(),180);
+  };
+
+  window.saveSellerListingEdit=async function(){
+    const productId=window.biddoEditingSellerProductId; const user=typeof biddoSellerStudioUser==='function'?await biddoSellerStudioUser():null; if(!productId||!user){closeSellerListingEditor();return;}
+    const title=document.getElementById('editSellerProductTitle')?.value.trim();
+    const price=Number(document.getElementById('editSellerProductPrice')?.value);
+    const inventory=Number(document.getElementById('editSellerProductInventory')?.value);
+    const category=document.getElementById('editSellerProductCategory')?.value||null;
+    const condition=document.getElementById('editSellerProductCondition')?.value||null;
+    const brand=document.getElementById('editSellerProductBrand')?.value.trim()||null;
+    const imageUrl=document.getElementById('editSellerProductImage')?.value.trim()||'';
+    const newImageFiles=Array.from(document.getElementById('editSellerProductImageFiles')?.files||[]);
+    const videoUrl=document.getElementById('editSellerProductVideo')?.value.trim()||'';
+    const newVideoFile=document.getElementById('editSellerProductVideoFileV2')?.files?.[0]||null;
+    const description=document.getElementById('editSellerProductDescription')?.value.trim()||null;
+    const safeImage=safeUrl(imageUrl), safeVideo=safeUrl(videoUrl);
+    const existingImages=editMediaRows.filter(m=>m.media_type==='image'); const existingVideo=editMediaRows.find(m=>m.media_type==='video');
+    if(title.length<2){toast('Enter a product name');return;}
+    if(!Number.isFinite(price)||price<=0){toast('Enter a valid price');return;}
+    if(!Number.isInteger(inventory)||inventory<0){toast('Enter a valid stock quantity');return;}
+    if(newImageFiles.length+existingImages.length>MAX_IMAGES){toast(`This product already has ${existingImages.length} image${existingImages.length===1?'':'s'}. Add only ${MAX_IMAGES-existingImages.length} more.`);return;}
+    if(imageUrl && !safeImage){toast('Use a valid direct image URL.');return;}
+    if(videoUrl && !safeVideo && !newVideoFile){toast('Use a valid direct video URL or upload a video.');return;}
+    try{ newImageFiles.forEach(validateImageSource); if(newVideoFile) await validateVideoSource(newVideoFile); }catch(e){toast(e.message||'Media validation failed');return;}
+    const btn=document.getElementById('editSellerProductSaveBtn'); if(btn){btn.disabled=true;btn.textContent='Saving…';}
+    const uploaded=[], insertedIds=[]; let imageUrlChanged=false, oldImageUrl=''; let videoChanged=false, oldVideoUrl='';
+    try{
+      const {data:updated,error:updateError}=await client.from('products').update({title,description,category,brand,condition,price_paise:Math.round(price*100),inventory_quantity:inventory,updated_at:new Date().toISOString()}).eq('id',productId).eq('seller_id',user.id).select('id').single();
+      if(updateError)throw updateError; if(!updated)throw new Error('Listing was not updated.');
+
+      let nextSort=existingImages.length;
+      for(const file of newImageFiles){ const u=await uploadMedia(file,user.id,productId,'image'); uploaded.push(u); const {data,rowError}=await client.from('product_media').insert({product_id:productId,media_type:'image',storage_path:u.url,alt_text:title,sort_order:nextSort}).select('id').single(); if(rowError)throw rowError; insertedIds.push(data.id); nextSort++; }
+
+      const firstImage=editMediaRows.find(m=>m.media_type==='image');
+      if(firstImage && safeImage && safeImage!==mediaUrl(firstImage)){
+        oldImageUrl=mediaUrl(firstImage); imageUrlChanged=true;
+        const {error}=await client.from('product_media').update({storage_path:safeImage,alt_text:title}).eq('id',firstImage.id).eq('product_id',productId); if(error)throw error;
+      }else if(!firstImage && safeImage){
+        const {data,rowError}=await client.from('product_media').insert({product_id:productId,media_type:'image',storage_path:safeImage,alt_text:title,sort_order:0}).select('id').single(); if(rowError)throw rowError; insertedIds.push(row.id);
+      }
+
+      if(newVideoFile){
+        const u=await uploadMedia(newVideoFile,user.id,productId,'video'); uploaded.push(u); const final=u.url;
+        if(existingVideo){ oldVideoUrl=mediaUrl(existingVideo); videoChanged=true; const {error}=await client.from('product_media').update({storage_path:final,alt_text:title,sort_order:existingImages.length+newImageFiles.length}).eq('id',existingVideo.id).eq('product_id',productId); if(error)throw error; }
+        else { const {data,rowError}=await client.from('product_media').insert({product_id:productId,media_type:'video',storage_path:final,alt_text:title,sort_order:existingImages.length+newImageFiles.length}).select('id').single(); if(rowError)throw rowError; insertedIds.push(data.id); }
+      }else if(safeVideo){
+        if(existingVideo && safeVideo!==mediaUrl(existingVideo)){ oldVideoUrl=mediaUrl(existingVideo); videoChanged=true; const {error}=await client.from('product_media').update({storage_path:safeVideo,alt_text:title,sort_order:existingImages.length+newImageFiles.length}).eq('id',existingVideo.id).eq('product_id',productId); if(error)throw error; }
+        else if(!existingVideo){ const {data,rowError}=await client.from('product_media').insert({product_id:productId,media_type:'video',storage_path:safeVideo,alt_text:title,sort_order:existingImages.length+newImageFiles.length}).select('id').single(); if(rowError)throw rowError; insertedIds.push(row.id); }
+      }else if(existingVideo){
+        oldVideoUrl=mediaUrl(existingVideo); videoChanged=true; const {error}=await client.from('product_media').delete().eq('id',existingVideo.id).eq('product_id',productId); if(error)throw error;
+      }
+
+      const {data:allMedia,error:mediaError}=await client.from('product_media').select('id,media_type,sort_order').eq('product_id',productId).order('media_type',{ascending:true}).order('sort_order',{ascending:true}); if(mediaError)throw mediaError;
+      const imgs=(allMedia||[]).filter(m=>m.media_type==='image'); const vids=(allMedia||[]).filter(m=>m.media_type==='video');
+      for(let i=0;i<imgs.length;i++){ if(imgs[i].sort_order!==i){ const {error}=await client.from('product_media').update({sort_order:i}).eq('id',imgs[i].id).eq('product_id',productId); if(error)throw error; } }
+      if(vids[0]){const {error}=await client.from('product_media').update({sort_order:imgs.length}).eq('id',vids[0].id).eq('product_id',productId);if(error)throw error;}
+      if(imageUrlChanged && oldImageUrl) await removeMediaObject(oldImageUrl);
+      if(videoChanged && oldVideoUrl) await removeMediaObject(oldVideoUrl);
+      toast('Listing updated ✓',ICON_CHECK); closeSellerListingEditor();
+      if(typeof biddoSellerStudioLoadDashboard==='function') await biddoSellerStudioLoadDashboard(user,biddoSellerStudioState.seller);
+      if(typeof window.biddoRefreshMarketplaceData==='function'){ window.biddoMarketplaceDataLoaded=false; await window.biddoRefreshMarketplaceData(); }
+    }catch(e){
+      for(const id of insertedIds){try{await client.from('product_media').delete().eq('id',id).eq('product_id',productId);}catch(_){} }
+      for(const u of uploaded) await removeMediaObject(u.url);
+      console.error('Biddo listing media edit failed',e); toast(e?.message||'Could not update listing.');
+    }finally{if(btn){btn.disabled=false;btn.textContent='Save changes';}}
+  };
+
+  /* =========================================================
+     SELLER ORDER NOTIFICATIONS + DASHBOARD MESSAGE
+     ========================================================= */
+  let realtimeChannel=null;
+  let notifRows=[];
+  let currentNotifUserId='';
+
+  function updateNotifDot(){
+    const dot=document.getElementById('notifDot'); if(dot) dot.style.display=notifRows.some(n=>!n.read_at)?'block':'none';
+  }
+  function formatNotifTime(value){ if(!value)return ''; const d=new Date(value); if(Number.isNaN(d.getTime()))return ''; const diff=Math.max(0,Date.now()-d.getTime()); const min=Math.floor(diff/60000); if(min<1)return 'Just now'; if(min<60)return min+'m ago'; const hrs=Math.floor(min/60); if(hrs<24)return hrs+'h ago'; const days=Math.floor(hrs/24); if(days<7)return days+'d ago'; return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }
+  async function loadNotifications(){
+    const {data:{user}}=await client.auth.getUser();
+    if(!user){ notifRows=[]; currentNotifUserId=''; updateNotifDot(); return []; }
+    currentNotifUserId=user.id;
+    const {data,error}=await client.from('notifications').select('id,user_id,type,title,body,data,read_at,created_at').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50);
+    if(error){ console.warn('Biddo notification load failed',error); return notifRows; }
+    notifRows=Array.isArray(data)?data:[]; updateNotifDot(); return notifRows;
+  }
+  function renderNotifications(){
+    const list=document.getElementById('notifList'); if(!list)return;
+    if(!notifRows.length){list.innerHTML='<div class="empty-state" style="padding:24px 18px;"><div class="t">No notifications</div><div class="s">You’re all caught up.</div></div>';return;}
+    list.innerHTML=notifRows.map(n=>`<div class="prow" style="border-color:var(--line);background:${n.read_at?'transparent':'var(--surface)'}"><div class="pi">${n.read_at?'✓':'🔴'}</div><div class="pt"><b style="font-size:12px;">${escV(n.title||'Notification')}</b><br><span style="font-size:10.5px;color:var(--ink-2);">${escV(n.body||'')}</span><br><span style="font-size:10px;color:var(--ink-3);">${escV(formatNotifTime(n.created_at))}</span></div></div>`).join('');
+  }
+  window.openNotifs=async function(){
+    document.getElementById('notifBackdrop')?.classList.add('active'); document.getElementById('notifSheet')?.classList.add('active');
+    await loadNotifications(); renderNotifications();
+    const unread=notifRows.filter(n=>!n.read_at).map(n=>n.id);
+    if(unread.length){
+      const {error}=await client.from('notifications').update({read_at:new Date().toISOString()}).in('id',unread).eq('user_id',currentNotifUserId);
+      if(!error){notifRows.forEach(n=>{if(unread.includes(n.id))n.read_at=new Date().toISOString();});updateNotifDot();}
+    }
+  };
+
+  async function sellerUnreadOrderCount(){
+    const {data:{user}}=await client.auth.getUser(); if(!user)return 0;
+    const {count,error}=await client.from('notifications').select('id',{count:'exact',head:true}).eq('user_id',user.id).eq('type','order').is('read_at',null);
+    return error?0:(typeof count==='number'?count:0);
+  }
+  async function renderSellerDashboardAlert(){
+    const body=document.getElementById('sellerStudioBody'); if(!body)return;
+    const actions=body.querySelector('.biddo-seller-actions[style*="grid-template-columns"]'); if(!actions)return;
+    let alert=body.querySelector('#biddoSellerOrderAlert');
+    if(!alert){ alert=document.createElement('div'); alert.id='biddoSellerOrderAlert'; alert.className='biddo-seller-order-alert'; actions.insertAdjacentElement('afterend',alert); }
+    const count=await sellerUnreadOrderCount();
+    if(count>0){ alert.innerHTML=`<div class="ico">📦</div><div class="copy"><b>${count} new order${count===1?'':'s'}</b><span>A buyer just placed an order. Review it in Seller Orders.</span></div><button type="button" onclick="openSellerOrders()">View</button>`; alert.style.display='flex'; }
+    else { alert.style.display='none'; }
+  }
+  const sellerBody=document.getElementById('sellerStudioBody');
+  if(sellerBody){ const mo=new MutationObserver(()=>{ clearTimeout(window.__biddoSellerAlertTO); window.__biddoSellerAlertTO=setTimeout(renderSellerDashboardAlert,80); }); mo.observe(sellerBody,{childList:true,subtree:false}); setTimeout(renderSellerDashboardAlert,250); }
+
+  const originalOpenSellerOrders=window.openSellerOrders;
+  if(originalOpenSellerOrders && !window.__biddoSellerOrdersWrapped){
+    window.__biddoSellerOrdersWrapped=true;
+    window.openSellerOrders=async function(){
+      const r=await originalOpenSellerOrders.apply(this,arguments);
+      const body=document.getElementById('sellerOrdersBody');
+      if(body){
+        body.querySelector('#biddoSellerOrdersAlert')?.remove();
+        const cards=body.querySelectorAll('.biddo-seller-order-card');
+        const pending=Array.from(cards).filter(card=>String(card.querySelector('.biddo-seller-order-status')?.textContent||'').trim().toLowerCase()==='pending');
+        if(pending.length){ const alert=document.createElement('div'); alert.id='biddoSellerOrdersAlert'; alert.className='biddo-seller-orders-alert'; alert.innerHTML=`<div class="ico">📦</div><div class="copy"><b>${pending.length} order${pending.length===1?'':'s'} awaiting your action</b><span>Confirm each order here to start processing it.</span></div>`; body.insertBefore(alert,body.firstChild); pending.forEach(card=>{if(!card.querySelector('.biddo-seller-new-badge')){const badge=document.createElement('span');badge.className='biddo-seller-new-badge';badge.textContent='NEW ORDER';const meta=card.querySelector('.biddo-seller-order-main');meta?.appendChild(badge);}}); }
+      }
+      return r;
+    };
+  }
+
+  async function subscribeNotifications(user){
+    if(realtimeChannel){ try{await client.removeChannel(realtimeChannel);}catch(e){} realtimeChannel=null; }
+    if(!user?.id)return;
+    currentNotifUserId=user.id;
+    await loadNotifications();
+    realtimeChannel=client.channel('biddo-notifications-'+user.id)
+      .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+user.id},payload=>{
+        const row=payload.new; if(!row)return;
+        notifRows=[row,...notifRows.filter(n=>n.id!==row.id)].slice(0,50); updateNotifDot();
+        if(row.type==='order'){
+          toast(row.title||'New order received',ICON_CHECK);
+          renderSellerDashboardAlert();
+          if(document.getElementById('page-seller-orders')?.classList.contains('active')) window.openSellerOrders();
+        }
+      })
+      .subscribe();
+  }
+  client.auth.getUser().then(({data})=>subscribeNotifications(data.user));
+  client.auth.onAuthStateChange((event,session)=>{
+    if(event==='SIGNED_OUT'){ notifRows=[]; updateNotifDot(); subscribeNotifications(null); return; }
+    if(session?.user){ setTimeout(()=>subscribeNotifications(session.user),0); }
+  });
 })();
 </script>
 
