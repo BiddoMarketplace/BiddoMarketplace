@@ -1183,6 +1183,24 @@ button{cursor:pointer; font-family:inherit;}
 .biddo-seller-mode-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;position:relative;z-index:1;}
 .biddo-seller-mode-btn{border:none;border-radius:12px;padding:10px 11px;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px;}
 .biddo-seller-mode-btn.primary{background:#fff;color:#111;}
+
+.biddo-seller-mode-btn.wide{grid-column:1/-1;}
+.biddo-order-note{margin:10px 18px 0;padding:10px 12px;border:1px solid var(--line);background:var(--surface);border-radius:14px;font-size:10.5px;color:var(--ink-2);line-height:1.45;}
+.biddo-seller-order-card{border:1px solid var(--line);border-radius:18px;padding:13px;margin:10px 18px;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.035);}
+.biddo-seller-order-top{display:flex;align-items:flex-start;gap:10px;}
+.biddo-seller-order-thumb{width:54px;height:54px;border-radius:12px;object-fit:cover;background:#eee;flex:none;}
+.biddo-seller-order-main{flex:1;min-width:0;}
+.biddo-seller-order-number{font-size:11px;font-weight:800;color:var(--ink);}
+.biddo-seller-order-time{font-size:9.5px;color:var(--ink-3);margin-top:2px;}
+.biddo-seller-order-product{font-size:12px;font-weight:800;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.biddo-seller-order-meta{font-size:10.5px;color:var(--ink-2);margin-top:2px;line-height:1.4;}
+.biddo-seller-order-address{font-size:10.5px;color:var(--ink-2);line-height:1.45;margin-top:9px;padding-top:9px;border-top:1px solid var(--line);}
+.biddo-seller-order-status{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;background:var(--surface);border:1px solid var(--line);font-size:9.5px;font-weight:800;margin-top:9px;}
+.biddo-seller-order-actions{display:flex;gap:8px;margin-top:10px;}
+.biddo-seller-order-actions select{flex:1;border:1px solid var(--line);border-radius:11px;background:#fff;padding:9px 10px;font-size:11px;outline:none;}
+.biddo-seller-order-actions button{border:none;border-radius:11px;background:var(--ink);color:#fff;padding:9px 12px;font-size:11px;font-weight:800;}
+.biddo-buyer-order-total{font-size:11px;font-weight:800;color:var(--ink);margin-top:7px;}
+.biddo-buyer-payment{font-size:10px;color:var(--ink-3);margin-top:3px;}
 .biddo-seller-mode-btn.secondary{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.14);}
 .biddo-seller-mode-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px;position:relative;z-index:1;}
 .biddo-seller-mode-stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:8px 9px;}
@@ -1527,6 +1545,7 @@ button{cursor:pointer; font-family:inherit;}
     <div class="biddo-seller-mode-actions">
       <button class="biddo-seller-mode-btn primary" type="button" onclick="openSellerStudio();">Manage store</button>
       <button class="biddo-seller-mode-btn secondary" type="button" onclick="sellerStudioOpenAddProductFromHome()">+ Add listing</button>
+      <button class="biddo-seller-mode-btn secondary wide" type="button" onclick="openSellerOrders()">📦 Orders</button>
     </div>
   </div>
   <div class="biddo-seller-mode-explore" id="biddoSellerModeExplore">
@@ -1782,8 +1801,8 @@ button{cursor:pointer; font-family:inherit;}
       <label class="biddo-seller-field"><span>Condition</span><select id="editSellerProductCondition"><option>Brand New</option><option>Pre-owned · Excellent</option><option>Pre-owned · Good</option></select></label>
     </div>
     <label class="biddo-seller-field"><span>Brand (optional)</span><input id="editSellerProductBrand" maxlength="60"></label>
-    <label class="biddo-seller-field"><span>Product image URL</span><input id="editSellerProductImage" type="url" autocomplete="off" oninput="previewEditedSellerImage()"></label>
-    <label class="biddo-seller-field"><span>Product video URL (optional)</span><input id="editSellerProductVideo" type="url" autocomplete="off"></label>
+    <label class="biddo-seller-field"><span>Product image URL</span><input id="editSellerProductImage" type="url" autocomplete="off" oninput="previewEditedSellerImage()"><input id="editSellerProductImageFile" type="file" accept="image/jpeg,image/png,image/webp" style="margin-top:7px;"></label>
+    <label class="biddo-seller-field"><span>Product video URL (optional)</span><input id="editSellerProductVideo" type="url" autocomplete="off"><input id="editSellerProductVideoFile" type="file" accept="video/mp4,video/webm,video/quicktime" style="margin-top:7px;"></label>
     <label class="biddo-seller-field"><span>Description</span><textarea id="editSellerProductDescription" maxlength="1000"></textarea></label>
     <div class="biddo-seller-edit-actions">
       <button class="biddo-seller-secondary" type="button" onclick="closeSellerListingEditor()">Cancel</button>
@@ -1799,6 +1818,15 @@ button{cursor:pointer; font-family:inherit;}
     <div class="ttl">Seller Studio</div>
   </div>
   <div id="sellerStudioBody"></div>
+</div>
+
+<!-- ============ SELLER ORDERS PAGE ============ -->
+<div class="page" id="page-seller-orders">
+  <div class="page-top">
+    <button class="icon-btn" onclick="closePage('seller-orders')" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="ttl">Seller Orders</div>
+  </div>
+  <div id="sellerOrdersBody"></div>
 </div>
 
 <!-- notifications sheet -->
@@ -2297,6 +2325,13 @@ async function loadMarketplaceData(){
       if(document.getElementById("page-cart")?.classList.contains("active")) renderCart();
       if(document.getElementById("page-product")?.classList.contains("active") && currentProductId) renderProduct(currentProductId);
       if(document.getElementById("page-search")?.classList.contains("active")) runSearch();
+      const discoverScreen=document.getElementById("screen-discover");
+      const discoverFeed=document.getElementById("discoverFeed");
+      if(discoverScreen?.classList.contains("active") && discoverFeed){
+        discoverFeed.dataset.built="";
+        discoverFeed.removeAttribute("data-biddo-discover-count");
+        buildDiscover();
+      }
 
       return {loaded:true,remoteCount:remoteProducts.length};
     }catch(error){
@@ -2316,13 +2351,30 @@ const BIDDO_DISCOVER_CYCLES = 7;
 let biddoDiscoverLoopLock = false;
 let biddoDiscoverScrollTO2 = null;
 
+function biddoGetDiscoverSequence(){
+  const remoteVideoIds=PRODUCTS
+    .filter(pr=>pr && pr.source==='supabase' && pr.video)
+    .map(pr=>pr.id);
+  const fallbackIds=BIDDO_DISCOVER_SEQUENCE.filter(id=>p(id));
+  const ids=[...new Set([...remoteVideoIds,...fallbackIds])];
+  return ids.length ? ids : PRODUCTS.filter(pr=>pr && pr.video).map(pr=>pr.id);
+}
+
 function buildDiscover(){
   const feed=document.getElementById('discoverFeed');
+  if(!feed) return;
   if(feed.dataset.built) return;
+  const discoverSequence=biddoGetDiscoverSequence();
+  if(!discoverSequence.length){
+    feed.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;padding:32px;text-align:center;color:#777;">No product videos yet. Sellers can add a video to a published listing to appear here.</div>';
+    feed.dataset.built="1";
+    return;
+  }
   feed.dataset.built="1";
+  feed.dataset.biddoDiscoverCount=String(discoverSequence.length);
   const slides=[];
   for(let cycle=0; cycle<BIDDO_DISCOVER_CYCLES; cycle++){
-    BIDDO_DISCOVER_SEQUENCE.forEach(id=>{
+    discoverSequence.forEach(id=>{
       const pr=p(id);
       if(pr) slides.push(discoverSlideHtml(pr));
     });
@@ -2330,7 +2382,7 @@ function buildDiscover(){
   feed.innerHTML=slides.join('');
   requestAnimationFrame(()=>{
     const h=feed.clientHeight || window.innerHeight;
-    feed.scrollTop=h*(Math.floor(BIDDO_DISCOVER_CYCLES/2)*BIDDO_DISCOVER_SEQUENCE.length);
+    feed.scrollTop=h*(Math.floor(BIDDO_DISCOVER_CYCLES/2)*discoverSequence.length);
     setupDiscoverObserver();
     playCurrentDiscoverVideo();
   });
@@ -2378,7 +2430,7 @@ function handleDiscoverInfiniteLoop(){
   biddoDiscoverScrollTO2=setTimeout(()=>{
     const feed=document.getElementById('discoverFeed');
     if(!feed || !feed.clientHeight) return;
-    const count=BIDDO_DISCOVER_SEQUENCE.length;
+    const count=Number(feed.dataset.biddoDiscoverCount||biddoGetDiscoverSequence().length||1);
     const h=feed.clientHeight;
     const index=Math.round(feed.scrollTop/h);
     const middleCycle=Math.floor(BIDDO_DISCOVER_CYCLES/2);
@@ -2587,8 +2639,8 @@ function renderProduct(id){
     ? `<div class="pd-price-row"><div class="pd-price">${fmt(pr.currentBid)}</div><span class="pd-tag">${pr.bidsCount} bids</span></div>`
     : `<div class="pd-price-row"><div class="pd-price">${fmt(pr.price)}</div>${pr.mrp?`<div class="pd-strike">${fmt(pr.mrp)}</div><span class="pd-tag">${Math.round((1-pr.price/pr.mrp)*100)}% off</span>`:''}</div>`;
   const actionBtns = pr.isAuction
-    ? `<button class="btn-secondary" onclick="toggleSave('${id}')">${pr.saved?'Saved ♥':'Save'}</button><button class="btn-primary" onclick="openBid('${id}')">Place Bid</button>`
-    : `<button class="btn-ghost-icon" onclick="toggleSave('${id}')">${pr.saved?BOOKMARK_F:BOOKMARK_O}</button><button class="btn-secondary" onclick="addToCart('${id}',1); toast('Added to cart', ICON_CHECK)">Add to Cart</button><button class="btn-primary" onclick="buyNow('${id}')">Buy Now</button>`;
+    ? `<button class="btn-secondary" id="pdSaveBtn" onclick="toggleSave('${id}')">${pr.saved?'Saved ♥':'Save'}</button><button class="btn-primary" onclick="openBid('${id}')">Place Bid</button>`
+    : `<button class="btn-ghost-icon" id="pdSaveBtn" onclick="toggleSave('${id}')">${pr.saved?BOOKMARK_F:BOOKMARK_O}</button><button class="btn-secondary" onclick="addToCart('${id}',1); toast('Added to cart', ICON_CHECK)">Add to Cart</button><button class="btn-primary" onclick="buyNow('${id}')">Buy Now</button>`;
   const revs = [
     {stars:5, txt:"Exactly as shown, fast delivery to Bengaluru.", who:"Rohit S."},
     {stars:4, txt:"Good quality, packaging could be sturdier.", who:"Meera J."},
@@ -3143,6 +3195,66 @@ function biddoSellerStudioSafeUrl(value,kind){
   if(/^https?:\/\//i.test(v)) return v;
   return "";
 }
+
+const BIDDO_MEDIA_BUCKET="biddo-media";
+const BIDDO_IMAGE_MAX_BYTES=10*1024*1024;
+const BIDDO_VIDEO_MAX_BYTES=50*1024*1024;
+const BIDDO_ALLOWED_IMAGE_TYPES=new Set(["image/jpeg","image/png","image/webp"]);
+const BIDDO_ALLOWED_VIDEO_TYPES=new Set(["video/mp4","video/webm","video/quicktime"]);
+
+function biddoMediaRandomId(){
+  try{ if(window.crypto?.randomUUID) return window.crypto.randomUUID(); }catch(e){}
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,10)}`;
+}
+
+function biddoMediaExtension(file,kind){
+  const name=String(file?.name||"");
+  const fromName=name.includes(".")?name.split(".").pop().toLowerCase():"";
+  const allowed=kind==="image"?new Set(["jpg","jpeg","png","webp"]):new Set(["mp4","webm","mov"]);
+  return allowed.has(fromName) ? fromName : (kind==="image" ? (file?.type==="image/png"?"png":file?.type==="image/webp"?"webp":"jpg") : (file?.type==="video/webm"?"webm":"mp4"));
+}
+
+function biddoValidateMediaFile(file,kind){
+  if(!(file instanceof File)) throw new Error(`Choose a ${kind} file first.`);
+  const allowed=kind==="image"?BIDDO_ALLOWED_IMAGE_TYPES:BIDDO_ALLOWED_VIDEO_TYPES;
+  const max=kind==="image"?BIDDO_IMAGE_MAX_BYTES:BIDDO_VIDEO_MAX_BYTES;
+  if(!allowed.has(file.type)) throw new Error(kind==="image"?"Use JPG, PNG or WebP for product images.":"Use MP4, WebM or MOV for product videos.");
+  if(file.size>max) throw new Error(kind==="image"?"Product images must be 10 MB or smaller.":"Product videos must be 50 MB or smaller.");
+}
+
+async function biddoUploadProductMedia(file,userId,productId,kind){
+  if(!window.biddoSupabase) throw new Error("Supabase is not connected.");
+  biddoValidateMediaFile(file,kind);
+  const ext=biddoMediaExtension(file,kind);
+  const path=`${userId}/${productId}/${kind}-${biddoMediaRandomId()}.${ext}`;
+  const {error}=await window.biddoSupabase.storage.from(BIDDO_MEDIA_BUCKET).upload(path,file,{
+    cacheControl:"3600",
+    contentType:file.type,
+    upsert:false
+  });
+  if(error) throw new Error(error.message||`Could not upload the ${kind}.`);
+  const {data}=window.biddoSupabase.storage.from(BIDDO_MEDIA_BUCKET).getPublicUrl(path);
+  const publicUrl=data?.publicUrl||"";
+  if(!publicUrl) throw new Error(`The ${kind} uploaded, but its public URL could not be created.`);
+  return {path,url:publicUrl};
+}
+
+function biddoStoragePathFromPublicUrl(value){
+  const url=String(value||"");
+  const marker=`/storage/v1/object/public/${BIDDO_MEDIA_BUCKET}/`;
+  const index=url.indexOf(marker);
+  if(index===-1) return "";
+  return decodeURIComponent(url.slice(index+marker.length));
+}
+
+async function biddoDeleteProductMediaObject(value){
+  const path=biddoStoragePathFromPublicUrl(value);
+  if(!path || !window.biddoSupabase) return;
+  try{
+    const {error}=await window.biddoSupabase.storage.from(BIDDO_MEDIA_BUCKET).remove([path]);
+    if(error) console.warn("Biddo old media cleanup failed",error);
+  }catch(error){ console.warn("Biddo old media cleanup failed",error); }
+}
 function biddoSellerStudioRenderLoading(){
   const body=document.getElementById("sellerStudioBody");
   if(body) body.innerHTML='<div class="biddo-seller-loading">Loading Seller Studio…</div>';
@@ -3170,7 +3282,46 @@ function biddoSellerStudioRenderSetup(){
 }
 
 /* ---------------- BIDDO ROLE SWITCH ---------------- */
-let biddoActiveRole = localStorage.getItem('biddo_active_role') || 'buyer';
+// Seller/Buyer mode is strictly scoped to the authenticated Supabase user.
+// Never inherit another account's seller role or seller profile in this browser.
+let biddoActiveRole = 'buyer';
+let biddoRoleUserId = '';
+function biddoRoleStorageKey(userId){ return 'biddo_active_role_' + String(userId || 'anonymous'); }
+function biddoResetSellerState(){ biddoSellerStudioState={seller:null,products:[],loading:false,addingProduct:false}; }
+async function biddoSyncRoleForUser(user, options={}){
+  const userId=String(user?.id||'');
+  biddoRoleUserId=userId;
+  if(!userId){ biddoActiveRole='buyer'; biddoResetSellerState(); return; }
+  const key=biddoRoleStorageKey(userId);
+  let desired=localStorage.getItem(key)||'buyer';
+  if(desired!=='seller') desired='buyer';
+  try{ localStorage.removeItem('biddo_active_role'); }catch(e){}
+  if(desired==='seller'){
+    try{
+      const {data:seller,error}=await window.biddoSupabase.from('seller_profiles')
+        .select('user_id,business_name,handle,bio,logo_path,banner_path,seller_status,created_at,updated_at')
+        .eq('user_id',userId).maybeSingle();
+      if(error) throw error;
+      if(!seller){
+        localStorage.setItem(key,'buyer');
+        biddoActiveRole='buyer';
+        biddoResetSellerState();
+        return;
+      }
+      biddoSellerStudioState.seller=seller;
+    }catch(error){
+      console.error('Biddo account-scoped seller role check failed',error);
+      localStorage.setItem(key,'buyer');
+      biddoActiveRole='buyer';
+      biddoResetSellerState();
+      return;
+    }
+  }else{
+    biddoResetSellerState();
+  }
+  biddoActiveRole=desired;
+  if(options.render!==false) renderBiddoRole();
+}
 function renderBiddoRole(){
   const role=biddoActiveRole==='seller'?'seller':'buyer';
   const title=document.getElementById('biddoRoleTitle');
@@ -3209,8 +3360,13 @@ async function setBiddoRole(role){
       return;
     }
   }
+  const roleUser=await biddoSellerStudioUser();
+  if(!roleUser){ closeBiddoRoleSwitcher(); toast('Log in to switch modes'); return; }
+  biddoRoleUserId=String(roleUser.id);
   biddoActiveRole=role;
-  localStorage.setItem('biddo_active_role',role);
+  localStorage.setItem(biddoRoleStorageKey(roleUser.id),role);
+  try{ localStorage.removeItem('biddo_active_role'); }catch(e){}
+  if(role!=='seller') biddoResetSellerState();
   renderBiddoRole();
   closeBiddoRoleSwitcher();
   const card=document.getElementById('biddoRoleCard');
@@ -3254,7 +3410,13 @@ async function loadBiddoSellerModeHome(){
   try{
     const {data:seller,error:sellerError}=await window.biddoSupabase.from('seller_profiles').select('user_id,business_name,handle,bio,logo_path,banner_path,seller_status,created_at,updated_at').eq('user_id',user.id).maybeSingle();
     if(sellerError) throw sellerError;
-    if(!seller){ renderBiddoSellerHomeMode(); return; }
+    if(!seller){
+      biddoResetSellerState();
+      biddoActiveRole='buyer';
+      localStorage.setItem(biddoRoleStorageKey(user.id),'buyer');
+      renderBiddoRole();
+      return;
+    }
     biddoSellerStudioState.seller=seller;
     const {data:products,error:productError}=await window.biddoSupabase.from('products').select('id,title,category,price_paise,inventory_quantity,status,created_at').eq('seller_id',user.id).order('created_at',{ascending:false});
     if(productError) throw productError;
@@ -3347,7 +3509,7 @@ function biddoSellerStudioRenderDashboard(){
           <div class="biddo-seller-stat"><b>${inventory}</b><span>Stock units</span></div>
         </div>
       </div>
-      <div class="biddo-seller-actions" style="margin-top:0;"><button class="biddo-seller-primary" type="button" onclick="sellerStudioOpenAddProduct()">+ Add product</button></div>
+      <div class="biddo-seller-actions" style="margin-top:0;display:grid;grid-template-columns:1fr 1fr;gap:8px;"><button class="biddo-seller-primary" type="button" onclick="sellerStudioOpenAddProduct()">+ Add product</button><button class="biddo-seller-secondary" type="button" onclick="openSellerOrders()">📦 Orders</button></div>
       <div id="sellerStudioProductComposer" class="biddo-seller-section" style="display:none;"></div>
       <div class="biddo-seller-section">
         <div class="biddo-seller-section-head"><h3>Your products</h3><span>${products.length} listed</span></div>
@@ -3405,6 +3567,10 @@ async function editSellerListing(productId){
   brand.value=pr.brand||'';
   image.value=pr.image||'';
   video.value='';
+  const imageFile=document.getElementById('editSellerProductImageFile');
+  const videoFile=document.getElementById('editSellerProductVideoFile');
+  if(imageFile) imageFile.value='';
+  if(videoFile) videoFile.value='';
   description.value=pr.description||'';
   try{
     const {data:media,error}=await window.biddoSupabase.from('product_media').select('id,media_type,storage_path,sort_order').eq('product_id',productId).order('sort_order',{ascending:true});
@@ -3441,17 +3607,23 @@ async function saveSellerListingEdit(){
   const brand=document.getElementById('editSellerProductBrand')?.value.trim()||null;
   const image=document.getElementById('editSellerProductImage')?.value.trim();
   const video=document.getElementById('editSellerProductVideo')?.value.trim();
+  const imageFile=document.getElementById('editSellerProductImageFile')?.files?.[0]||null;
+  const videoFile=document.getElementById('editSellerProductVideoFile')?.files?.[0]||null;
   const description=document.getElementById('editSellerProductDescription')?.value.trim()||null;
   if(title.length<2){toast('Enter a product name');return;}
   if(!Number.isFinite(price)||price<=0){toast('Enter a valid price');return;}
   if(!Number.isInteger(inventory)||inventory<0){toast('Enter a valid stock quantity');return;}
   const safeImage=biddoSellerStudioSafeUrl(image,'image');
-  if(!safeImage){toast('Add a valid product image URL');return;}
+  if(!imageFile && !safeImage){toast('Add a product image or upload one from your device');return;}
   const safeVideo=biddoSellerStudioSafeUrl(video,'video');
-  if(video && !safeVideo){toast('Use a valid video URL');return;}
+  if(video && !safeVideo && !videoFile){toast('Use a valid video URL or upload a valid video file');return;}
   const btn=document.getElementById('editSellerProductSaveBtn');
   if(btn){btn.disabled=true;btn.textContent='Saving…';}
+  const newlyUploaded=[];
   try{
+    if(imageFile) biddoValidateMediaFile(imageFile,'image');
+    if(videoFile) biddoValidateMediaFile(videoFile,'video');
+
     const {data:updated,error:updateError}=await window.biddoSupabase.from('products').update({
       title,
       description,
@@ -3470,24 +3642,42 @@ async function saveSellerListingEdit(){
     const rows=Array.isArray(existingMedia)?existingMedia:[];
     const imageRow=rows.find(m=>m.media_type==='image');
     const videoRow=rows.find(m=>m.media_type==='video');
+
+    let finalImage=safeImage;
+    let finalVideo=safeVideo;
+    if(imageFile){
+      const uploaded=await biddoUploadProductMedia(imageFile,user.id,productId,'image');
+      newlyUploaded.push(uploaded);
+      finalImage=uploaded.url;
+    }
+    if(videoFile){
+      const uploaded=await biddoUploadProductMedia(videoFile,user.id,productId,'video');
+      newlyUploaded.push(uploaded);
+      finalVideo=uploaded.url;
+    }
+
     if(imageRow){
-      const {error}=await window.biddoSupabase.from('product_media').update({storage_path:safeImage,alt_text:title,sort_order:0}).eq('id',imageRow.id).eq('product_id',productId);
+      const {error}=await window.biddoSupabase.from('product_media').update({storage_path:finalImage,alt_text:title,sort_order:0}).eq('id',imageRow.id).eq('product_id',productId);
       if(error) throw error;
+      if(imageRow.storage_path!==finalImage) await biddoDeleteProductMediaObject(imageRow.storage_path);
     }else{
-      const {error}=await window.biddoSupabase.from('product_media').insert({product_id:productId,media_type:'image',storage_path:safeImage,alt_text:title,sort_order:0});
+      const {error}=await window.biddoSupabase.from('product_media').insert({product_id:productId,media_type:'image',storage_path:finalImage,alt_text:title,sort_order:0});
       if(error) throw error;
     }
-    if(safeVideo){
+
+    if(finalVideo){
       if(videoRow){
-        const {error}=await window.biddoSupabase.from('product_media').update({storage_path:safeVideo,alt_text:title,sort_order:1}).eq('id',videoRow.id).eq('product_id',productId);
+        const {error}=await window.biddoSupabase.from('product_media').update({storage_path:finalVideo,alt_text:title,sort_order:1}).eq('id',videoRow.id).eq('product_id',productId);
         if(error) throw error;
+        if(videoRow.storage_path!==finalVideo) await biddoDeleteProductMediaObject(videoRow.storage_path);
       }else{
-        const {error}=await window.biddoSupabase.from('product_media').insert({product_id:productId,media_type:'video',storage_path:safeVideo,alt_text:title,sort_order:1});
+        const {error}=await window.biddoSupabase.from('product_media').insert({product_id:productId,media_type:'video',storage_path:finalVideo,alt_text:title,sort_order:1});
         if(error) throw error;
       }
     }else if(videoRow){
       const {error}=await window.biddoSupabase.from('product_media').delete().eq('id',videoRow.id).eq('product_id',productId);
       if(error) throw error;
+      await biddoDeleteProductMediaObject(videoRow.storage_path);
     }
 
     toast('Listing updated ✓',ICON_CHECK);
@@ -3499,6 +3689,9 @@ async function saveSellerListingEdit(){
     renderBiddoSellerHomeMode();
   }catch(error){
     console.error('Biddo listing edit failed',error);
+    // Keep newly uploaded objects on a partial DB failure. A later DB step may
+    // already reference one of them; deleting here could leave a broken listing.
+    // Unreferenced upload cleanup can be handled later from Storage.
     toast(biddoSellerStudioFriendlyError(error));
   }finally{
     if(btn){btn.disabled=false;btn.textContent='Save changes';}
@@ -3516,8 +3709,10 @@ async function deleteSellerListing(productId){
     const {error:updateError}=await window.biddoSupabase.from('products').update({status:'archived'}).eq('id',productId).eq('seller_id',user.id);
     if(updateError) throw updateError;
     // Media rows can be removed by the listing owner; the archived product remains as the historical record.
+    const {data:oldMedia}=await window.biddoSupabase.from('product_media').select('storage_path').eq('product_id',productId);
     const {error:mediaError}=await window.biddoSupabase.from('product_media').delete().eq('product_id',productId);
     if(mediaError) console.warn('Biddo media cleanup failed',mediaError);
+    for(const media of (oldMedia||[])) await biddoDeleteProductMediaObject(media.storage_path);
     biddoSellerStudioState.products=biddoSellerStudioState.products.map(x=>x.id===productId?{...x,status:'archived'}:x);
     const local=p(productId);
     if(local && local.source==='supabase') local._archived=true;
@@ -3550,8 +3745,8 @@ function sellerStudioOpenAddProduct(){
         <label class="biddo-seller-field"><span>Condition</span><select id="sellerProductCondition"><option>Brand New</option><option>Pre-owned · Excellent</option><option>Pre-owned · Good</option></select></label>
       </div>
       <label class="biddo-seller-field"><span>Brand (optional)</span><input id="sellerProductBrand" maxlength="60" placeholder="Brand name"></label>
-      <label class="biddo-seller-field"><span>Product image URL</span><input id="sellerProductImage" type="url" placeholder="https://…" autocomplete="off"><div class="biddo-seller-help">Use a direct image URL for now. Supabase Storage upload comes in the next media step.</div></label>
-      <label class="biddo-seller-field"><span>Product video URL (optional)</span><input id="sellerProductVideo" type="url" placeholder="https://…" autocomplete="off"></label>
+      <label class="biddo-seller-field"><span>Product image URL</span><input id="sellerProductImage" type="url" placeholder="https://…" autocomplete="off"><input id="sellerProductImageFile" type="file" accept="image/jpeg,image/png,image/webp" style="margin-top:7px;"><div class="biddo-seller-help">Use a direct image URL, or upload a JPG, PNG or WebP from your device.</div></label>
+      <label class="biddo-seller-field"><span>Product video URL (optional)</span><input id="sellerProductVideo" type="url" placeholder="https://…" autocomplete="off"><input id="sellerProductVideoFile" type="file" accept="video/mp4,video/webm,video/quicktime" style="margin-top:7px;"><div class="biddo-seller-help">Upload MP4, WebM or MOV, up to 50 MB.</div></label>
       <label class="biddo-seller-field"><span>Description</span><textarea id="sellerProductDescription" maxlength="1000" placeholder="Describe the product, what's included, and anything buyers should know."></textarea></label>
       <div class="biddo-seller-note">This product is created as a draft, media is attached, and only then is it published. That prevents half-created published listings.</div>
       <div class="biddo-seller-actions"><button class="biddo-seller-secondary" type="button" onclick="sellerStudioCloseAddProduct()">Cancel</button><button class="biddo-seller-primary" type="button" onclick="createSellerProduct()">Publish Product</button></div>
@@ -3610,18 +3805,23 @@ async function createSellerProduct(){
   const brand=document.getElementById("sellerProductBrand")?.value.trim();
   const image=document.getElementById("sellerProductImage")?.value.trim();
   const video=document.getElementById("sellerProductVideo")?.value.trim();
+  const imageFile=document.getElementById("sellerProductImageFile")?.files?.[0]||null;
+  const videoFile=document.getElementById("sellerProductVideoFile")?.files?.[0]||null;
   const description=document.getElementById("sellerProductDescription")?.value.trim();
   if(title.length<2){toast("Enter a product name");return;}
   if(!Number.isFinite(price)||price<=0){toast("Enter a valid price");return;}
   if(!Number.isInteger(inventory)||inventory<1){toast("Enter a valid stock quantity");return;}
-  const safeImage=biddoSellerStudioSafeUrl(image,"image");
-  if(!safeImage){toast("Add a valid product image URL");return;}
-  const safeVideo=biddoSellerStudioSafeUrl(video,"video");
-  if(video && !safeVideo){toast("Use a valid video URL");return;}
+  if(imageFile) biddoValidateMediaFile(imageFile,'image');
+  if(videoFile) biddoValidateMediaFile(videoFile,'video');
+  const safeImage=biddoSellerStudioSafeUrl(image,'image');
+  if(!imageFile && !safeImage){toast("Add a product image URL or upload an image from your device");return;}
+  const safeVideo=biddoSellerStudioSafeUrl(video,'video');
+  if(video && !safeVideo && !videoFile){toast("Use a valid video URL or upload a valid video file");return;}
   const box=document.getElementById("sellerStudioProductComposer");
   const btn=box?.querySelector(".biddo-seller-primary");
   if(btn){btn.disabled=true;btn.textContent="Publishing…";}
   let productId=null;
+  const newlyUploaded=[];
   try{
     const draftPayload={
       seller_id:user.id,
@@ -3640,8 +3840,21 @@ async function createSellerProduct(){
     if(draftError) throw draftError;
     productId=draft.id;
 
-    const mediaRows=[{product_id:productId,media_type:"image",storage_path:safeImage,alt_text:title,sort_order:0}];
-    if(safeVideo) mediaRows.push({product_id:productId,media_type:"video",storage_path:safeVideo,alt_text:title,sort_order:1});
+    let finalImage=safeImage;
+    let finalVideo=safeVideo;
+    if(imageFile){
+      const uploaded=await biddoUploadProductMedia(imageFile,user.id,productId,'image');
+      newlyUploaded.push(uploaded);
+      finalImage=uploaded.url;
+    }
+    if(videoFile){
+      const uploaded=await biddoUploadProductMedia(videoFile,user.id,productId,'video');
+      newlyUploaded.push(uploaded);
+      finalVideo=uploaded.url;
+    }
+
+    const mediaRows=[{product_id:productId,media_type:"image",storage_path:finalImage,alt_text:title,sort_order:0}];
+    if(finalVideo) mediaRows.push({product_id:productId,media_type:"video",storage_path:finalVideo,alt_text:title,sort_order:1});
     const {error:mediaError}=await window.biddoSupabase.from("product_media").insert(mediaRows);
     if(mediaError) throw mediaError;
 
@@ -3653,12 +3866,16 @@ async function createSellerProduct(){
     sellerStudioCloseAddProduct();
     await biddoSellerStudioLoadDashboard(user,biddoSellerStudioState.seller);
 
-    // Refresh the marketplace cache so the new listing appears immediately.
     biddoMarketplaceDataLoaded=false;
     biddoMarketplaceDataPromise=null;
     await loadMarketplaceData();
   }catch(error){
     console.error("Biddo product publish failed",error);
+    for(const uploaded of newlyUploaded) await biddoDeleteProductMediaObject(uploaded.url);
+    if(productId){
+      try{ await window.biddoSupabase.from("product_media").delete().eq("product_id",productId); }catch(e){}
+      try{ await window.biddoSupabase.from("products").delete().eq("id",productId).eq("seller_id",user.id); }catch(e){}
+    }
     toast(biddoSellerStudioFriendlyError(error));
   }finally{
     if(btn){btn.disabled=false;btn.textContent="Publish Product";}
@@ -4886,6 +5103,1010 @@ window.addEventListener('load',()=>{
   }catch(e){ console.warn('Biddo seller mode init failed',e); }
 });
 </script>
+
+<script id="biddo-phase1-real-persistence">
+(function(){
+  "use strict";
+
+  const client = window.biddoSupabase;
+  if(!client) return;
+
+  const LOCAL_SAVED_KEY = "biddo_local_saved_v2";
+  const LOCAL_FOLLOWS_KEY = "biddo_local_follows_v2";
+  const LOCAL_CART_KEY = "biddo_local_cart_v2";
+  const cartWriteQueues = new Map();
+
+  async function currentUser(){
+    try{
+      const {data:{user}} = await client.auth.getUser();
+      return user || null;
+    }catch(e){ return null; }
+  }
+
+  function storageKey(base,userId){
+    return base + ":" + String(userId || "guest");
+  }
+
+  function readSet(base,userId){
+    try{
+      const raw=localStorage.getItem(storageKey(base,userId));
+      const parsed=raw ? JSON.parse(raw) : [];
+      return new Set(Array.isArray(parsed) ? parsed.map(String) : []);
+    }catch(e){ return new Set(); }
+  }
+
+  function writeSet(base,userId,set){
+    try{ localStorage.setItem(storageKey(base,userId), JSON.stringify([...set])); }
+    catch(e){ console.warn("Biddo local persistence write failed",e); }
+  }
+
+  function readCart(userId){
+    try{
+      const key=storageKey(LOCAL_CART_KEY,userId);
+      const raw=localStorage.getItem(key);
+      if(raw===null) return null;
+      const parsed=JSON.parse(raw);
+      if(!Array.isArray(parsed)) return [];
+      return parsed
+        .map(x=>({productId:String(x?.productId||""),qty:Number(x?.qty||0)}))
+        .filter(x=>x.productId && Number.isFinite(x.qty) && x.qty>0)
+        .map(x=>({productId:x.productId,qty:Math.max(1,Math.floor(x.qty))}));
+    }catch(e){ return []; }
+  }
+
+  function writeCart(userId,items){
+    try{
+      const cleaned=(items||[])
+        .map(x=>({productId:String(x?.productId||""),qty:Number(x?.qty||0)}))
+        .filter(x=>x.productId && Number.isFinite(x.qty) && x.qty>0)
+        .map(x=>({productId:x.productId,qty:Math.max(1,Math.floor(x.qty))}));
+      localStorage.setItem(storageKey(LOCAL_CART_KEY,userId),JSON.stringify(cleaned));
+    }catch(e){ console.warn("Biddo local cart write failed",e); }
+  }
+
+  function remoteProduct(id){
+    const pr = typeof p === "function" ? p(id) : null;
+    return pr && pr.source === "supabase" ? pr : null;
+  }
+
+  function updateSavedStat(userId,remoteCount,localCount){
+    const stat=document.getElementById("statSaved");
+    if(stat) stat.textContent=String(Math.max(0,Number(remoteCount||0)+Number(localCount||0)));
+  }
+
+  function updateFollowingStat(remoteCount,localCount){
+    const stat=document.getElementById("statFollowing");
+    if(stat) stat.textContent=String(Math.max(0,Number(remoteCount||0)+Number(localCount||0)));
+  }
+
+  function setSaveUi(id,saved){
+    const pr=typeof p === "function" ? p(id) : null;
+    if(pr) pr.saved=!!saved;
+
+    document.querySelectorAll('#save-'+CSS.escape(String(id))).forEach(el=>{
+      el.innerHTML=saved ? BOOKMARK_F : BOOKMARK_O;
+    });
+
+    document.querySelectorAll('.dact.save-act[data-id="'+String(id).replace(/"/g,'\\"')+'"]').forEach(dact=>{
+      dact.classList.toggle('saved',!!saved);
+      const b=dact.querySelector('button');
+      if(b) b.innerHTML=saved ? BOOKMARK_F : BOOKMARK_O;
+    });
+
+    const productSave=document.getElementById("pdSaveBtn");
+    if(productSave && typeof currentProductId !== "undefined" && currentProductId===id){
+      productSave.innerHTML=saved ? BOOKMARK_F : BOOKMARK_O;
+      if(pr?.isAuction) productSave.textContent=saved ? "Saved ♥" : "Save";
+    }
+  }
+
+  function setFollowButton(btn,following){
+    if(!btn) return;
+    btn.classList.toggle("following",!!following);
+    btn.textContent=following ? "Following" : "Follow";
+  }
+
+  function updateFollowUi(){
+    if(typeof PRODUCTS === "undefined") return;
+    document.querySelectorAll('.followbtn').forEach(btn=>{
+      const pr=PRODUCTS.find(x=>{
+        try{ return document.getElementById(`follow-${x.sellerId}-${x.id}`)===btn; }catch(e){ return false; }
+      });
+      if(pr) setFollowButton(btn,!!pr.following);
+    });
+
+    const pd=document.getElementById('pdFollowBtn');
+    const current=typeof currentProductId !== "undefined" && currentProductId ? p(currentProductId) : null;
+    if(pd && current) setFollowButton(pd,!!current.following);
+  }
+
+  async function hydrateSocial(){
+    const user=await currentUser();
+    if(!user) return;
+
+    const localSaved=readSet(LOCAL_SAVED_KEY,user.id);
+    const localFollows=readSet(LOCAL_FOLLOWS_KEY,user.id);
+
+    if(typeof PRODUCTS !== "undefined"){
+      PRODUCTS.forEach(pr=>{
+        if(pr.source!=="supabase"){
+          pr.saved=localSaved.has(String(pr.id));
+          pr.following=localFollows.has(String(pr.sellerId));
+        }
+      });
+    }
+
+    let remoteSaved=new Set();
+    let remoteFollowing=new Set();
+    let remoteSavedCount=0;
+    let remoteFollowingCount=0;
+
+    try{
+      const [savedResult,followResult]=await Promise.all([
+        client.from("saved_products").select("product_id").eq("user_id",user.id),
+        client.from("follows").select("following_id").eq("follower_id",user.id)
+      ]);
+
+      if(savedResult.error){
+        console.error("Biddo saved products could not be loaded",savedResult.error);
+        toast("Saved products could not be loaded");
+      }else{
+        const rows=savedResult.data||[];
+        remoteSaved=new Set(rows.map(x=>String(x.product_id)).filter(Boolean));
+        remoteSavedCount=rows.length;
+      }
+
+      if(followResult.error){
+        console.error("Biddo follows could not be loaded",followResult.error);
+        toast("Followed sellers could not be loaded");
+      }else{
+        const rows=followResult.data||[];
+        remoteFollowing=new Set(rows.map(x=>String(x.following_id)).filter(Boolean));
+        remoteFollowingCount=rows.length;
+      }
+    }catch(e){
+      console.error("Biddo social hydration failed",e);
+    }
+
+    if(typeof PRODUCTS !== "undefined"){
+      PRODUCTS.forEach(pr=>{
+        if(pr.source==="supabase"){
+          pr.saved=remoteSaved.has(String(pr.id));
+          pr.following=remoteFollowing.has(String(pr.sellerId));
+        }
+      });
+
+      PRODUCTS.forEach(pr=>setSaveUi(pr.id,!!pr.saved));
+      updateSavedStat(user.id,remoteSavedCount,localSaved.size);
+      updateFollowingStat(remoteFollowingCount,localFollows.size);
+      updateFollowUi();
+    }
+
+    if(document.getElementById("page-saved")?.classList.contains("active") && typeof renderSaved==="function"){
+      renderSaved();
+    }
+  }
+
+  window.biddoHydrateSocial=hydrateSocial;
+
+  window.toggleSave=async function(id){
+    const pr=typeof p === "function" ? p(id) : null;
+    if(!pr) return;
+    if(pr.savePending) return;
+
+    const user=await currentUser();
+    if(!user){ toast("Sign in to save products"); return; }
+
+    const previous=!!pr.saved;
+    pr.savePending=true;
+    setSaveUi(id,!previous);
+
+    try{
+      if(pr.source!=="supabase"){
+        const set=readSet(LOCAL_SAVED_KEY,user.id);
+        if(previous) set.delete(String(id));
+        else set.add(String(id));
+        writeSet(LOCAL_SAVED_KEY,user.id,set);
+        toast(!previous?"Saved to your list":"Removed from saved");
+      }else if(!previous){
+        const {error}=await client.from("saved_products").insert({user_id:user.id,product_id:id});
+        if(error && !/duplicate|unique/i.test(String(error.message||""))) throw error;
+        toast("Saved to your list");
+      }else{
+        const {error}=await client.from("saved_products").delete().eq("user_id",user.id).eq("product_id",id);
+        if(error) throw error;
+        toast("Removed from saved");
+      }
+
+      if(pr.source==="supabase"){
+        const set=readSet(LOCAL_SAVED_KEY,user.id);
+        const {count}=await client.from("saved_products").select("product_id",{count:"exact",head:true}).eq("user_id",user.id);
+        updateSavedStat(user.id,typeof count==="number"?count:0,set.size);
+      }else{
+        updateSavedStat(user.id,0,readSet(LOCAL_SAVED_KEY,user.id).size);
+      }
+
+      if(document.getElementById("page-saved")?.classList.contains("active") && typeof renderSaved==="function") renderSaved();
+    }catch(error){
+      pr.saved=previous;
+      setSaveUi(id,previous);
+      console.error("Biddo save update failed",error);
+      toast(biddoSellerStudioFriendlyError(error));
+    }finally{
+      pr.savePending=false;
+    }
+  };
+
+  async function setFollowing(sellerId,following,localOnly){
+    const user=await currentUser();
+    if(!user){ toast("Sign in to follow sellers"); return false; }
+    if(!sellerId){ return false; }
+
+    if(localOnly){
+      const set=readSet(LOCAL_FOLLOWS_KEY,user.id);
+      if(following) set.add(String(sellerId));
+      else set.delete(String(sellerId));
+      writeSet(LOCAL_FOLLOWS_KEY,user.id,set);
+      return true;
+    }
+
+    const normalizedSellerId=String(sellerId);
+    if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(normalizedSellerId)){
+      const set=readSet(LOCAL_FOLLOWS_KEY,user.id);
+      if(following) set.add(normalizedSellerId);
+      else set.delete(normalizedSellerId);
+      writeSet(LOCAL_FOLLOWS_KEY,user.id,set);
+      return true;
+    }
+
+    if(following){
+      // Upsert makes Follow idempotent: repeated clicks cannot fail on a
+      // duplicate row and the state is still persisted in Supabase.
+      const {error}=await client.from("follows").upsert(
+        {follower_id:user.id,following_id:normalizedSellerId},
+        {onConflict:"follower_id,following_id",ignoreDuplicates:true}
+      );
+      if(error) throw error;
+      const set=readSet(LOCAL_FOLLOWS_KEY,user.id);
+      set.add(normalizedSellerId);
+      writeSet(LOCAL_FOLLOWS_KEY,user.id,set);
+    }else{
+      const {error}=await client.from("follows").delete().eq("follower_id",user.id).eq("following_id",normalizedSellerId);
+      if(error) throw error;
+      const set=readSet(LOCAL_FOLLOWS_KEY,user.id);
+      set.delete(normalizedSellerId);
+      writeSet(LOCAL_FOLLOWS_KEY,user.id,set);
+    }
+    return true;
+  }
+
+  function isRemoteSeller(sellerId){
+    return typeof PRODUCTS!=="undefined" && PRODUCTS.some(pr=>pr.source==="supabase" && String(pr.sellerId)===String(sellerId));
+  }
+
+  window.toggleFollowFromCard=async function(sellerId,btn){
+    const pr=typeof PRODUCTS!=="undefined" ? PRODUCTS.find(x=>x.source==="supabase" && String(x.sellerId)===String(sellerId)) : null;
+    const currentFollowing=!!btn.classList.contains("following");
+    const following=!currentFollowing;
+    if(btn.dataset.pending==="1") return;
+    btn.dataset.pending="1";
+    setFollowButton(btn,following);
+
+    try{
+      const ok=await setFollowing(sellerId,following,!pr && !isRemoteSeller(sellerId));
+      if(!ok){ setFollowButton(btn,currentFollowing); return; }
+
+      if(typeof PRODUCTS!=="undefined") PRODUCTS.filter(x=>String(x.sellerId)===String(sellerId)).forEach(x=>x.following=following);
+
+      const user=await currentUser();
+      const local=readSet(LOCAL_FOLLOWS_KEY,user?.id);
+      let remoteCount=0;
+      if(user){
+        const {count,countError}=await client.from("follows").select("following_id",{count:"exact",head:true}).eq("follower_id",user.id);
+        if(!countError) remoteCount=typeof count==="number"?count:0;
+      }
+      updateFollowingStat(remoteCount,local.size);
+      toast(following ? "Following "+(s(sellerId)?.name||"seller") : "Unfollowed");
+    }catch(error){
+      setFollowButton(btn,currentFollowing);
+      console.error("Biddo follow update failed",error);
+      toast(biddoSellerStudioFriendlyError(error));
+    }finally{
+      btn.dataset.pending="0";
+    }
+  };
+
+  function restoreCurrentProductFollowButton(){
+    try{
+      const btn=document.getElementById("pdFollowBtn");
+      const current=typeof currentProductId!=="undefined" && currentProductId ? p(currentProductId) : null;
+      if(btn && current) setFollowButton(btn,!!current.following);
+    }catch(e){}
+  }
+
+  window.togglePdFollow=async function(btn){
+    const pr=typeof currentProductId!=="undefined" && currentProductId ? p(currentProductId) : null;
+    const sellerId=pr?.sellerId;
+    if(!pr || !sellerId) return;
+
+    const previous=!!btn.classList.contains("following");
+    const following=!previous;
+    if(btn.dataset.pending==="1") return;
+    btn.dataset.pending="1";
+    setFollowButton(btn,following);
+
+    try{
+      const ok=await setFollowing(sellerId,following,pr.source!=="supabase");
+      if(!ok){ setFollowButton(btn,previous); return; }
+      PRODUCTS.filter(x=>String(x.sellerId)===String(sellerId)).forEach(x=>x.following=following);
+      toast(following?"Followed seller":"Unfollowed");
+    }catch(error){
+      setFollowButton(btn,previous);
+      console.error("Biddo product follow failed",error);
+      toast(biddoSellerStudioFriendlyError(error));
+    }finally{
+      btn.dataset.pending="0";
+    }
+  };
+
+  async function ensureCart(){
+    const user=await currentUser();
+    if(!user) return null;
+
+    const {data:existing,error:readError}=await client.from("carts").select("id").eq("user_id",user.id).maybeSingle();
+    if(readError) throw readError;
+    if(existing?.id) return existing.id;
+
+    const {data:created,error:createError}=await client.from("carts").insert({user_id:user.id}).select("id").single();
+    if(createError) throw createError;
+    return created.id;
+  }
+
+  async function persistCartItem(productId,quantity){
+    const user=await currentUser();
+    const pr=remoteProduct(productId);
+
+    if(!pr){
+      writeCart(user?.id||"guest",CART);
+      return;
+    }
+    if(!user){
+      toast("Sign in to keep this cart after reopening");
+      return;
+    }
+
+    const cartId=await ensureCart();
+    if(!cartId) return;
+
+    if(quantity<=0){
+      const {error}=await client.from("cart_items").delete().eq("cart_id",cartId).eq("product_id",productId);
+      if(error) throw error;
+      return;
+    }
+
+    const {error}=await client.from("cart_items").upsert({cart_id:cartId,product_id:productId,quantity},{onConflict:"cart_id,product_id"});
+    if(error) throw error;
+  }
+
+  function queueCartWrite(productId,task){
+    const previous=cartWriteQueues.get(String(productId))||Promise.resolve();
+    const next=previous.catch(()=>{}).then(task);
+    cartWriteQueues.set(String(productId),next.finally(()=>{
+      if(cartWriteQueues.get(String(productId))===next) cartWriteQueues.delete(String(productId));
+    }));
+    return next;
+  }
+
+  async function hydrateCart(){
+    const user=await currentUser();
+    const localKey=user?.id||"guest";
+    let localCart=readCart(localKey);
+
+    if(localCart===null){
+      const seeded=typeof CART!=="undefined" ? CART.filter(item=>!remoteProduct(item.productId)) : [];
+      localCart=seeded.map(item=>({productId:item.productId,qty:item.qty}));
+      writeCart(localKey,localCart);
+    }
+
+    const localItems=localCart.filter(item=>!remoteProduct(item.productId));
+    let remoteItems=[];
+
+    if(user){
+      try{
+        const {data:cart,error:cartError}=await client.from("carts").select("id").eq("user_id",user.id).maybeSingle();
+        if(cartError) throw cartError;
+        if(cart?.id){
+          const {data:items,error:itemError}=await client.from("cart_items").select("product_id,quantity").eq("cart_id",cart.id);
+          if(itemError) throw itemError;
+          remoteItems=(items||[]).map(item=>({productId:String(item.product_id),qty:Math.max(1,Number(item.quantity)||1)}));
+        }
+      }catch(e){
+        console.error("Biddo cart could not be loaded",e);
+        toast("Cart could not be loaded");
+      }
+    }
+
+    CART=[...localItems,...remoteItems];
+    if(typeof renderCart==="function") renderCart();
+  }
+
+  window.biddoHydrateCart=hydrateCart;
+
+  const originalAddToCart=window.addToCart;
+  window.addToCart=async function(id,qty){
+    if(typeof originalAddToCart==="function") originalAddToCart(id,qty);
+    const item=CART.find(x=>String(x.productId)===String(id));
+    if(!item) return;
+    try{
+      await queueCartWrite(id,()=>persistCartItem(id,item.qty));
+    }catch(error){
+      console.error("Biddo cart save failed",error);
+      toast(biddoSellerStudioFriendlyError(error));
+      await hydrateCart();
+    }
+  };
+
+  const originalChangeQty=window.changeQty;
+  window.changeQty=async function(id,delta){
+    if(typeof originalChangeQty==="function") originalChangeQty(id,delta);
+    const item=CART.find(x=>String(x.productId)===String(id));
+    const quantity=item?.qty||0;
+    try{
+      await queueCartWrite(id,()=>persistCartItem(id,quantity));
+    }catch(error){
+      console.error("Biddo cart quantity save failed",error);
+      toast(biddoSellerStudioFriendlyError(error));
+      await hydrateCart();
+    }
+  };
+
+  const originalRemoveFromCart=window.removeFromCart;
+  window.removeFromCart=async function(id){
+    if(typeof originalRemoveFromCart==="function") originalRemoveFromCart(id);
+    try{
+      await queueCartWrite(id,()=>persistCartItem(id,0));
+    }catch(error){
+      console.error("Biddo cart remove failed",error);
+      toast(biddoSellerStudioFriendlyError(error));
+      await hydrateCart();
+    }
+  };
+
+  window.buyNow=async function(id){
+    const pr=typeof p==="function"?p(id):null;
+    if(!pr) return;
+    const user=await currentUser();
+    CART=[{productId:id,qty:1}];
+    renderCart();
+
+    try{
+      if(user){
+        const localKey=user.id;
+        if(pr.source!=="supabase") writeCart(localKey,[{productId:id,qty:1}]);
+        else writeCart(localKey,[]);
+
+        const cartId=await ensureCart();
+        if(cartId){
+          const {error:clearError}=await client.from("cart_items").delete().eq("cart_id",cartId);
+          if(clearError) throw clearError;
+          if(pr.source==="supabase"){
+            const {error:addError}=await client.from("cart_items").insert({cart_id:cartId,product_id:id,quantity:1});
+            if(addError) throw addError;
+          }
+        }
+      }
+
+      closePage('product');
+      go('cart');
+      renderCart();
+      toast('Ready to checkout');
+    }catch(error){
+      console.error("Biddo Buy Now cart persistence failed",error);
+      toast(biddoSellerStudioFriendlyError(error));
+      await hydrateCart();
+    }
+  };
+
+  function wrapFollowRedraw(name){
+    const original=window[name];
+    if(typeof original!=="function") return;
+    window[name]=function(){
+      const result=original.apply(this,arguments);
+      try{
+        requestAnimationFrame(()=>{ updateFollowUi(); restoreCurrentProductFollowButton(); });
+      }catch(e){}
+      return result;
+    };
+  }
+  wrapFollowRedraw("renderProduct");
+  wrapFollowRedraw("buildHome");
+  wrapFollowRedraw("runSearch");
+
+  const originalOpenSaved=window.openSaved;
+  window.openSaved=async function(){
+    if(typeof originalOpenSaved==="function") originalOpenSaved();
+    await hydrateSocial();
+    if(typeof renderSaved==="function") renderSaved();
+  };
+
+  const originalGo=window.go;
+  window.go=async function(tab){
+    const result=typeof originalGo==="function" ? originalGo(tab) : undefined;
+    if(tab==="cart") await hydrateCart();
+    if(tab==="profile") await hydrateSocial();
+    return result;
+  };
+
+  const originalMarketplaceLoader=window.biddoRefreshMarketplaceData || window.loadMarketplaceData;
+  async function marketplaceLoaderWithPersistence(){
+    const result=typeof originalMarketplaceLoader==="function" ? await originalMarketplaceLoader.apply(this,arguments) : null;
+    await hydrateSocial();
+    await hydrateCart();
+    return result;
+  }
+  if(typeof originalMarketplaceLoader==="function"){
+    window.loadMarketplaceData=marketplaceLoaderWithPersistence;
+    window.biddoRefreshMarketplaceData=marketplaceLoaderWithPersistence;
+  }
+
+  async function afterAuth(){
+    try{
+      const authUser=await currentUser();
+      // Reset stale seller state immediately when a different account signs in.
+      if(biddoRoleUserId!==String(authUser?.id||'')){
+        biddoActiveRole='buyer';
+        biddoResetSellerState();
+      }
+      if(typeof originalMarketplaceLoader==="function") await originalMarketplaceLoader();
+      await hydrateSocial();
+      await hydrateCart();
+      await biddoSyncRoleForUser(authUser,{render:false});
+      try{ renderBiddoRole(); }catch(e){}
+      if(biddoActiveRole==='seller' && authUser) await loadBiddoSellerModeHome();
+    }catch(e){ console.error("Biddo persistence hydration failed",e); }
+  }
+
+  try{
+    client.auth.onAuthStateChange((event,session)=>{
+      if(event==="SIGNED_OUT"){
+        CART=[];
+        biddoActiveRole='buyer';
+        biddoRoleUserId='';
+        biddoResetSellerState();
+        try{ localStorage.removeItem('biddo_active_role'); }catch(e){}
+        try{ renderCart(); }catch(e){}
+        try{ renderBiddoRole(); }catch(e){}
+        return;
+      }
+      if(session?.user) setTimeout(afterAuth,0);
+    });
+    setTimeout(afterAuth,0);
+  }catch(e){ console.warn("Biddo persistence auth listener failed",e); }
+
+})();
+</script>
+
+
+<script id="biddo-orders-js">
+(function(){
+  "use strict";
+  const client=window.biddoSupabase;
+  if(!client) return;
+
+  const ACTIVE_STATUSES=new Set(["pending","confirmed","packed","shipped","out_for_delivery"]);
+  const STAGE={pending:0,confirmed:1,packed:2,shipped:3,out_for_delivery:4,delivered:5};
+  const STATUS_LABEL={pending:"Order received",confirmed:"Confirmed",packed:"Packed",shipped:"Shipped",out_for_delivery:"Out for Delivery",delivered:"Delivered",cancelled:"Cancelled",refunded:"Refunded"};
+  const PAYMENT_LABEL={upi:"UPI",card:"Card",wallet:"Biddo Wallet",cod:"Cash on Delivery"};
+
+  function esc(v){return typeof biddoEscapeHtml==='function'?biddoEscapeHtml(v):String(v??"").replace(/[&<>\"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
+  function id(v){return String(v||"");}
+  function moneyPaise(v){return typeof fmt==='function'?fmt(Number(v||0)/100):"₹"+Math.round(Number(v||0)/100).toLocaleString("en-IN");}
+  function getUser(){return client.auth.getUser().then(r=>r.data?.user||null);}
+  function remoteCartItems(){
+    return (typeof CART!=="undefined"?CART:[]).filter(x=>typeof p==='function' && p(x.productId)?.source==='supabase');
+  }
+  function productFor(idv){return typeof p==='function'?p(idv):null;}
+  function productImage(idv){return productFor(idv)?.img||IMGS?.[0]||"";}
+  function productName(idv){return productFor(idv)?.name||"Product";}
+
+  async function loadDefaultAddress(){
+    const user=await getUser();
+    if(!user) return null;
+    const {data,error}=await client.from("addresses")
+      .select("id,recipient_name,phone,address_line_1,address_line_2,landmark,city,state,postal_code,country,is_default")
+      .eq("user_id",user.id)
+      .order("is_default",{ascending:false})
+      .order("created_at",{ascending:false})
+      .limit(1)
+      .maybeSingle();
+    if(error) throw error;
+    return data||null;
+  }
+
+  async function saveCheckoutAddress(){
+    const user=await getUser();
+    if(!user) throw new Error("Please log in first.");
+    const name=document.getElementById("ckName")?.value.trim()||"";
+    const phone=document.getElementById("ckPhone")?.value.trim()||"";
+    const address1=document.getElementById("ckAddr")?.value.trim()||"";
+    const cityLine=document.getElementById("ckCity")?.value.trim()||"";
+    if(name.length<2) throw new Error("Enter your full name.");
+    const digits=phone.replace(/\D/g,"");
+    if(digits.length!==10) throw new Error("Enter a valid 10-digit phone number.");
+    if(address1.length<5) throw new Error("Enter your delivery address.");
+    const split=cityLine.split(",").map(x=>x.trim()).filter(Boolean);
+    if(!split[0]) throw new Error("Enter your city and pincode.");
+    const city=split[0];
+    const postalCode=(split[1]||"").replace(/\D/g,"").slice(0,6);
+    const state=document.getElementById("ckState")?.value.trim()||"";
+    if(postalCode.length!==6) throw new Error("Enter a valid 6-digit pincode.");
+    if(state.length<2) throw new Error("Enter your state.");
+
+    const payload={
+      recipient_name:name,
+      phone:"+91 "+digits,
+      address_line_1:address1,
+      address_line_2:null,
+      landmark:null,
+      city,
+      state,
+      postal_code:postalCode,
+      country:"India",
+      is_default:true,
+      user_id:user.id
+    };
+
+    let q=client.from("addresses");
+    if(window.biddoCheckoutAddressId){
+      const {data,error}=await q.update({...payload}).eq("id",window.biddoCheckoutAddressId).eq("user_id",user.id).select("*").single();
+      if(error) throw error;
+      return data;
+    }
+
+    const {error:clearError}=await client.from("addresses").update({is_default:false}).eq("user_id",user.id).eq("is_default",true);
+    if(clearError) throw clearError;
+    const {data,error}=await client.from("addresses").insert(payload).select("*").single();
+    if(error) throw error;
+    window.biddoCheckoutAddressId=data.id;
+    return data;
+  }
+
+  window.startCheckout=async function(){
+    if(typeof CART==="undefined" || !CART.length){toast("Your cart is empty");return;}
+    const items=remoteCartItems();
+    if(!items.length){toast("Add a published Biddo product to checkout first.");return;}
+    checkoutStep=1;
+    checkoutData={address:null,delivery:'standard',payment:'cod'};
+    window.biddoCheckoutAddressId=null;
+    const initialProfile=typeof getProfile==='function'?getProfile():{};
+    window.biddoCheckoutState={state:initialProfile?.state||""};
+    openPage('checkout');
+    renderCheckout();
+    try{
+      const addr=await loadDefaultAddress();
+      if(addr){
+        window.biddoCheckoutAddressId=addr.id;
+        window.biddoCheckoutState={state:addr.state||""};
+        checkoutData.address=addr;
+        renderCheckout();
+      }else{
+        const profile=typeof getProfile==='function'?getProfile():{};
+        const name=document.getElementById('ckName'); const phone=document.getElementById('ckPhone');
+        if(name&&profile?.name) name.value=profile.name;
+        if(phone&&profile?.phone) phone.value=String(profile.phone).replace(/\D/g,"").slice(-10);
+      }
+    }catch(e){
+      console.error('Biddo checkout address load failed',e);
+      toast('Could not load your saved address');
+    }
+  };
+
+  window.renderCheckout=function(){
+    if(typeof renderStepper==='function') renderStepper();
+    const body=document.getElementById('checkoutBody');
+    if(!body) return;
+    const items=remoteCartItems();
+    if(checkoutStep===1){
+      const profile=typeof getProfile==='function'?getProfile():{};
+      const a=checkoutData.address||{};
+      const phoneDigits=String(a.phone||profile?.phone||"").replace(/\D/g,"").slice(-10);
+      const cityValue=a.city?(a.city+(a.postal_code?', '+a.postal_code:'')):"";
+      body.innerHTML=`
+        <div class="form-field"><label>Full Name</label><input id="ckName" value="${esc(a.recipient_name||profile?.name||"")}"></div>
+        <div class="form-field"><label>Phone Number</label><input id="ckPhone" inputmode="numeric" maxlength="10" value="${esc(phoneDigits)}"></div>
+        <div class="form-field"><label>Address</label><input id="ckAddr" placeholder="Flat no, building, street" value="${esc(a.address_line_1||"")}"></div>
+        <div class="form-field"><label>City / Pincode</label><input id="ckCity" value="${esc(cityValue)}" placeholder="City, 520001"></div>
+        <div class="form-field"><label>State</label><input id="ckState" value="${esc(a.state||profile?.state||"")}" placeholder="Andhra Pradesh"></div>
+        <div style="padding:8px 18px 100px;"><button class="btn-primary" style="width:100%" onclick="ckNext(1)">Continue to Delivery</button></div>`;
+      return;
+    }
+    if(checkoutStep===2){
+      body.innerHTML=`
+        <div class="section-lbl" style="padding-top:6px;">Choose delivery speed</div>
+        ${optCard('delivery','standard','Standard Delivery','3-5 business days · Free', checkoutData.delivery)}
+        ${optCard('delivery','express','Express Delivery','1-2 business days · +₹149', checkoutData.delivery)}
+        <div style="padding:8px 18px 100px;"><button class="btn-primary" style="width:100%" onclick="ckNext(2)">Continue to Payment</button></div>`;
+      return;
+    }
+    if(checkoutStep===3){
+      body.innerHTML=`
+        <div class="section-lbl" style="padding-top:6px;">Payment method</div>
+        ${optCard('payment','upi','UPI','Payment will remain pending until a gateway is connected.', checkoutData.payment)}
+        ${optCard('payment','card','Credit / Debit Card','Payment will remain pending until a gateway is connected.', checkoutData.payment)}
+        ${optCard('payment','wallet','Biddo Wallet','Balance is not debited until wallet payments are connected.', checkoutData.payment)}
+        ${optCard('payment','cod','Cash on Delivery','Pay when it arrives', checkoutData.payment)}
+        <div class="biddo-order-note">No payment is charged by Biddo yet. UPI, Card and Wallet orders are recorded as <b>payment pending</b>; Cash on Delivery is payable on delivery.</div>
+        <div style="padding:8px 18px 100px;"><button class="btn-primary" style="width:100%" onclick="ckNext(3)">Review Order</button></div>`;
+      return;
+    }
+    if(checkoutStep===4){
+      const subtotal=items.reduce((sum,c)=>{const pr=productFor(c.productId);return sum+Math.round(Number(pr?.price||0)*100)*Number(c.qty||1);},0);
+      const deliveryFee=checkoutData.delivery==='express'?14900:0;
+      const finalTotal=subtotal+deliveryFee;
+      body.innerHTML=`
+        <div class="section-lbl" style="padding-top:6px;">Items</div>
+        ${items.map(c=>{const pr=productFor(c.productId);return `<div class="review-row"><span>${esc(pr?.name||'Product')} × ${c.qty}</span><span>${moneyPaise(Math.round(Number(pr?.price||0)*100)*c.qty)}</span></div>`;}).join('')}
+        <div class="section-lbl">Delivery to</div>
+        <div class="review-row"><span class="lbl2">${checkoutData.address?.recipient_name||'Delivery address'}</span><span></span></div>
+        <div class="review-row"><span class="lbl2">${esc([checkoutData.address?.address_line_1,checkoutData.address?.city,checkoutData.address?.state,checkoutData.address?.postal_code].filter(Boolean).join(', '))}</span><span></span></div>
+        <div class="review-row"><span class="lbl2">${checkoutData.delivery==='express'?'Express (1-2 days)':'Standard (3-5 days)'}</span><span>${deliveryFee?moneyPaise(deliveryFee):'Free'}</span></div>
+        <div class="section-lbl">Payment</div>
+        <div class="review-row"><span class="lbl2">Method</span><span>${PAYMENT_LABEL[checkoutData.payment]||checkoutData.payment}</span></div>
+        <div class="review-row"><span class="lbl2">Payment status</span><span>Pending</span></div>
+        <div class="summary-row total" style="margin:16px 18px 0;"><span>Total Payable</span><span>${moneyPaise(finalTotal)}</span></div>
+        <div style="padding:16px 18px 100px;"><button class="btn-primary" id="placeOrderBtn" style="width:100%" onclick="placeOrder()">Place Order</button></div>`;
+    }
+  };
+
+  window.ckNext=async function(step){
+    if(step===1){
+      const btn=document.querySelector('#checkoutBody .btn-primary');
+      if(btn){btn.disabled=true;btn.textContent='Saving address…';}
+      try{
+        const addr=await saveCheckoutAddress();
+        checkoutData.address=addr;
+        window.biddoCheckoutState={state:addr.state||""};
+        checkoutStep=2;
+        renderCheckout();
+      }catch(e){toast(e?.message||'Could not save your address.');if(btn){btn.disabled=false;btn.textContent='Continue to Delivery';}}
+      return;
+    }
+    checkoutStep=step+1; renderCheckout();
+  };
+
+  window.placeOrder=async function(){
+    const user=await getUser();
+    if(!user){toast('Please log in first');return;}
+    const items=remoteCartItems();
+    if(!items.length){toast('Your checkout has no real Biddo products.');return;}
+    if(!checkoutData.address){
+      try{checkoutData.address=await saveCheckoutAddress();}catch(e){toast(e?.message||'Add your delivery address first.');return;}
+    }
+    const btn=document.getElementById('placeOrderBtn');
+    if(btn){btn.disabled=true;btn.textContent='Placing order…';}
+    try{
+      const {data,error}=await client.rpc('place_order_from_cart',{
+        p_shipping_address:checkoutData.address,
+        p_delivery_method:checkoutData.delivery,
+        p_payment_method:checkoutData.payment
+      });
+      if(error) throw error;
+      if(!data?.order_id) throw new Error('Order was not created.');
+
+      await hydrateCartIfAvailable();
+      await loadBuyerOrders();
+      window._promoApplied=false;
+      closePage('checkout');
+      go('home');
+      if(typeof renderCart==='function') renderCart();
+      toast(`Order ${data.order_number||''} placed ✓`, typeof ICON_CHECK!=='undefined'?ICON_CHECK:undefined);
+      setTimeout(()=>openOrders(),220);
+    }catch(e){
+      console.error('Biddo real order creation failed',e);
+      const raw=String(e?.message||e||'Could not place order.');
+      let msg=raw;
+      if(/not enough stock|no longer available/i.test(raw)) msg='A product is out of stock. Refresh your cart and try again.';
+      else if(/cart is empty/i.test(raw)) msg='Your cart is empty.';
+      else if(/permission|row-level|policy|42501/i.test(raw)) msg='Supabase blocked the order. Run the Biddo Orders SQL migration in your Business Supabase project.';
+      toast(msg);
+      if(btn){btn.disabled=false;btn.textContent='Place Order';}
+    }
+  };
+
+  async function hydrateCartIfAvailable(){
+    if(typeof window.biddoHydrateCart==='function') await window.biddoHydrateCart();
+    else if(typeof renderCart==='function') renderCart();
+  }
+
+  function toOrderRows(rows){
+    return (rows||[]).map(o=>{
+      const items=Array.isArray(o.order_items)?o.order_items:[];
+      const first=items[0];
+      return {
+        id:o.order_number||o.id,
+        orderUuid:o.id,
+        productId:first?.product_id||null,
+        seller:first?.seller_id||null,
+        qty:first?.quantity||1,
+        status:STATUS_LABEL[o.status]||o.status,
+        rawStatus:o.status,
+        stage:STAGE[o.status]??0,
+        active:ACTIVE_STATUSES.has(o.status),
+        reviewed:false,
+        items,
+        totalPaise:Number(o.total_paise||0),
+        deliveryFeePaise:Number(o.delivery_fee_paise||0),
+        paymentMethod:o.payment_method||"cod",
+        paymentStatus:o.payment_status||"pending",
+        address:o.shipping_address_snapshot||{},
+        createdAt:o.created_at,
+        updatedAt:o.updated_at
+      };
+    });
+  }
+
+  async function loadBuyerOrders(){
+    const user=await getUser();
+    if(!user) return [];
+    const {data,error}=await client.from('orders')
+      .select('id,order_number,status,subtotal_paise,delivery_fee_paise,total_paise,shipping_address_snapshot,delivery_method,payment_method,payment_status,created_at,updated_at,order_items(id,product_id,seller_id,product_title_snapshot,seller_name_snapshot,quantity,unit_price_paise,line_total_paise)')
+      .eq('buyer_id',user.id)
+      .order('created_at',{ascending:false});
+    if(error) throw error;
+    ORDERS=toOrderRows(data||[]);
+    return ORDERS;
+  }
+  window.biddoLoadBuyerOrders=loadBuyerOrders;
+
+  window.openOrders=async function(){
+    openPage('orders');
+    try{await loadBuyerOrders();}catch(e){console.error('Biddo buyer orders load failed',e);toast('Could not load your orders');}
+    switchOrderTab('active');
+  };
+
+  window.switchOrderTab=function(tab){
+    orderTab=tab;
+    document.getElementById('ordersTabActive')?.classList.toggle('active',tab==='active');
+    document.getElementById('ordersTabCompleted')?.classList.toggle('active',tab==='completed');
+    const body=document.getElementById('ordersBody'); if(!body) return;
+    const list=(ORDERS||[]).filter(o=>tab==='active'?o.active:!o.active);
+    if(!list.length){
+      body.innerHTML=`<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M3 7l2-4h14l2 4"/></svg><div class="t">You don't have an order yet</div><div class="s">You don't have any ${tab} orders at this time.</div></div>`;
+      return;
+    }
+    body.innerHTML=list.map(o=>{
+      const first=o.items?.[0];
+      const title=first?.product_title_snapshot||productName(o.productId);
+      const image=productImage(first?.product_id||o.productId);
+      const itemCount=(o.items||[]).reduce((n,x)=>n+Number(x.quantity||0),0);
+      return `<div class="order-card">
+        <img src="${esc(image)}">
+        <div style="flex:1">
+          <div class="nm">${esc(title)}${o.items?.length>1?` + ${o.items.length-1} more`:''}</div>
+          <div class="sel">Order ${esc(o.id)} · ${itemCount} item${itemCount===1?'':'s'}</div>
+          <div class="biddo-buyer-order-total">${moneyPaise(o.totalPaise)}</div>
+          <div class="biddo-buyer-payment">${PAYMENT_LABEL[o.paymentMethod]||o.paymentMethod} · Payment ${esc(o.paymentStatus)}</div>
+          <div class="st">${esc(o.status)}</div>
+          <div class="actrow">${o.active?`<button class="smallbtn" onclick="openTrack('${esc(o.orderUuid)}')">Track Order</button>`:`<button class="smallbtn outline" onclick="orderBuyAgain('${esc(o.orderUuid)}')">Buy Again</button>`}</div>
+        </div>
+      </div>`;
+    }).join('');
+  };
+
+  window.orderBuyAgain=function(orderId){
+    const o=(ORDERS||[]).find(x=>x.orderUuid===orderId); if(!o) return;
+    (o.items||[]).forEach(item=>{ if(item.product_id) addToCart(item.product_id,Number(item.quantity||1)); });
+    toast('Items added to cart',typeof ICON_CHECK!=='undefined'?ICON_CHECK:undefined);
+  };
+
+  window.openTrack=async function(orderId){
+    let o=(ORDERS||[]).find(x=>x.orderUuid===orderId);
+    try{
+      const user=await getUser();
+      const {data,error}=await client.from('orders')
+        .select('id,order_number,status,total_paise,shipping_address_snapshot,payment_method,payment_status,created_at,updated_at,order_items(id,product_id,seller_id,product_title_snapshot,quantity,unit_price_paise,line_total_paise)')
+        .eq('id',orderId).eq('buyer_id',user.id).single();
+      if(error) throw error;
+      o=toOrderRows([data])[0];
+      const idx=(ORDERS||[]).findIndex(x=>x.orderUuid===orderId); if(idx>=0) ORDERS[idx]=o;
+    }catch(e){console.error('Biddo track order load failed',e);if(!o){toast('Could not load this order');return;}}
+    const body=document.getElementById('trackBody');
+    const stages=['pending','confirmed','packed','shipped','out_for_delivery','delivered'];
+    const first=o.items?.[0];
+    body.innerHTML=`
+      <div class="pd-body" style="padding-top:16px;">
+        <div class="seller-card"><img src="${esc(productImage(first?.product_id))}" style="width:56px;height:56px;border-radius:12px;object-fit:cover;"><div class="info"><div class="nm">${esc(first?.product_title_snapshot||'Biddo order')}</div><div class="sub">Order ${esc(o.id)}</div><div class="sub">${moneyPaise(o.totalPaise)} · ${PAYMENT_LABEL[o.paymentMethod]||o.paymentMethod} · ${esc(o.paymentStatus)}</div></div></div>
+        ${(o.items||[]).map(item=>`<div class="review-row"><span>${esc(item.product_title_snapshot)} × ${item.quantity}</span><span>${moneyPaise(item.line_total_paise)}</span></div>`).join('')}
+      </div>
+      ${o.rawStatus==='cancelled'?`<div class="section-pad" style="color:#b52b2e;font-weight:800;">This order was cancelled.</div>`:`<div class="track-line">${stages.map((st,i)=>{const stage=STAGE[o.rawStatus]??0;const done=stage>=STAGE[st];return `<div class="tstep ${done?'done':''}"><div class="dotwrap"><div class="d"></div>${i<stages.length-1?'<div class="bar"></div>':''}</div><div class="tinfo"><div class="tt">${esc(STATUS_LABEL[st])}</div><div class="td">${done?(st===o.rawStatus?'Current status':'Completed'):'Pending'}</div></div></div>`;}).join('')}</div>`}`;
+    openPage('track');
+  };
+
+  async function loadSellerOrders(){
+    const user=await getUser();
+    if(!user) throw new Error('Please log in first.');
+    const {data,error}=await client.from('order_seller_statuses')
+      .select('order_id,seller_id,status,updated_at,orders!inner(id,order_number,status,total_paise,shipping_address_snapshot,payment_method,payment_status,created_at,updated_at,order_items(id,product_id,seller_id,product_title_snapshot,quantity,unit_price_paise,line_total_paise))')
+      .eq('seller_id',user.id)
+      .order('updated_at',{ascending:false});
+    if(error) throw error;
+    return data||[];
+  }
+
+  function nextChoices(status){
+    const allowed={pending:['confirmed','cancelled'],confirmed:['packed','cancelled'],packed:['shipped','cancelled'],shipped:['out_for_delivery'],out_for_delivery:['delivered'],delivered:[],cancelled:[],refunded:[]};
+    return allowed[status]||[];
+  }
+
+  function renderSellerOrders(rows){
+    const body=document.getElementById('sellerOrdersBody'); if(!body) return;
+    if(!rows.length){
+      body.innerHTML='<div class="biddo-seller-empty" style="margin:14px 18px;"><b>No seller orders yet</b><span>Orders containing your products will appear here.</span></div>';
+      return;
+    }
+    body.innerHTML=rows.map((row)=>{
+      const o=row.orders||{};
+      const item=(o.order_items||[]).find(x=>x.seller_id===row.seller_id)||(o.order_items||[])[0];
+      const addr=o.shipping_address_snapshot||{};
+      const choices=nextChoices(row.status);
+      const options=[row.status,...choices].filter((v,i,a)=>a.indexOf(v)===i).map(st=>`<option value="${st}">${STATUS_LABEL[st]||st}</option>`).join('');
+      return `<div class="biddo-seller-order-card">
+        <div class="biddo-seller-order-top">
+          <img class="biddo-seller-order-thumb" src="${esc(productImage(item?.product_id))}">
+          <div class="biddo-seller-order-main">
+            <div class="biddo-seller-order-number">${esc(o.order_number||o.id)}</div>
+            <div class="biddo-seller-order-time">${o.created_at?new Date(o.created_at).toLocaleString('en-IN',{dateStyle:'medium',timeStyle:'short'}):''}</div>
+            <div class="biddo-seller-order-product">${esc(item?.product_title_snapshot||'Product')}</div>
+            <div class="biddo-seller-order-meta">Qty ${Number(item?.quantity||0)} · ${moneyPaise(item?.line_total_paise||0)} · ${PAYMENT_LABEL[o.payment_method]||o.payment_method||'Payment'}</div>
+            <span class="biddo-seller-order-status">${esc(STATUS_LABEL[row.status]||row.status)}</span>
+          </div>
+        </div>
+        <div class="biddo-seller-order-address"><b style="color:var(--ink);">Ship to:</b> ${esc([addr.recipient_name,addr.phone,addr.address_line_1,addr.address_line_2,addr.city,addr.state,addr.postal_code].filter(Boolean).join(', '))}</div>
+        ${choices.length?`<div class="biddo-seller-order-actions"><select id="sellerOrderStatus_${esc(o.id)}">${options}</select><button onclick="updateSellerOrderStatus('${esc(o.id)}', '${esc(row.status)}')">Update</button></div>`:'<div class="biddo-seller-order-note">No further seller action is available for this order.</div>'}
+      </div>`;
+    }).join('');
+  }
+
+  window.openSellerOrders=async function(){
+    const user=await getUser(); if(!user){toast('Please log in first');return;}
+    openPage('seller-orders');
+    const body=document.getElementById('sellerOrdersBody'); if(body) body.innerHTML='<div class="biddo-seller-loading">Loading orders…</div>';
+    try{const rows=await loadSellerOrders();renderSellerOrders(rows);}catch(e){console.error('Biddo seller orders load failed',e);if(body) body.innerHTML=`<div class="biddo-seller-empty" style="margin:14px 18px;"><b>Seller orders couldn't load</b><span>${esc(e?.message||'Run the Biddo Orders SQL migration first.')}</span></div>`;}
+  };
+
+  window.updateSellerOrderStatus=async function(orderId,previousStatus){
+    const sel=document.getElementById('sellerOrderStatus_'+orderId); const next=sel?.value;
+    if(!next || next===previousStatus) return;
+    if(!confirm(`Change this order to “${STATUS_LABEL[next]||next}”?`)){if(sel) sel.value=previousStatus;return;}
+    if(sel) sel.disabled=true;
+    try{
+      const {data,error}=await client.rpc('seller_update_order_status',{p_order_id:orderId,p_status:next});
+      if(error) throw error;
+      if(!data?.ok) throw new Error('Order status was not updated.');
+      toast(`Order updated to ${STATUS_LABEL[next]||next} ✓`,typeof ICON_CHECK!=='undefined'?ICON_CHECK:undefined);
+      await window.openSellerOrders();
+      if(document.getElementById('page-orders')?.classList.contains('active')){
+        await loadBuyerOrders(); switchOrderTab(orderTab);
+      }
+    }catch(e){
+      console.error('Biddo seller order status update failed',e);
+      toast(e?.message||'Could not update the order.');
+      if(sel){sel.disabled=false;sel.value=previousStatus;}
+    }
+  };
+
+  // Hydrate real buyer orders after auth and when the buyer profile opens.
+  async function bootOrders(){
+    try{ await loadBuyerOrders(); }catch(e){ console.warn('Biddo buyer order hydration skipped',e); }
+  }
+  client.auth.onAuthStateChange((event,session)=>{
+    if(session?.user && event!=='SIGNED_OUT') setTimeout(bootOrders,0);
+    if(event==='SIGNED_OUT'){ ORDERS=[]; }
+  });
+  setTimeout(bootOrders,300);
+})();
+</script>
+
 </body>
 </html>
 
